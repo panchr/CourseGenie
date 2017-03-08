@@ -1,0 +1,18 @@
+# docker-compose.yml
+# Author: Rushy Panchal
+# Date: March 8thth, 2017
+# Description: Defines services required for Docker with Django.
+
+version: '2'
+services:
+  db:
+    image: postgres:9.6.2
+  web:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/server
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db

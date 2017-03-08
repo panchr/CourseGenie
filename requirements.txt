@@ -1,0 +1,10 @@
+# requirements.txt
+# Author: Rushy Panchal
+# Date: March 8th, 2017
+# Description: Default Python requirements file.
+
+Django==1.10
+django-cas-ng==3.5.4
+djangorestframework==3.3.3
+psycopg2==2.6.1
+PyYAML==3.11
