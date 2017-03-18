@@ -1,6 +1,6 @@
 # docker-compose.yml
 # Author: Rushy Panchal
-# Date: March 8thth, 2017
+# Date: March 8th, 2017
 # Description: Defines services required for Docker with Django.
 
 version: '2'
@@ -16,3 +16,5 @@ services:
       - "8000:8000"
     depends_on:
       - db
+    environment:
+      - DATABASE_URL=postgres://db:5432
