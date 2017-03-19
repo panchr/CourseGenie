@@ -1,5 +1,5 @@
 # core/urls.py
-# CourseVision
+# CourseGenie
 # Author: Rushy Panchal
 # Date: March 18th, 2017
 
