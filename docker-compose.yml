@@ -5,15 +5,21 @@
 
 version: '2'
 services:
+  # Database (Postgres)
   db:
     image: postgres:9.6.2
+
+  # Primary web server
   web:
     build: .
-    command: python manage.py runserver 0.0.0.0:8000
+    command: ['docker/wait-for-it.sh', 'db:5432', '--', 'python', 'manage.py',
+      'runserver', '0.0.0.0:8000']
     volumes:
       - .:/server
     ports:
       - "8000:8000"
+    links:
+      - db
     depends_on:
       - db
     environment:
