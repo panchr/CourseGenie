@@ -57,17 +57,6 @@ class Course(models.Model):
 	number = models.PositiveIntegerField()
 	department = models.CharField(max_length=3)
 
-	TERM_FALL = 1
-	TERM_SPRING = 2
-	TERM_BOTH = 3
-	TERM_INCONSISTENT = 4 # Inconsistent offerings
-	term = models.PositiveSmallIntegerField(choices=(
-		(TERM_FALL, 'Fall'),
-		(TERM_SPRING, 'Spring'),
-		(TERM_BOTH, 'Fall & Spring'),
-		(TERM_INCONSISTENT, 'Inconsistent'),
-		), default=TERM_FALL)
-
 	def __str__(self):
 		return '{} {}'.format(self.department, self.number)
 

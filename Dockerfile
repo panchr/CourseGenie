@@ -12,4 +12,4 @@ WORKDIR /server
 ADD requirements.txt /server/
 RUN pip install -r requirements.txt
 ADD . /server/
-RUN python manage.py migrate
+# RUN python manage.py migrate
