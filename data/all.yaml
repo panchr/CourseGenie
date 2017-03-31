@@ -1,0 +1,3146 @@
+# data collection
+majors:
+  - name: COS
+    degree: B.S.E.
+    requirements:
+      - type: prerequisite
+        number: 3
+        courses:
+          - COS 126
+          - COS 217
+          - COS 226
+      - type: theory
+        number: 2
+        courses:
+          - COS 340 
+          - COS 423 
+          - COS 433 
+          - COS 445 
+          - COS 451
+          - COS 487
+          - COS 488
+          - COS 510 | COS 441 | COS 516
+          - COS 511
+      - type: systems
+        number: 2
+        courses:
+          - COS 306
+          - COS 318
+          - COS 320
+          - COS 333
+          - COS 375
+          - COS 418
+          - COS 425
+          - COS 461
+          - COS 475
+      - type: applications
+        number: 2
+        courses:
+          - COS 314
+          - COS 323
+          - COS 325
+          - COS 326
+          - COS 401
+          - COS 402
+          - COS 424
+          - COS 426
+          - COS 429
+          - COS 432
+          - COS 435
+          - COS 436
+          - COS 455
+      - type: departmentals # Also includes "any 300- or 400- level Math or ELE or Physics or ORF course that does not duplicate COS content" and some 500 level COS courses upon approval
+        number: 2
+        courses:
+          - COS >= 300 # 500 level courses only upon approval
+          - MOL 437
+          - ECO 326
+          - ECO 312
+          - CHM 303
+          - MAE 345
+          - PHI 312
+          - ORF 309
+    - type: independent
+        number: 1
+        courses: 
+          - COS 397 | COS 398 | COS 497 | COS 498
+    tracks:
+  - name: ELE
+    degree: B.S.E.
+    requirements:
+      - type: core
+        number: 6
+        courses:
+          - ELE 201
+          - ELE 203
+          - ELE 206
+          - ELE 208
+          - ELE 301
+          - ELE 302
+      - type: math
+        number: 1
+        courses:
+          - MAT >= 300
+          - MAE 305
+          - MAE 306
+          - ORF 309 # ORF 309 can be used to fulfill the math requirement or a concentration requirement, but not both
+          - COS 340 
+      - type: deptelective
+        number: 1
+        courses:
+          - ELE >= 300
+          - COS 318
+          - COS 320
+          - COS 333
+          - COS 402
+          - COS 426
+          - COS 429
+          - COS 432
+          - COS 441
+          - COS 461
+          - PHY 208 & PHY 305
+      - type: science
+        number: 1
+        courses: # the following is a non-exhaustive list of possibilities
+        # Please Note: The course used to satisfy the Engineering Science 
+        # requirement cannot also be used to satisfy the concentration requirement or the
+        # breadth requirement, nor can it be counted as a Departmental requirement
+          - COS 217
+          - COS 226
+          - COS 320
+          - COS 402
+          - COS 423
+          - COS 425
+          - COS 444
+          - COS 451
+          - COS 487
+          - MAE 206
+          - MAE 221
+          - MAE 222
+          - MAE 324
+          - MAE 328
+          - MAE 344
+          - MAE 345
+          - MAE 433
+          - MAE 434
+          - CEE 205 
+          - CEE 303
+          - CEE 305
+          - CEE 471
+          - MSE 301
+          - MSE 302
+          - CBE 245
+          - CBE 246
+          - CBE 341
+          - CBE 415
+          - CBE 445
+          - CBE 447
+          - ORF 307
+          - ORF 311
+          - ORF 405
+          - ORF 406
+          - ORF 417 
+      # Of the eight Departmental courses, at least five must be ELE courses. 
+      # The remaining three courses can be taken in CEE, CHM, CBE, COS, EEB, ELE,
+      # MAE, MAT, MOL, MSE, ORF or PHY. Courses outside electrical engineering 
+      # counted towards this requirement must be closely related to the student’s
+      # academic program.
+      # I separated the departmentals into the 5 ELE departmentals and 3 other miscellaneous departmentals 
+      - type: eledepartmental
+        number: 5
+        courses: 
+          - ELE >= 300
+      - type: miscdepartmental
+        # Courses outside electrical engineering counted towards this requirement 
+        # must be closely related to the student’s academic program.
+        number: 3
+        courses:
+          - CEE >= 300
+          - CHM >= 300
+          - CBE >= 300
+          - COS >= 300
+          - EEB >= 300
+          - ELE >= 300
+          - MAE >= 300
+          - MAT >= 300
+          - MOL >= 300
+          - MSE >= 300
+          - ORF >= 300
+          - PHY >= 300
+      - type: design
+        # This requirement may also be satisfied with junior or senior independent work,
+        # if that work contains a substantial design component.
+        number: 1
+        courses:
+          - ELE 352
+          - ELE 375
+          - ELE 404
+          - ELE 454
+          - ELE 462
+          - ELE 465
+          - ELE 475
+          - ELE 482
+          - COS 426
+          - COS 436
+    tracks:
+    # Two of the three courses must be listed in ELE (crosslisted is OK). 
+    # ORF 309/MAT 309 may be used to satisfy either the upperclass mathematics 
+    # requirement or the concentration requirement, but not both.
+    # Graduate courses can be included in a concentration with departmental 
+    # representative permission.
+      "Circuits and Systems":
+        - type: reqconcentration
+          number: 1
+          courses: 
+            - ELE 304
+        - type: concentration
+          number: 2
+          courses: 
+            - ELE 341
+            - ELE 375
+            - ELE 461
+            - ELE 462
+            - ELE 464
+            - ELE 482
+      "Data and Information":
+        - type: eleconcentration
+          number: 2
+          courses:
+            - ELE 381
+            - ELE 477
+            - ELE 482
+            - ELE 486
+            - ELE 488
+            - ELE 535
+        - type: miscconcentration
+          number: 1
+          courses:
+            - ELE 381
+            - ELE 477
+            - ELE 482
+            - ELE 486
+            - ELE 488
+            - ELE 535
+            - ORF 309
+            - COS 402
+            - COS 424
+            - COS 429
+      "Computer Systems":
+        - type: reqconcentration
+          number: 1
+          courses:
+            - ELE 375
+        - type: eleconcentration
+          number: 1
+          courses:
+            - ELE 461
+            - ELE 462
+            - ELE 464
+            - ELE 470
+            - ELE 475
+        - type: miscconcentration
+          number: 1
+          courses:
+            - ELE 461
+            - ELE 462
+            - ELE 464
+            - ELE 470
+            - ELE 475
+            - COS 318
+            - COS 320
+            - COS 461
+      "Robotics and Cyber-physical Systems":
+        - type: eleconcentration
+          number: 2
+          courses:
+            - ELE 304
+            - ELE 375
+            - ELE 464
+            - ELE 488
+        - type: miscconcentration
+          number: 1
+          courses:
+            - ELE 304
+            - ELE 375
+            - ELE 464
+            - ELE 488
+            - COS 402
+            - COS 429
+            - MAE 345
+            - MAE 433
+      "Quantum Information and Applied Physics":
+        - type: reqconcentration
+          number: 1
+          courses:
+            - ELE 342
+        - type: concentration
+          number: 2
+          courses:
+            - ELE 396
+            - ELE 441
+            - ELE 453
+            - ELE 456
+            - ELE 568
+      "Security and Privacy":
+        - type: reqconcentration
+          number: 1
+          courses:
+            - ELE 432
+        - type: eleconcentration
+          number: 1
+          courses: 
+            - ELE 375
+            - ELE 464
+            - ELE 470
+        - type: miscconcentration
+          number: 1
+          courses:
+            - ELE 375
+            - ELE 464
+            - ELE 470
+            - COS 424
+            - COS 433
+            - COS 461 
+      "Electronic Devices and Materials":
+        - type: reqconcentration
+          number: 1
+          courses:
+            - ELE 341
+        - type: eleconcentration
+          number: 1
+          courses: 
+            - ELE 304
+            - ELE 342
+            - ELE 431
+            - ELE 441
+        - type: miscconcentration
+          number: 1
+          courses:
+            - ELE 304
+            - ELE 342
+            - ELE 431
+            - ELE 441
+            - MSE 301
+            - MSE 302
+            - MSE 505
+            - MAE 324 
+      "Biomedical Engineering":
+        - type: eleconcentration
+          number: 2
+          courses:
+            - ELE 304
+            - ELE 452
+            - ELE 455
+            - ELE 480
+            - ELE 488
+        - type: miscconcentration
+          number: 1
+          courses:
+            - ELE 304
+            - ELE 452
+            - ELE 455
+            - ELE 480
+            - ELE 488
+            - COS 455
+            - MAE 344
+            - NEU 427
+            - NEU 437
+      "Optics and Photonics":
+        - type: reqconcentration
+          number: 1
+          courses:
+            - ELE 351
+        - type: concentration
+          number: 2
+          courses:
+            - ELE 342
+            - ELE 452
+            - ELE 453
+            - ELE 454
+            - ELE 455
+            - ELE 456
+      "Energy and the Environment":
+        - type: concentration
+          number: 3
+          courses:
+            - ELE 341
+            - ELE 431
+            - ELE 455
+            - ELE 557
+            - MAE 424
+  - name: Civil & Environmental Engineering
+    url: https://www.princeton.edu/cee/forms/Yellow_Book_for_Class_of_2019_Sept.2016.pdf
+    short_name: CEE
+    degree: B.S.E.
+    requirements:
+      - type: thesis
+        name: Senior Thesis
+        number: 2
+        courses:
+          - CEE 478 # thesis
+    tracks:
+      Architecture and Engineering - Structural:
+        - type: engineering-science
+          name: Engineering Science
+          number: 8
+          courses:
+            - CEE 205
+            - CEE 262A
+            - CEE 207 | CEE 302 | CEE 304 | CEE 306
+            - CEE 312
+            - CEE 361
+            - CEE 364
+            - CEE 365
+            - ARC 374 | CEE 463
+        - type: engineering-design
+          name: Engineering Design
+          number: 2
+          courses:
+            - CEE 366
+            - CEE 461 | CEE 462
+        - type: track-specific
+          name: Track Specific
+          number: 3
+          courses:
+            - ARC 203
+            - ARC 204
+            - ARC 350 # junior independent work
+        - type: statistics
+          name: Statistics (Additional Math)
+          number: 1
+          courses:
+            - ORF 245
+            - ORF 309
+          notes: waived with 5 in AP STAT
+        - type: additional-math
+          name: Additional Path
+          number: 1
+          courses:
+            - MAE 305
+        - type: additional-science
+          name: Additional Science
+          number: 1
+          courses:
+            - EEB 211
+            - MOL 214
+            - MOL 215
+          notes: waived with 5 in AP BIO
+        - type: elective
+          name: Program Electives
+          number: 1
+          courses:
+            - CEE 439
+            - CEE 460
+            - CEE 463
+            - CEE 467
+            - CEE 477
+            - CEE 540
+            - CEE 566
+            - CEE 568
+            - ORF 307
+            - ORF 309
+
+      Architecture and Engineering - Architecture:
+        - type: engineering-science
+          name: Engineering Science
+          number: 6
+          courses:
+            - CEE 205
+            - CEE 262A
+            - CEE 312 | CEE 361
+            - CEE 364
+            - ARC 311
+            - ARC 374 | CEE 463
+        - type: engineering-design
+          name: Engineering Design
+          number: 2
+          courses:
+            - CEE 366
+            - CEE 461 | CEE 462
+        - type: track-specific
+          name: Track Specific
+          number: 6
+          courses:
+            - ARC 203
+            - ARC 204
+            - ARC 403
+            - ARC 404
+            - ARC 350 # junior independent work
+            - ARC 351 # Senior independent work
+        - type: elective
+          name: Program Electives
+          number: 2
+          courses:
+            - CEE 439
+            - CEE 460
+            - CEE 463
+            - CEE 467
+            - CEE 477
+            - CEE 540
+            - CEE 566
+            - CEE 568
+            - ORF 307
+            - ORF 309
+            - ARC 201
+            - ARC 202
+            - ARC 302
+            - ARC 304
+            - ARC 305
+            - ARC 308
+            - ARC 401
+            - ARC 406
+            - ARC 492
+            - ART 206
+            - ART 230
+            - ART 242
+            - ART 250
+            - ART 308
+            - ART 315
+            - ART 320
+            - ART 332
+            - ART 333
+            - ART 337
+            - ART 351
+            - ART 443
+            - ART 445
+            - ART 458
+            - URB 201
+
+      Environmental Engineering:
+        - type: engineering-science
+          name: Engineering Science
+          number: 8
+          courses:
+            - CEE 205
+            - CEE 207 | CEE 304
+            - CEE 305
+            - CEE 306
+            - CEE 308
+            - CEE 311
+            - CEE 364 | CEE 365
+        - type: statistics
+          name: Statistics (Additional Math)
+          number: 1
+          courses:
+            - ORF 245
+            - ORF 309
+          notes: waived with 5 in AP STAT
+        - type: additional-math
+          name: Additional Math
+          number: 1
+          courses:
+            - MAE 305
+        - type: additional-science
+          name: Additioanl Science
+          number: 1
+          courses:
+            - EEB 211
+            - MOL 214
+            - MOL 215
+          notes: waived with 5 in AP BIO
+        - type: engineering-design
+          name: Engineering Design
+          number: 2
+          courses:
+            - CEE 471
+            - CEE 477
+        - type: elective
+          name: Program Electives
+          number: 3
+          courses:
+            - CEE 334
+            - CEE 361
+            - CEE 460
+            - CEE 487
+            - CEE 566
+            - MAE 328
+            - GEO 363
+            - GEO 418
+            - ORF 309
+            - ELE 455
+            - ELE 428
+            - MAE*
+            - CBE*
+            - ORF*
+            - GEO*
+            - BIO*
+            - CHM*
+      
+      Geological Engineering:
+        - type: engineering-science
+          name: Engineering Science
+          number: 8
+          courses:
+            - CEE 205
+            - CEE 207 | CEE 302
+            - CEE 304
+            - CEE 305 | CEE 311
+            - CEE 306
+            - CEE 308 | GEO 300
+            - CEE 365 | CEE 370
+            - CEE 360 | GEO 363 | GEO 366 | CEE 417 | GEO 418 | CEE 424 | GEO 430 | GEO 441 | GEO 470 | GEO 499
+        - type: statistics
+          name: Statistics (Additional Math)
+          number: 1
+          courses:
+            - ORF 245
+            - ORF 309
+          notes: waived with 5 in AP STAT
+        - type: additional-math
+          name: Additional Math
+          number: 1
+          courses:
+            - MAE 305
+        - type: additional-science
+          name: Additional Science
+          number: 1
+          courses:
+            - GEO 203
+            - EEB 211
+            - MOL 214
+            - MOL 215
+          notes: waived with 5 in AP BIO
+        - type: engineering-design
+          name: Engineering Design
+          number: 2
+          courses:
+            - CEE 471
+            - CEE 477
+        - type: elective
+          name: Program Electives
+          number: 3
+          courses:
+            - CEE 311
+            - CEE 460
+            - CEE 566
+            - CEE 423
+            - MAE*
+            - CBE*
+            - APC*
+            - ORF*
+            - GEO*
+            - EEB*
+            - CHM*
+
+      Structural Engineering:
+        - type: engineering-science
+          name: Engineering Science
+          number: 6
+          courses:
+            - CEE 205
+            - CEE 262A
+            - CEE 312
+            - CEE 361
+            - CEE 207 | CEE 302 | CEE 304
+            - CEE 305 | CEE 306
+        - type: engineering-science-additional
+          name: Engineering Science
+          number: 2
+          courses:
+            - CEE 364
+            - CEE 365
+            - CEE 308
+        - type: statistics
+          name: Statistics (Additional Math)
+          number: 1
+          courses:
+            - ORF 245
+            - ORF 309
+          notes: waived with 5 in AP STAT
+        - type: additional-math
+          name: Additional Math
+          number: 1
+          courses:
+            - MAE 305
+        - type: additional-science
+          name: Additional Science
+          number: 1
+          courses:
+            - GEO 203
+            - EEB 211
+            - MOL 214
+            - MOL 215
+          notes: waived with 5 in AP BIO
+        - type: engineering-design
+          name: Engineering Desing
+          number: 2
+          courses:
+            - CEE 366
+            - CEE 461
+        - type: elective
+          name: Program Electives
+          number: 3
+          courses:
+            - CEE 376
+            - CEE 439
+            - CEE 460
+            - CEE 363
+            - CEE 467
+            - CEE 477
+            - CEE 540
+            - CEE 560
+            - ORF 307
+            - ORF 309
+            - MAE*
+            - APC*
+            - ORF*
+            - GEO*
+
+      Engineering and the Liberal Arts:
+        - type: engineering-science
+          name: Engineering Science
+          number: 3
+          courses:
+            - CEE
+        - type: engineering-science-300
+          name: Engineering Science
+          number: 2
+          courses:
+            - CEE>=300
+        - type: engineering-science-300-stl
+          name: Engineering Science
+          number: 1
+          courses:
+            - CEE[STL]>=300
+        - type: elective
+          name: Program Electives
+          number: 4
+          courses:
+            - '*'
+        - type: elective-300
+          name: Program Electives
+          number: 3
+          courses:
+            - '*>=300'
+        - type: 300+
+          name: 8 300+ Level Courses
+          number: 8
+          courses:
+            - '*>=300'
+          unique: false
+  - name: Operations Research and Financial Engineering
+    short_name: ORFE
+    degree: B.S.E.
+    requirements:
+      - type: core
+        number: 6
+        courses:
+          - ORF 245
+          - ORF 307
+          - ORF 309
+          - ORF 405
+          - ORF 335
+          - ORF 411
+      - type: math
+      	number: 1
+      	courses:
+          - MAT 320
+          - MAT 322
+          - MAT 375
+          - MAT 377
+          - MAT 378
+          - MAT 385
+          - MAT 391
+          - MAT 392
+          - MAT 427
+          - MAT 486
+          - MAT 522
+      - type: departmental
+      	number: 8
+      	courses:
+          - ORF 311
+          - ORF 350
+          - ORF 360
+          - ORF 363
+          - ORF 375
+          - ORF 376
+          - ORF 401
+          - ORF 406
+          - ORF 407
+          - ORF 409
+          - ORF 417
+          - ORF 418
+          - ORF 435
+          - ORF 455
+          - ORF 467
+          - ORF 473
+          - ORF 474
+          - CEE 304
+          - CEE 460
+          - CHM 303
+          - CHM 304
+          - COS 217
+          - COS 226
+          - COS 323
+          - COS 340
+          - COS 402
+          - COS 423
+          - COS 425
+          - ECO 310
+          - ECO 311
+          - ECO 312
+          - ECO 317
+          - ECO 332
+          - ECO 341
+          - ECO 342
+          - ECO 361
+          - ECO 362
+          - ECO 363
+          - ECO 418
+          - ECO 462
+          - ECO 464
+          - ECO 466
+          - ECO 467
+          - EEB 324
+          - ELE 381
+          - ELE 486
+          - ENV 302
+          - MAE 433
+          - MOL 345
+          - NEU 437
+          - NEU 330
+  - name: CBE
+    degree: B.S.E.
+    requirements:
+      - type: core
+        number: 3
+        courses:
+          - CBE 245
+          - CBE 246
+          - CBE 250
+          - CBE 341
+          - CBE 346
+          - CBE 441
+          - CBE 442
+          - CBE 454A
+          - CBE 454B
+      - type: advanced-stem-differential-equations
+        number: 1
+        courses:
+          - MAE 305
+          - MAT 427
+          - APC 350
+      - type: advanced-stem-chemistry
+        number: 1
+        courses:
+          - CHM 304
+          - CHM 305
+          - CHM 306
+          - CHM 333
+          - CHM 345
+          - CHM 371
+          - CHM 403
+          - CHM 406
+          - CHM 407
+          - CHM 408
+          - CHM 440
+          - CHM 470
+          - CHM 502
+          - CHM 504
+          - CHM 516
+          - CHM 521
+          - CHM 524
+          - CHM 525
+          - CHM 529
+          - CHM 532
+          - CHM 534
+          - CHM 541
+          - CHM 544
+          - CBE 415
+          - CBE 421
+          - GEO 363
+          - GEO 418
+      - type: advanced-stem-organic-chemistry
+        number: 1
+        courses:
+          CHM 303
+          CHM 304
+          CHM 304B
+      - type: advanced-stem-molecular-biology
+        number: 1
+        courses:
+          MOL 214
+          MOL 215
+    tracks:
+      "Bioengineering and biotechnology":
+        - type: concentration
+          number: 3
+          courses: 
+            - CBE 419
+            - CBE 423
+            - CBE 432
+            - CBE 433
+            - CBE 438
+            - MOL 438
+            - CBE 439
+            - CBE 440
+            - CBE 443
+            - CBE 447
+            - CBE 573
+            - CHM 412
+            - CHM 440
+            - CHM 515
+            - CHM 538
+            - CHM 542
+            - CHM 543
+            - CHM 544
+            - EEB 320
+            - EEB 325
+            - EEB 327
+            - ENV 418
+            - GEO 428
+            - ISC 326
+            - MAE 344
+            - MOL 340
+            - MOL 342
+            - MOL 345
+            - MOL 348
+            - MOL 408
+            - MOL 410
+            - MOL 433
+            - MOL 434
+            - MOL 435
+            - MOL 437
+            - MOL 448
+            - CHM 448
+            - MOL 455
+            - MOL 457
+            - MOL 459
+            - MOL 523
+            - NEU 258
+            - NEU 259B
+            - NEU 408
+            - NEU 437
+            - PSY 406
+            - PSY 407
+            - QCB 511
+        - type: breadth
+          number: 2
+          courses: CBE | CEE | COS | EGR | ELE | MAE | MSE | ORF
+      "Entrepreneurship and management":
+        - type: concentration
+          number: 3
+          courses:
+            - CBE 260
+            - CEE 334
+            - CEE 460
+            - CHV 331
+            - COS 432
+            - ECO 310
+            - ECO 311
+            - EGR 437
+            - MAE 437
+            - ELE 437
+            - EGR 492
+            - EGR 494
+            - EGR 495
+            - EGR 497
+            - ELE 491
+            - ENV 324
+            - EGR 324
+            - GEO 366
+            - ORF 245
+            - ORF 335
+            - ORF 435
+            - WWS 373
+        - type: breadth
+          number: 2
+          courses: CBE | CEE | COS | EGR | ELE | MAE | MSE | ORF
+      "Energy and environmental technology":
+        - type: concentration
+          number: 3
+          courses:
+            - AST 309
+            - CBE 335
+            - CEE 207
+            - CEE 304
+            - CEE 306
+            - CEE 308
+            - CEE 311
+            - CEE 334
+            - CEE 471
+            - CEE 474
+            - CEE 477
+            - ENE 477
+            - CHM 333
+            - CHM 525
+            - ECO 429
+            - ELE 431
+            - ENE 414
+            - ENE 418
+            - ENE 558
+            - ENV 201A
+            - ENV 202A
+            - ENV 204
+            - ENV 324
+            - EGR 324
+            - ENV 531
+            - GEO 220A
+            - GEO 322
+            - GEO 361
+            - GEO 363
+            - GEO 364
+            - GEO 366
+            - GEO 418
+            - GEO 423
+            - GEO 424
+            - GEO 470
+            - MAE 328
+            - MAE 424
+            - MAE 427
+            - WWS 306
+        - type: breadth
+          number: 2
+          courses: CBE | CEE | COS | EGR | ELE | MAE | MSE | ORF
+      "Materials and product engineering":
+        - type: concentration
+          number: 3
+          courses:
+            - CBE 415
+            - CBE 422
+            - CBE 423
+            - CBE 425
+            - CBE 433
+            - CBE 526
+            - CEE 364
+            - CHM 403
+            - CHM 409
+            - ELE 341
+            - ELE 342
+            - ELE 455
+            - ELE 441
+            - ELE 442
+            - ELE 449
+            - GEO 378
+            - MAE 324
+            - MAE 334
+            - MSE 301
+            - MSE 302
+            - MSE 504
+            - MSE 531
+        - type: breadth
+          number: 2
+          courses: CBE | CEE | COS | EGR | ELE | MAE | MSE | ORF
+      "Optimization, dynamics, and information technology":
+        - type: concentration
+          number: 3
+          courses:
+            - CBE 422
+            - CBE 445
+            - CBE 448
+            - CBE 520
+            - CBE 527
+            - COS 217
+            - COS 226
+            - COS 323
+            - COS 333
+            - COS 402
+            - COS 424
+            - ECO 317
+            - EEB 355
+            - ORF 245
+            - ORF 307
+            - ORF 309
+            - ORF 311
+            - ORF 406
+            - ORF 409
+            - ORF 411
+            - ORF 417
+        - type: breadth
+          number: 2
+          courses: CBE | CEE | COS | EGR | ELE | MAE | MSE | ORF
+      "Science and engineering for new technologies":
+        - type: concentration
+          number: 3
+          courses:
+            - CBE 342
+            - CBE 425
+            - MAE 306
+            - MAE 336
+            - MAE 423
+            - CBE 421
+            - CHM 302
+            - CHM 305
+            - CHM 306
+            - CHM 403
+            - CHM 405
+            - CHM 406
+            - CHM 407
+            - CHM 408
+            - PHY 203
+            - PHY 208
+            - PHY 301
+            - PHY 304
+            - PHY 305
+            - ELE 206
+            - ELE 208
+            - ELE 341
+            - ELE 342
+            - ELE 441
+            - ELE 442 
+        - type: breadth
+          number: 2
+          courses: CBE | CEE | COS | EGR | ELE | MAE | MSE | ORF
+
+          
+certificates:
+  - name: African America Studies
+    requirements:
+      - type: core
+        number: 1
+        courses:
+          - AAS 201
+      - type: survey # At least one survey course shoud be a pre-20th century course
+        number: 2
+        courses:
+          - AAS 353
+          - AAS 366
+          - AAS 359
+          - AAS 367
+      - type: subfield
+        number: 2
+        courses:
+          - AFS 400
+          - AFS 427
+          - AMS 342 
+          - ANT 210
+          - ANT 301
+          - ANT 304
+          - ANT 321
+          - ANT 322
+          - ANT 350
+          - ARC 305
+          - ARC 401
+          - ART 242
+          - ART 456
+          - ECO 321
+          - ECO 351
+          - ENG 350
+          - ENG 351
+          - ENG 367
+          - ENG 368
+          - ENG 411
+          - ENG 415
+          - ENG 416
+          - HIS 305
+          - HIS 314
+          - HIS 315
+          - HIS 316
+          - HIS 373
+          - HIS 374
+          - HIS 376
+          - HIS 377
+          - HIS 381
+          - HIS 383
+          - HIS 389
+          - MUS 250
+          - MUS 258
+          - MUS 260
+          - MUS 264
+          - MUS 265
+          - MUS 311
+          - MUS 312
+          - MUS 352
+          - POL 220
+          - POL 316
+          - POL 317
+          - POL 321
+          - POL 366
+          - POL 421
+          - POR 301
+          - POR 304
+          - PSY 212
+          - PSY 252 
+          - PSY 307
+          - PSY 313
+          - REL 236
+          - REL 258
+          - REL 319
+          - REL 328
+          - REL 358
+          - REL 360
+          - REL 366
+          - SOC 201
+          - SOC 210
+          - SOC 216
+          - SOC 227
+          - SOC 345
+          - SOC 359
+          - SOC 361
+          - WWS 370
+
+  - name: African Studies
+    requirements:
+      - type: core 
+        number: 1
+        courses:
+          - ART 237
+          - ART 260
+          - COM 239
+          - HIS 314
+          - HIS 316
+      # Additional requirements for this certificate include:
+      # One course each in three of the four key areas:
+      #   Culture, Literature, and the Arts
+      #   History 
+      #   Science, Technology and Health
+      #   Politics and Economics
+      # One elective course from one of the four key areas that can be an “advanced topics”
+      # seminar offered by Africanists in a variety of departments or the year-long sequence
+      # in Swahili offered on campus
+      # The Senior Colloquium where students discuss works-in-progress
+      # A senior thesis on Africa or an African-related topic.
+      # One capstone semester-long seminar in a student’s junior or senior year. 
+      # The seminar will focus on independent research, methods, and will incorporate
+      # the AFS lecture series as part of the curriculum.
+
+  - name: American Studies
+    requirements: 
+      - type: core
+        number: 1
+        courses:
+          - AMS 101
+      - type: ams-courses
+        number: 3
+        courses:
+          - AMS >= 300
+      - type: electives
+        number: 3
+        courses:
+          # Three electives, from three different departments outside the student's major
+      
+  - name: Applications of Computing
+    requirements:
+      - type: prerequisite
+        number: 1
+        courses:
+          - COS 126
+      - type: core
+        number: 2
+        courses:
+          - COS 217
+          - COS 226
+          - COS 323
+      - type: departmental
+        number: 1
+        courses:
+          - COS >= 300 # (except not 397, 398, 497, 498, or 323 if it was used as one of the core classes)
+      - type: additional
+        number: 1
+        courses:
+          # Including but not limited to
+          - APC 524
+          - ARC 374
+          - CBE 422
+          - CBE 442
+          - CBE 448
+          - ECO 326
+          - ELE 375
+          - ELE 381
+          - ELE 396
+          - ELE 463
+          - ELE 464
+          - ELE 475
+          - ELE 481
+          - ELE 482
+          - MAT 305
+          - MAE 345          
+          - MAE 412          
+          - MAE 433
+          - MOL 457
+          - MUS 315
+          - NEU 314          
+          - NEU 437
+          - ORF 301          
+          - ORF 307          
+          - ORF 309          
+          - ORF 311          
+          - ORF 350          
+          - ORF 363          
+          - ORF 417          
+          - ORF 467          
+          - ORF 523
+          - PSY 322
+          - WWS 357
+
+  - name: Applied and Computational Mathematics
+    requirements:
+      - type: core
+        number: 5
+        courses:
+          # A total of five courses normally 300 level or higher (pass/D/fail not accepted),
+          # at least two of which are not from your home department and you are not using to
+          # satisfy the requirements of your major concentration.
+
+          #The five required courses may vary widely from department to department in order 
+          # to include a broad spectrum of science and engineering students throughout the 
+          # University. These courses should fit readily within the degree requirements of 
+          # the respective departments of the engineering school or the economics, mathematics, 
+          # physics, chemistry, molecular biology, and ecology and evolutionary biology, or other 
+          # relevant departments, but will require a particular emphasis in applied mathematics. 
+          # The five required courses must be distributed between the following two areas, with at
+          # least two from each area:
+
+          # 1. Mathematical foundations and techniques, including differential equations, real and
+          # complex analysis, discrete mathematics, probability, and statistics, typically offered
+          # by the Department of Mathematics.
+
+          # 2. Mathematical applications, including signal processing, control theory, optimization,
+          # mathematical economics, typically offered by the economics, science, and engineering departments. 
+      
+  - name: Archaeology
+    requirements:
+      - type: core
+        number: 3
+        courses:
+          - ART 100
+          - ART 401
+          - ART 304 # Or its equivalent (must be fieldwork of some sort) and must be approved by the program's executive committee ahead of time
+      - type: breadth
+        number: 3
+        courses:
+          # At least one must be offered in the Department of Art and Archaeology
+          # in the Ancient area, and at least one must be a course outside of the
+          # Department of Art and Archaeology
+          - ANT 206
+          - ANT 308
+          - ANT 374
+          - ART 100
+          - ART 102
+          - ART 200
+          - ART 201
+          - ART 266
+          - ART 267
+          - ART 290
+          - ART 300
+          - ART 301
+          - ART 304
+          - ART 306
+          - ART 308
+          - ART 395
+          - ART 418
+          - ART 401
+          - ART 481
+          - FRS 126
+          - FRS 187
+          - GEO 103
+          - GEO 203
+          - GEO 370
+          
+  - name: Architecture and Engineering
+    requirements:
+      # There's virtually no information about the requirements for this minor
+
+  - name: Biophysics
+    requirements:
+      # There's virtually no information about the requirements for this minor
+
+  - name: Cognitive Science
+    requirements:
+        # Students are required to take five courses in cognitive science, which
+        # in combination satisfy the following requirements:
+
+        # 1. Three courses at the 300-level or higher;
+        # 2. Courses taken in at least three different academic units (please note 
+        # that this restriction applies only to a course's primary course listing, 
+        # not to additional cross-listings);
+        # 3. Typically no more than one course with a primary course listing from
+        # the student's department of concentration, unless permission is obtained
+        # from the director;
+        # 4. At least one course that is not counted towards the student's 
+        # departmental concentration;
+        # 5. At most, one course may be taken P/D/F.
+      - type: core
+        number: 5
+        courses:
+          # Other cognitive science related courses, including graduate courses, 
+          # may be counted toward certificate completion with the approval of the 
+          # director.
+          - COS 109
+          - COS 126
+          - COS 402
+          - COS 424
+          - COS 429
+          - COS 495
+          - LIN 201
+          - LIN 216
+          - LIN 250
+          - LIN 301
+          - LIN 302
+          - LIN 303
+          - LIN 306
+          - LIN 308
+          - LIN 310 
+          - LIN 312
+          - LIN 314
+          - LIN 355
+          - LIN 360
+          - LIN 408
+          - LIN 412
+          - MAE 345
+          - NEU 175
+          - NEU 202
+          - NEU 202
+          - NEU 330
+          - NEU 437
+          - PHI 207 
+          - PHI 218
+          - PHI 311
+          - PHI 313
+          - PHI 315
+          - PHI 317
+          - PHI 322
+          - PHI 352
+          - PHI 380
+          - PSY 212
+          - PSY 237
+          - PSY 254
+          - PSY 255
+          - PSY 304 
+          - PSY 306
+          - PSY 309
+          - PSY 310 
+          - PSY 311
+          - PSY 337 
+          - PSY 338
+          - PSY 400
+          - PSY 418
+          - TRA 301
+          - WWS 340
+
+  - name: Contemporary European Politics and Society
+    requirements:
+      - type: gateway
+        number: 1
+        courses:
+          - EPS 300
+          - EPS 301
+          - EPS 302
+      - type: core
+        number: 4
+        courses:
+          # Of the four courses, at least one must be chosen from among offerings
+          # in history and at least one must be chosen from among offerings in 
+          # the other social sciences.
+          # I cannot access all of the possible core classes
+          - EPS 227
+          - EPS 300
+          - EPS 302
+          - EPS 322
+          - EPS 342
+          - EPS 452
+      # Additional requirements for this certificate:
+      # Fulfill a language requirement by doing one of the following.
+      #   a) Take a 200- or 300-level course in a European language.
+      #   b) Demonstrate fluency in a European language by taking a test 
+      #   administered by the program. Any national language spoken in a 
+      #   European country may be used to satisfy the requirement. The 
+      #   expectation is that students will have sufficient linguistic 
+      #   competence to use research materials in the foreign language 
+      #   for their senior thesis research.
+      # Participate in a senior thesis colloquium sponsored by the program.
+      # Write a senior thesis on a subject related to contemporary European
+      # politics and society. Students majoring in departments where a senior
+      # thesis on modern Europe is not possible may petition the director to
+      # have another piece of independent research meet this requirement.
+  - name: Creative Writing
+    requirements:
+      - type: 200-lvl
+        number: 2
+        courses: CWR >= 200
+      - type: 300-lvl
+        number: 2
+        courses: CWR >= 300
+
+  - name: Dance
+    requirements:
+        - type: studio-performance
+          number: 2
+          courses:
+            - DAN 319
+            - DAN 320
+            - DAN 419
+            - DAN 420
+        - type: studio-spring
+          number: 1
+          courses:
+            - DAN 307
+            - DAN 408
+            - DAN 431
+            - DAN 432
+         - type: studio-gen
+           number: 1
+           courses: DAN >= 300
+         - type: co-curricular
+           number: 2
+           courses:
+             - DAN 204
+             - DAN 207
+             - DAN 209
+             - DAN 210
+             - DAN 213
+             - DAN 214
+             - DAN 211
+             - DAN 322
+             - DAN 315
+         - type: seminar
+           number: 1
+           courses:
+             - DAN 316
+             - DAN 215
+             - DAN 321
+             - DAN 312
+             - DAN 497
+             - DAN 310
+
+  - name: East Asian Studies
+    requirements:
+      - type: core
+        number: 4
+        courses: CHI | JPN | KOR
+      - type: general-200
+        number: 1
+        courses: EAS >= 200
+      - type: general-other
+        number: 3
+        courses: EAS >= 100
+
+  - name: Engineering & Management Systems
+    requirements:
+      - type: core
+        number: 2
+        courses:
+          - MAT 201
+          - MAT 202
+      - type: statistics
+        number: 1
+        courses:
+          - ORF 245
+          - ECO 202
+          - PSY 251
+          - PHY 301
+          - SOC 201
+          - WWS 200
+          - ORF 350
+          - ORF 405
+          - ECO 302
+          - ECO 312
+      - type: optimization
+        number: 1
+        courses:
+          - ORF 307
+          - ORF 363
+          - CBE 442
+          - ELE 382
+          - MAE 433
+      - type: probability
+        number: 1
+        courses: ORF 309
+      - type: uncertainty
+        number: 1
+        courses:
+          - ORF 311
+          - ORF 360
+          - ORF 418
+          - COS 402
+          - MAE 345
+          - ECO 418
+          - ECO 462
+          - ECO 465
+          - WWS 340
+      - type: entrepreneurship/management
+        number: 1
+        courses:
+          - ORF 411
+          - CBE 442
+          - EGR 497
+          - ELE 491
+
+  - name: Engineering Biology
+    requirements:
+      - type: biology
+        number: 3
+        courses:
+          - EEB >= 100
+          - MOL >= 100
+          - QCB >= 100
+      - type: adv-biology
+        number: 2
+        courses:
+          - EEB >= 300
+          - MOL >= 300
+          - ACB >= 300
+      - type: engineering
+        number: 3
+        courses:
+          - CBE >= 100
+          - CEE >= 100
+          - EGR >= 100
+          - ELE >= 100
+          - MAE >= 100
+          - MSE >= 100
+          - ORF >= 100
+          - COS >= 100
+      - type: adv-engineering
+        number: 2
+        courses:
+          - CBE >= 300
+          - CEE >= 300
+          - EGR >= 300
+          - ELE >= 300
+          - MAE >= 300
+          - MSE >= 300
+          - ORF >= 300
+          - COS >= 300
+
+  - name: Engineering Physics
+    requirements:
+      - type: mathematics
+        number: 2
+        courses: MAT >= 300
+      - type: physics
+        number: 6
+        courses:
+          - PHY 205
+          - PHY 207
+          - PHY 209
+          - PHY 210
+          - PHY 208
+          - PHY >= 300
+
+  - name: Entrepreneurship
+    requirements:
+      - type: intro
+        number: 2
+        courses:
+          - EGR 200
+          - EGR 201
+      - type: core
+        number: 2
+        courses:
+          - ANT 300
+          - COS 448
+          - EGR 491
+          - EGR 397
+          - EGR 488
+          - EGR 489
+          - HIS 379
+          - SOC 345
+      - type: breadth
+        number: 1
+        courses:
+          - ANT 301
+          - ECO 317
+          - ECO 385
+          - HIS 481
+          - VIS 214
+          - VIS 439
+          - POL 377
+          - POL 349
+          - PSY 311
+          - PSY 420
+          - NEU 425
+          - SOC 346
+          - WWS 340
+
+  - name: Environmental Studies
+    requirements:
+    tracks:
+      "Generalist":
+        - type: foundation
+          number: 1
+          courses:
+            - ENV 200B
+            - ENV 200F
+            - ENV 201A
+            - ENV 201B
+            - ENV 302
+        - type: humanities
+          number: 1
+          courses: ART | PHI | ARC | ENG
+        - type: social-sciences
+          number: 1
+          courses: ECO | HIS | WWS | ANT | POL
+        - type: natural-sciences
+          number: 1
+          courses: CHM | EEB | GEO | PHY | MOL
+        - type: engineering
+          number: 1
+          courses: CEE | CBE | MAE
+      "Biodiversity and Conservation":
+        - type: env-science
+          number: 1
+          courses:
+            - ENV 302
+            - GEO 360
+            - EEB 321
+        - type: env-policy
+          number: 1
+          courses: WWS 350
+        - type: core
+          number: 3
+          courses:
+            - AMS 364
+            - CEE 307
+            - CEE 334
+            - CEE 391
+            - EEB >= 300
+            - ENV 200A
+            - ENV 200B
+            - ENV 200C
+            - ENV 200D
+            - ENV 200E
+            - ENV 200F
+            - ENV 302
+            - ENV 304
+            - ENV 316
+            - ENV 327
+            - ENV 357
+            - ENV 363
+            - GEO 201
+            - GEO 299
+            - GEO 366
+            - GEO 417
+            - GEO 427
+            - HIS 473
+            - NES 470
+      "Climate and Energy":
+        - type: env-science
+          number: 1
+          courses:
+            - ENV 302
+            - GEO 360
+            - EEB 321
+        - type: env-policy
+          number: 1
+          courses: WWS 350
+        - type: core
+          number: 3
+          courses:
+            - AMS 364
+            - ARC 406
+            - AST 309
+            - CBE 335
+            - CBE 421
+            - CEE 301
+            - CEE 304
+            - CEE 305
+            - CEE 311
+            - CEE 334
+            - CEE 391
+            - CEE 477
+            - CEE 490
+            - CHM 333
+            - CHM 406
+            - EEB 417B
+            - ELE 428
+            - ELE 431
+            - ELE 455
+            - ENE 202
+            - ENV 200A
+            - ENV 200B
+            - ENV 200C
+            - ENV 200D
+            - ENV 200E
+            - ENV 200F
+            - ENV 302
+            - ENV 327
+            - ENV 357
+            - ENV 363
+            - GEO 201
+            - GEO 366
+            - GEO 427
+            - GEO 430
+            - HIS 422
+            - MAE 228
+            - MAE 328
+            - MAE 423
+            - MAE 424
+            - MAE 427
+            - NES 466
+            - ORF 474
+      "Earth Systems":
+        - type: env-science
+          number: 1
+          courses:
+            - ENV 302
+            - GEO 360
+            - EEB 321
+        - type: env-policy
+          number: 1
+          courses: WWS 350
+        - type: core
+          number: 3
+          courses:
+            - AMS 364
+            - CEE 391
+            - CEE 490
+            - CHM 333
+            - EEB 417B
+            - ENV 200A
+            - ENV 200B
+            - ENV 200C
+            - ENV 200D
+            - ENV 200E
+            - ENV 200F
+            - ENV 302
+            - ENV 327
+            - ENV 357
+            - ENV 363
+            - GEO 201
+            - GEO 299
+            - GEO 361
+            - GEO 362
+            - GEO 363
+            - GEO 364
+            - GEO 365
+            - GEO 366
+            - GEO 370
+            - GEO 415
+            - GEO 417
+            - GEO 418
+            - GEO 419
+            - GEO 423
+            - GEO 425
+            - GEO 427
+            - GEO 430
+            - GEO 470
+      "Environmental Policy":
+        - type: env-science
+          number: 1
+          courses:
+            - ENV 302
+            - GEO 360
+            - EEB 321
+        - type: env-policy
+          number: 1
+          courses: WWS 350
+        - type: core
+          number: 3
+          courses:
+            - ANT 204
+            - AMS 364
+            - AST 309
+            - CEE 334
+            - CHM 333
+            - CNV 321
+            - ECO 329
+            - ECO 355
+            - EEB 417B
+            - EGR 277
+            - ENV 200A
+            - ENV 200B
+            - ENV 200C
+            - ENV 200D
+            - ENV 200E
+            - ENV 200F
+            - ENV 201A
+            - ENV 201B
+            - ENV 302
+            - ENV 304
+            - ENV 310
+            - ENV 316
+            - ENV 327
+            - ENV 357
+            - ENV 363
+            - GEO 201
+            - GEO 299
+            - GEO 366
+            - GEO 499
+            - HIS 422
+            - HIS 431
+            - MAE 228
+            - MAE 328
+            - WWS 306
+            - WWS 406
+      "Environment and Water":
+        - type: env-science
+          number: 1
+          courses:
+            - ENV 302
+            - GEO 360
+            - EEB 321
+        - type: env-policy
+          number: 1
+          courses: WWS 350
+        - type: core
+          number: 3
+          courses:
+            - AMS 364
+            - CBE 335
+            - CEE 301
+            - CEE 304
+            - CEE 305
+            - CEE 306
+            - CEE 307
+            - CEE 308
+            - CEE 391
+            - CEE 471
+            - CEE 477
+            - CEE 487
+            - CEE 490
+            - CHM 406
+            - EEB 341
+            - EEB 417B
+            - ENV 200A
+            - ENV 200B
+            - ENV 200C
+            - ENV 200D
+            - ENV 200E
+            - ENV 200F
+            - ENV 302
+            - ENV 327
+            - ENV 357
+            - ENV 363
+            - GEO 201
+            - GEO 299
+            - GEO 361
+            - GEO 363
+            - GEO 364
+            - GEO 370
+            - GEO 418
+            - GEO 427
+
+  - name: Ethnographic Studies
+    requirements:
+      - type: core
+        number: 2
+        courses:
+          - ANT 301A
+          - ANT 300A
+      - type: electives
+        number: 3
+        courses:
+          - AAS 201
+          - AMS 311
+          - AMS 351
+          - ANT >= 200
+          - ARC 304
+          - ART 350
+          - ART 463
+          - DAN 215
+          - EAS 225
+          - EAS 312
+          - EEB 332
+          - ELE 381
+          - FRE 313
+          - GER 208
+          - GHP 350
+          - GER 211
+          - GER 332
+          - HIS 384
+          - HUM 365
+          - JRN 440
+          - JRN 452
+          - LAO 200
+          - LAS 402
+          - MUS 242
+          - LIN 308
+          - POL 350
+          - PSY 307
+          - PSY 314
+          - PSY 403
+          - REL 226
+          - REL 222
+          - REL 328
+          - SAS 322
+          - SLA 221
+          - SOC 210
+          - SOC 345
+          - SOC 300
+          - SOC 301
+          - SOC 330
+          - SPA 224
+          - SPA 327
+          - THR 300
+          - THR 303
+          - THR 310
+          - THR 337
+          - TPP 301
+          - TRA 200
+          - TRN 304
+          - URB 385
+
+  - name: European Cultural Studies
+    requirements:
+      - type: core
+        number: 1
+        courses:
+          - ECS 301
+          - EPS 302
+          - HUM 219
+      - type: electives
+        number: 2
+        courses: ECS >= 300
+
+  - name: Finance
+    requirements:
+      - type: prerequisite-math
+        number: 3
+        courses:
+          - MAT 201
+          - MAT 202
+          - ECO 310
+      - type: prerequisite-statistics
+        number: 1
+        courses:
+          - ECO 202
+          - MAT 222
+          - ORF 245
+          - PSY 251
+          - SOC 301
+          - POLY 345
+          - WWS 200
+          - WWS 332
+          - PHY 301
+      - type: core
+        number: 2
+        courses:
+          - ECO 363
+          - ECO 362
+      - type: electives
+        number: 3
+        courses:
+          - APC 350
+          - CEE 460
+          - COS 318
+          - COS 323
+          - COS 333
+          - COS 423
+          - COS 424
+          - COS 425
+          - COS 432
+          - COS 436
+          - COS 444
+          - COS 445
+          - COS 461
+          - EAP 402
+          - ECO >= 300
+          - ELE 491
+          - HIS 364
+          - MAE 305
+          - MAE 306
+          - MAT 325
+          - MAT 330
+          - MAT 335
+          - MAT 385
+          - MAT 486
+          - ORF 307
+          - ORF 309
+          - ORF 311
+          - ORF 374
+          - ORF 401
+          - ORF 405
+          - ORF 409
+          - ORF 474
+          - ORF 335
+          - ORF 350
+          - ORF 435
+          - ORF 455
+          - POL 345
+          - POL 348
+          - WWS 307
+          - WWS 340
+          - WWS 594N
+          - WWS 582F
+          - WWS 332
+          - WWS 408
+          - WWS 466
+          - WWS 524
+  - name: Gender and Sexuality Studies
+    url: http://gss.princeton.edu/about-program/undergraduate-certificate
+    short_name: GSS
+    requirements:
+      - type: introductory
+        name: Introductory
+        number: 1
+        courses:
+          - GSS 201
+      - type: additional
+        name: Additional 300+
+        number: 1
+        courses:
+          - GSS>=300
+      - type: thematic
+        name: Thematic Clustered Courses
+        number: 3
+        courses:
+          - theme:transnational/global perspectives
+          - theme:gender, race, & ethnicity
+          - theme:bodies, sexualities
+          - theme:culture & representation
+          - theme:politics & social change
+          - theme:historical perspectives
+      - type: total
+        name: Total Course Requirement
+        number: 5
+        unique: false
+    notes:
+      - maximum one PDF
+      - independent work (senior thesis, one junior paper)
+
+  - name: Geological Engineering
+    url: https://ua.princeton.edu/academic-units/program-geological-engineering
+    short_name: Geo-Engineering
+    requirements:
+      - type: bse
+        name: Specific B.S.E. Requirements
+        number: 3
+        courses:
+          - MAT 103
+          - MAT 104
+          - MAT 201 | MAT 203 | MAT 218 | EGR 192
+          - MAT 202 | MAT 204 | MAT 217
+          - PHY 103 | PHY 105 | EGR 191
+          - PHI 104 | PHY 106
+          - CHM 201 | CHM 207
+      - type: thesis
+        name: Senior Thesis
+        number: 1
+        courses: special
+      - type: program
+        name: General Program Courses
+        number: 4
+        courses:
+          - GEO>=300
+          - CEE>=300
+
+  - name: Global Health & Health Policy
+    url: http://globalhealth.princeton.edu/undergraduate
+    short_name: GHP
+    requirements:
+      - type: science-prerequisite
+        name: Basic Science Prerequisites
+        number: 1
+        courses:
+          - EEB 210
+          - EEB 211
+          - MOL 101
+          - MOL 214
+          - MOL 215
+          - ISC 231 | ISC 232 | ISC 233 | ISC 244
+      - type: statistics
+        name: Statistics
+        number: 1
+        courses:
+          - ECO 202
+          - EEB 355
+          - ORF 245
+          - POL 345
+          - PSY 251
+          - SML 101
+          - SML 201
+          - SOC 301
+          - WWS 200
+      - type: core
+        name: Core Courses
+        number: 2
+        courses:
+          - GHP 350
+          - GHP 351
+      - type: elective
+        name: Program Electives
+        number: 4
+        course:
+          - AMS 306
+          - AMS 379
+          - ANT 403
+          - CBE 440
+          - CBE 447
+          - CHM 440
+          - EEB 328
+          - EEB 325
+          - ENV 304
+          - ENV 305
+          - ENV 329
+          - ENV 407
+          - GHP 300
+          - GHP 410
+          - GSS 420
+          - HIS 393
+          - HIS 472
+          - ISC 326
+          - LAS 372
+          - MAE 344
+          - MOL 340
+          - MOL 423
+          - MOL 425
+          - MOL 433
+          - MOL 440
+          - MOL 447
+          - MOL 455
+          - MOL 458
+          - MOL 459
+          - MOL 460
+          - NES 361
+          - PSY 317
+          - PSY 331
+          - PSY 413
+          - SLA 368
+          - SOC 366
+          - WWS 354
+          - WWS 393
+          - WWS 407
+          - WWS 453
+      - type: summer-research
+        name: Summer Research Project
+        number: 1
+        courses: special
+      - type: thesis
+        name: Senior Thesis
+        number: 1
+        courses: special
+
+  - name: Hellenic Studies
+    url: http://www.princeton.edu/hellenic/undergraduate/
+    short_name: HLS
+    requirements:
+      - type: introductory
+        name: Introductory
+        number: 1
+        courses:
+          - HLS 107
+          - HLS 206
+          - HLS 210
+          - HLS 240
+          - HLS 266
+          - HLS 346
+          - HUM 216
+          - HUM 217
+          - COM 205
+      - type: seminar
+        name: Upperclass Seminars
+        number: 2
+        courses:
+          - HLS 324
+          - HLS 330
+          - HLS 334
+          - HLS 335
+          - HLS 337
+          - HLS 355
+          - HLS 358
+          - HLS 361
+          - HLS 362
+          - HLS 363
+      - type: thesis
+        name: Senior Thesis
+        number: 1
+        courses: special
+
+  - name: History and the Practice of Diplomacy
+    url: http://hpd.princeton.edu/requirements
+    short_name: HPD
+    requirements:
+      - type: core
+        name: Core Course
+        number: 1
+        courses:
+          - WWS 315
+      - type: elective
+        name: Program Electives
+        number: 4
+        courses:
+          - HIS*
+          - WWS*
+          - POL*
+        notes: needs approval; 8 required if in HIS/WWS/POL
+      - type: internship
+        name: Summer Internship
+        number: 1
+        courses: special
+
+  - name: Humanistic Studies
+    url: https://humstudies.princeton.edu/
+    short_name: HUM
+    requirements:
+      - type: prerequisite
+        name: Prerequisites
+        number: 2
+        courses:
+          - HUM 216
+          - HUM 217
+          - HUM 218
+          - HUM 219
+          - HUM 233
+          - HUM 234
+      - type: interdiscriplinary
+        name: Interdiscriplinary Courses
+        number: 3
+        courses:
+          - '*'
+      - type: capstone
+        name: Capstone Seminar
+        number: 1
+        courses: special
+      - type: elective
+        name: Program Electives
+        number: 2
+        courses: special
+        notes: must be approved by advisor
+      - type: thesis
+        name: Senior Thesis or Interdiscriplinary Research Paper
+        number: 1
+        courses: special
+
+  - name: Jazz Studies
+    url: http://www.princeton.edu/music/certificate-in-jazz-studi/
+    short_name: jazz
+    requirements:
+      - type: history
+        name: Jazz History
+        number: 1
+        courses:
+          - MUS 262
+          - MUS 320
+      - type: theory
+        name: Jazz Theory & Composition
+        number: 1
+        courses:
+          - MUS 311
+          - MUS 312
+          - MUS 319
+          - MUS 306
+      - type: performance
+        name: Jazz Performance
+        number: 1
+        courses:
+          - MUS 215
+          - MUS 321
+      - type: elective
+        name: Historical/Cultural Context Electives
+        number: 1
+        courses:
+          - AAS 201
+          - AAS 305
+          - AAS 310
+          - AAS 342
+          - AAS 348
+          - AAS 372
+          - AMS 301
+          - ENG 212
+          - HIS 399
+          - MUS 358
+          - MUS 359
+          - MUS 260
+          - MUS 264
+          - MUS 265
+          - SOC 214
+      - type: ensemble
+        name: Jazz Ensemble
+        number: 1
+        courses: special
+      - type: independent-work
+        name: Independent Work
+        number: 1
+        courses: special
+
+  - name: Judaic Studies
+    url: http://www.princeton.edu/judaic/certificate-program/
+    short_name: JDS
+    requirements:
+      - type: prerequisite
+        name: Prerequisites
+        number: 1
+        courses:
+          - JDS 202
+      - type: premodern
+        name: Pre-Modern Period Courses
+        number: 1
+        courses:
+          - JDS 248
+          - JDS 303
+          - JDS 400
+      - type: core
+        name: Core Requirements
+        number: 3
+        courses:
+          - JDS*
+    tracks:
+      Course:
+        - type: core
+          name: Core Requirements
+          number: 3
+          courses:
+            - JDS*
+      Thesis:
+        - type: core
+          name: Core Requirements
+          number: 1
+          courses:
+            - JDS*
+        - type: thesis
+          name: Senior Thesis
+          number: 1
+          courses: special
+
+  - name: Latin American Studies
+    url: http://www.princeton.edu/plas/programs/certificate-program/
+    short_name: PLAS
+    requirements:
+      - type: prerequisite
+        name: Prerequisites
+        number: 1
+        courses:
+          - SPA 107
+          - POR 109
+          - FRE 107
+      - type: thesis
+        name: Senior Thesis
+        number: 1
+        courses: special
+    tracks:
+      Latin American Studies:
+        - type: core
+          name: Core Requirements
+          number: 3
+          courses:
+            - ANT 335
+            - ECO 351
+            - SPA 346
+            - LAS*
+        - type: interdiscriplinary
+          name: Interdiscriplinary
+          number: 1
+            - ECO*
+            - HIS*
+            - POL*
+            - SOC*
+            - ANT*
+      Brazilian Studies:
+        - type: core
+          name: Core Requirements
+          number: 2
+          courses:
+            - LAS*
+        - type: brazilian-culture
+          name: Brazilian Culture
+          number: 1
+          courses:
+            - theme:brazilian culture
+
+  - name: Greek/Roman Language and Culture
+    url: https://www.princeton.edu/classics/undergraduate/programs/certificate/
+    short_name: Greek & Roman
+    requirements:
+      - type: core
+        name: Core Requirements
+        number: 2
+        courses:
+          - HLS>=300
+          - CLA>=300
+          - LAT>=300
+          - CLG>=300
+          - MOG>=300
+      - type: core-200
+        name: Core Requirements
+        number: 1
+        courses:
+          - HLS>=200
+          - CLA>=200
+          - LAT>=200
+          - CLG>=200
+          - MOG>=200
+      - type: independent-work
+        name: Independent Work
+        number: 1
+        courses: special
+
+  - name: East Asian Studies
+    url: http://www.princeton.edu/eas/undergraduate/certificates/
+    short_name: EAS
+    requirements:
+      - type: core
+        name: Core Requirements
+        number: 1
+        courses:
+          - EAS*
+      - type: thesis
+        name: Senior Thesis or Independent Work
+        number: 1
+        courses: special
+    tracks:
+      Chinese:
+        - type: language
+          name: Language
+          number: 4
+          courses:
+            - CHI*
+        - type: language-proficiency
+          name: Language Proficiency
+          number: 3
+          courses:
+            - CHI>=107
+      Korean:
+        - type: language
+          name: Language
+          number: 4
+          courses:
+            - KOR*
+        - type: language-proficiency
+          name: Language Proficiency
+          number: 3
+          courses:
+            - KOR>=107
+      Japanese:
+        - type: language
+          name: Language
+          number: 4
+          courses:
+            - JPN*
+        - type: language-proficiency
+          name: Language Proficiency
+          number: 3
+          courses:
+            - JPN>=107
+
+  - name: French & Italian
+    url: http://fit.princeton.edu/undergraduate/certificate/certificate-independent-work
+    short_name: French & Italian
+    requirements:
+      - type: prerequisite
+        name: Prerequisites
+        number: 1
+        courses:
+          - FRE 211
+          - FRE 215
+          - FRE 221
+          - FRE 222
+          - FRE 224
+          - ITA 208
+          - ITA 209
+          - ITA 220
+      - type: departmental
+        name: Departmental Requirements
+        number: 3
+        courses:
+          - FRE>=300
+          - ITA>=300
+      - type: independent-work
+        name: Independent Work
+        number: 1
+        courses: special
+  - name: linguistics
+    requirements: 
+      - type: prerequisite
+        number: 1
+        courses: 
+          - LIN201
+      - type: additional
+        number: 4
+        courses:
+          - LIN 220
+          - LIN 235
+          - LIN 301
+          - LIN 303 
+          - LIN 308
+          - LIN 350
+          - LIN 355
+          - PSY 309
+          - TRA 301
+  - name: materials science and engineering
+    requirements:
+      - type: core
+        number: 1
+        courses:
+          - MSE 301
+          - CEE 364
+          - MAE 324    
+      - type: experimental-methods
+        number: 1
+        courses:
+          - MSE 302
+          - CHM 371
+      - type: math
+        number: 2
+        courses:
+          - MAT199
+          - MAT322
+          - MAT473
+          - MAT474
+          - MAT578
+          - MAT391
+          - MAT392
+          - MAT103
+          - MAT104
+          - MAT175
+          - MAT201
+          - MAT202
+          - MAT204
+          - MAT215
+          - MAT217
+          - MAT218
+          - MAT325
+          - MAT330
+          - MAT346
+          - MAT355
+          - MAT375
+          - MAT378
+          - MAT385
+          - MAT419
+          - MAT425
+          - MAT429
+          - MAT447
+          - MAT519
+          - MAT526
+          - MAT527
+          - MAT528
+          - MAT529
+          - MAT547
+          - MAT549
+          - MAT555
+          - MAT558
+          - MAT560
+          - MAT566
+          - MAT579
+          - MAT589
+          - MAT380
+          - MAT306
+          - MAT313
+          - MAT597
+  - name: neuroscience
+    requirements:
+      - type: core-part1
+        number: 1
+        courses:
+          - NEU 175
+          - NEU 201
+      - type: core-part2
+        number: 1
+        courses:
+          -  NEU 202
+  - name: planets and life
+    requirements:
+      - type: core
+        number: 1
+        courses:
+          - GEO 255
+  - name: robotics and intelligent systems
+    requirements:
+      - type: math
+        number: 1
+        courses:
+          - MAT 202
+          - MAT 204
+      - type: computing
+        number: 1
+        courses:
+          - COS 126
+          - ORF 201
+      - type: lab
+        number: 1
+        courses:
+          - ELE 206
+          - MAE 224
+          - PHY 210
+      - type: control-system
+        number: 1
+        courses:
+          - CBE 445
+          ELE 301
+          MAE 345
+          MAE 433
+          MAE 434
+      - type: cognition
+        number: 1
+        courses:
+          - CGS207
+          - CGS255
+          - PSY258
+          - PSY259
+          - PSY330
+          - NEU316
+          - PSY321
+          - NEU331
+      - type: electives
+        number: 3
+        courses:
+          - CBE442
+          - CBE447
+          - CBE448
+          - CEE361
+          - COS217
+          - COS226
+          - COS333
+          - COS340
+          - COS402
+          - COS424
+          - COS426
+          - COS429
+          - COS461
+          - ECO202
+          - ELE201
+          - ELE302
+          - ELE381
+          - ELE486
+          - ELE488
+          - LIN306
+          - LIN412
+          - MAE206
+          - MAE321
+          - MAE322
+          - MAE331
+          - MAE332
+          - MAE341
+          - MAE342
+          - MAE412
+          - MOL408
+          - ORF245
+          - ORF307
+          - ORF309
+          - ORF311
+          - ORF363
+          - ORF405
+          - ORF411
+          - ORF467
+          - PHI212
+          - PSY345
+  - name: Visual arts
+    requirements:
+      - type: core
+        number: 2
+        courses:
+          - VIS 392
+          - VIS 416
+
+  - name: Values and public life
+    requirements:
+        - type: philosophy
+          number: 1
+          courses:
+            - CHV 202
+        - type: ethics
+          number: 1
+          courses:
+            - WWS 370
+            - POL 307
+            - POL 306
+            - POL 313
+
+  - name: Urban studies
+    requirements: 
+      - type: core
+        number: 2
+        courses:
+          - URB 200
+          - ARC 205
+      - type: social-sciences
+        number: 1
+        courses:
+          - ANT 228
+          - ART 250
+          - SOC 302
+          - AMS 311
+          - SOC 210
+          - SOC 227
+          - URB 202
+      - type: humanities
+        number: 1
+        courses:
+          - AAS 392
+          - ANT 228
+          - AAS 392
+          - ARC 321
+          - ARC 492
+          - ART 250
+          - ART 466
+          - CEE 262A
+          - CEE 262B
+          - CEE 475
+          - DAN 322
+          - ECO 382
+          - EEB 410
+          - ENG 386
+          - GEO 360
+          - MUS 264
+          - SOC 302
+          - SPA 360
+          - URB 201
+          - AMS 311
+          - ARC 401
+          - ARC 545
+          - DAN 310
+          - ENG 362
+          - HIS 465
+          - SOC 210
+          - SOC 227
+          - URB 202
+          - URB 300
+      - type: engineering-and-natural-sciences
+        number: 2
+        courses:
+          - ARC 492
+          - CEE 262A
+          - CEE 262B
+          - CEE 311
+          - CEE 475
+          - ENG 386
+          - GEO 360
+          - CEE 102A
+          - CEE 102B
+          - CEE 311
+          - CEE 334
+          - CEE 471
+          - CEE 477
+          - EEB 417B
+          - ENV 305
+          - GEO 102A
+          - GEO 102B
+          - MAE 228
+  - name: Translation and intercultural communication
+    requirements:
+      - type: core
+        number: 2
+        courses:
+          - TRA 200
+          - TRA 400
+  - name: Technology and society energy track
+    requirements:
+      - type: core
+        number: 1
+        courses:
+          - EGR 277
+      - type: technology
+        number: 2
+        courses:
+          - CEE 301
+          - CEE 304
+          - CEE 305
+          - CEE 311
+          - CEE 334
+          - CEE 477
+          - CEE 490
+          - CHM 333
+          - EGR 194
+          - EGR 251
+          - EGR 351
+          - EGR 451
+          - ELE 431
+          - ENE 202
+          - ENV 302
+          - MAE 228
+          - MAE 328
+          - ORF 455
+          - ORF 474
+          - FRS 159
+      - type: societal
+        number: 2
+        courses:
+          - ANT 314
+          - COS 448
+          - EEB 341
+          - ENE 561
+          - ENV 305
+          - ENV 306
+          - ENV 324
+          - HIS 431
+          - HIS 491
+          - HIS 507
+          - SOC 214
+          - SOC 356
+          - SOC 357
+          - URB 201
+          - WWS 306
+          - WWS 350
+      - type: breadth
+        number: 1
+        courses:
+          - ANT 334
+          - EGR 201
+          - EGR 392
+          - EGR 492
+          - EGR 495
+          - ELE 491
+          - HIS 398
+          - SOC 344
+          - WWS 309
+  - name: Technology and society information technology track
+    requirements:
+      - type: core
+        number: 1
+        courses:
+          - EGR 277
+      - type: technology
+        number: 2
+        courses:
+          - COS 126
+          - COS 424
+          - COS 432
+          - COS 433
+          - COS 435
+          - COS 445
+          - COS 461
+          - COS 495
+          - ELE 201
+          - ELE 464
+          - ELE 580
+          - FRS 170
+          - ORF 350
+          - ORF 401
+          - POL 346
+          - SML 201
+          - TRA 301
+          - ARC 374
+          - COS 109
+          - COS 402
+          - COS 429
+          - COS 455
+          - ELE 381
+          - ELE 470
+          - ELE 477
+          - ELE 535
+          - ELE 574
+          - ORF 411
+          - ORF 467
+      - type: societal
+        number: 2
+        courses:
+          - CHV 411
+          - COS 448
+          - FRS 122
+          - FRS 172
+          - GER 517
+          - JRN 400
+          - SOC 204
+          - SOC 558
+          - WWS 352
+          - WWS 357
+          - ECO 326
+          - EGR 492
+          - FRS 127
+          - GER 517
+          - HUM 346
+          - POL 341
+      - type: breadth
+        number: 1
+        courses:
+          - AMS 399
+          - ECO 332
+          - EGR 491
+          - EGR 494
+          - EGR 489
+          - ENV 316
+          - FRS 138
+          - FRS 140
+          - FRS 178
+          - PHI 277
+          - CBE 260
+          - CEE 102A
+          - EGR 488
+          - ENV 304
+          - GER 211
+          - GHP 350
+          - HIS 295
+          - ITA 320
+          - STC 349
+          - WWS 354
+  - name: Teacher preparation
+    requirements:
+      - type: core
+        number: 4
+        courses:
+          - PSY 307
+          - TPP 301
+          - TPP 401
+          - TPP 402
+  - name: Sustainable energy
+    requirements:
+      - type: core
+        number: 1
+        courses:
+          - EGR 277
+      - type: technology
+        number: 2
+        courses:
+          - CEE 207
+          - CEE 304
+          - CEE 305
+          - CEE 311
+          - CEE 334
+          - CEE 477
+          - CEE 490
+          - CHM 333
+          - EGR 194
+          - EGR 251
+          - EGR 351
+          - EGR 451
+          - ENE 202
+          - ENE 267
+          - ENE 431
+          - ENV 302
+          - FRS 159
+          - MAE 228
+          - ORF 455
+          - ORF 474
+      - type: societal
+        number: 2
+        courses:
+          - ANT 314
+          - AMS 364
+          - CHV 321
+          - CHV 472
+          - COS 448
+          - ENV 305
+          - ENV 306
+          - ENE 561
+          - HIS 295
+          - HIS 431
+          - HIS 491
+          - HIS 507
+          - MSE 407
+          - SOC 357
+          - URB 201
+          - WWS 306
+          - WWS 350
+          - WWS 353
+          - WWS 373
+      - type: breadth
+        number: 1
+        courses:
+          - ANT 344
+          - EGR 200
+          - EGR 201
+          - EGR 491
+          - EGR 492
+          - EGR 494
+          - EGR 495
+          - ENV 201A
+          - FRE 338
+          - HIS 398
+          - NES 201
+          - POL 351
+          - WWS 333
+          - WWS 334
+          - WWS 340
+  - name: Statistics and machine learning
+    requirements:
+      - type: statistics
+        number: 1
+        courses:
+          - ECO 202
+          - EEB 355
+          - ORF 245
+          - POL 345
+          - PSY 251
+          - WWS 200
+      - type: machine learning
+        number: 1
+        courses:
+          - COS 424
+          - ELE 364
+          - ORF 350
+      - type: electives
+        number: 3
+        courses:
+          - ECO 202
+          - EEB 355
+          - ORF 245
+          - POL 345
+          - PSY 251
+          - WWS 200
+          - COS 424
+          - ELE 364
+          - ORF 350
+          - POL 245
+          - SML 201
+          - COS 402
+          - COS 429
+          - COS 495
+          - ELE 477
+          - ORF 418
+          - MAT 385
+          - ORF 309
+          - ORF 363
+          - AST 303
+          - CEE 460
+          - ECO 302
+          - ECO 312
+          - ECO 313
+          - ELE 480
+          - GEO 422
+          - ORF 405
+          - POL 346
+          - QCB 408
+  - name: Portuguese 
+    requirements:
+      - type: core
+        number: 3
+        courses:
+          - POR 301
+          - POR 308
+          - POR 330
+          - POR 562
+  - name: Spanish
+    requirements:
+      - type: core-upper-level
+        number: 3
+        courses: SPA >= 300
+      - type: core-general
+        number: 1
+        courses: SPA >= 209
+  - name: Russian language 
+    requirements:
+      - type: prerequisite
+        number: 1
+        courses:
+            RUS 207
+      - type: language
+        number: 2
+        courses:
+          - RUS 208
+          - RUS 405
+          - RUS 406
+          - RUS 407
+          - RUS 408
+      - type: literature
+        number: 1
+        courses:
+          - SLA 308
+          - SLA 312
+          - SLA 413
+  - name: Russian literature
+    requirements:
+      - type: prerequisite
+        number: 1
+        courses:
+          RUS 207
+      - type: literature
+        number: 2
+        courses:
+          - SLA 308
+          - SLA 312
+          - SLA 413
+      - type: language
+        number: 1
+        courses:
+          - RUS 208
+          - RUS 405
+          - RUS 406
+          - RUS 407
+          - RUS 408   
+  - name: Near Eastern studies
+    requirements:
+      - type: language
+        number: 4
+        courses: ARA | HEB | PER | TUR
+      - type: history
+        number: 1
+        courses:
+          - HIS 267
+          - HIS 342
+          - NES 268
+          - NES 327
+          - NES 333
+          - NES 338
+          - NES 351
+          - NES 374
+          - NES 394
+          - NES 438
+          - REL 337
+  - name: German
+    requirements:
+      - type: core-upper-level
+        number: 2
+        courses: GER >= 300
+      - type: core-general
+        number: 2
+        courses: GER >= 200
