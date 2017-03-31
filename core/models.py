@@ -39,22 +39,23 @@ class Certificate(models.Model):
 	requirements = GenericRelation('Requirement',
 		related_query_name='certificate')
 
-	def all_requirements(self):
-		'''Retrieve all requirements for the certificate.'''
-		return Requirements.objects.filter(
-			models.Q(certificate=self) | models.Q(degree=self.degree_id))
-
 	def __str__(self):
 		return self.short_name
 
 class Track(Certificate):
 	# Although a Track is represented in the same way as a Certificate, they are
 	# stored under a separate model to establish the semantic difference.
-	pass
+	major = models.ForeignKey(Major, on_delete=models.CASCADE)
+	requirements = GenericRelation('Requirement', related_query_name='track')
+
+	def all_requirements(self):
+		'''Retrieve all requirements for the certificate.'''
+		return Requirements.objects.filter(
+			models.Q(track=self) | models.Q(degree=self.degree_id))
 
 class Course(models.Model):
 	name = models.CharField(max_length=255)
-	number = models.PositiveIntegerField()
+	number = models.CharField(max_length=4)
 	department = models.CharField(max_length=3)
 
 	TERM_FALL = 1
@@ -71,11 +72,11 @@ class Course(models.Model):
 	def __str__(self):
 		return '{} {}'.format(self.department, self.number)
 
-class CourseListing(models.Model):
+class CrossListing(models.Model):
 	course = models.ForeignKey(Course, on_delete=models.CASCADE,
 		related_name='listings')
 	name = models.CharField(max_length=255)
-	number = models.PositiveIntegerField()
+	number = models.CharField(max_length=4)
 	department = models.CharField(max_length=3)
 
 	def __str__(self):
@@ -83,7 +84,7 @@ class CourseListing(models.Model):
 	
 class Requirement(models.Model):
 	name = models.CharField(max_length=255)
-	t = models.CharField(max_length=25) # requirement type
+	t = models.CharField(max_length=50) # requirement type
 	number = models.PositiveIntegerField(default=0) # number required
 
 	# Courses can be listed in many different requirements
