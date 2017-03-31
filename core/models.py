@@ -42,16 +42,18 @@ class Certificate(models.Model):
 	def __str__(self):
 		return self.short_name
 
-class Track(Certificate):
-	# Although a Track is represented in the same way as a Certificate, they are
-	# stored under a separate model to establish the semantic difference.
-	major = models.ForeignKey(Major, on_delete=models.CASCADE)
+class Track(models.Model):
+	name = models.CharField(max_length=255)
+	short_name = models.CharField(max_length=15)
 	requirements = GenericRelation('Requirement', related_query_name='track')
 
 	def all_requirements(self):
 		'''Retrieve all requirements for the certificate.'''
 		return Requirements.objects.filter(
 			models.Q(track=self) | models.Q(degree=self.degree_id))
+
+	def __str__(self):
+		return self.short_name
 
 class Course(models.Model):
 	name = models.CharField(max_length=255)
@@ -67,7 +69,7 @@ class Course(models.Model):
 		(TERM_SPRING, 'Spring'),
 		(TERM_BOTH, 'Fall & Spring'),
 		(TERM_INCONSISTENT, 'Inconsistent'),
-		), default=TERM_FALL)
+		), default=TERM_INCONSISTENT)
 
 	def __str__(self):
 		return '{} {}'.format(self.department, self.number)
@@ -75,7 +77,6 @@ class Course(models.Model):
 class CrossListing(models.Model):
 	course = models.ForeignKey(Course, on_delete=models.CASCADE,
 		related_name='listings')
-	name = models.CharField(max_length=255)
 	number = models.CharField(max_length=4)
 	department = models.CharField(max_length=3)
 
