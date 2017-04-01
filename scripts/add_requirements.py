@@ -1,3 +1,9 @@
+# scripts/add_requirements.py
+# CourseGenie
+# Author: Kathy Fan
+# Date: March 31st, 2017
+# Description: script to help add major and requirements data into database.
+
 import os
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "coursegenie.settings")
 import django
