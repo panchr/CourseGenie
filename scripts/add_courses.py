@@ -1,3 +1,9 @@
+# scripts/add_courses.py
+# CourseGenie
+# Author: Kathy Fan
+# Date: March 30th, 2017
+# Description: script to help add course data into database.
+
 import os
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "coursegenie.settings")
 import django
