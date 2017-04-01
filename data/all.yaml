@@ -1,6 +1,7 @@
 # data collection
 majors:
-  - name: COS
+  - name: Computer Science
+    short_name: COS
     degree: B.S.E.
     requirements:
       - type: prerequisite
@@ -65,7 +66,8 @@ majors:
         courses: 
           - COS 397 | COS 398 | COS 497 | COS 498
     tracks:
-  - name: ELE
+  - name: Electrical Engineering
+    short_name: ELE
     degree: B.S.E.
     requirements:
       - type: core
@@ -368,7 +370,7 @@ majors:
             - ELE 455
             - ELE 557
             - MAE 424
-  - name: Civil & Environmental Engineering
+  - name: Civil and Environmental Engineering
     url: https://www.princeton.edu/cee/forms/Yellow_Book_for_Class_of_2019_Sept.2016.pdf
     short_name: CEE
     degree: B.S.E.
@@ -799,7 +801,8 @@ majors:
           - MOL 345
           - NEU 437
           - NEU 330
-  - name: CBE
+  - name: Chemical and Biological Engineering
+    short_name: CBE
     degree: B.S.E.
     requirements:
       - type: core
@@ -1085,6 +1088,7 @@ majors:
           
 certificates:
   - name: African America Studies
+    short_name: AAS
     requirements:
       - type: core
         number: 1
@@ -1170,6 +1174,7 @@ certificates:
           - WWS 370
 
   - name: African Studies
+    short_name: African Studies
     requirements:
       - type: core 
         number: 1
@@ -1195,6 +1200,7 @@ certificates:
       # the AFS lecture series as part of the curriculum.
 
   - name: American Studies
+    short_name: American Studies
     requirements: 
       - type: core
         number: 1
@@ -1210,6 +1216,7 @@ certificates:
           # Three electives, from three different departments outside the student's major
       
   - name: Applications of Computing
+    short_name: Computing
     requirements:
       - type: prerequisite
         number: 1
@@ -1264,6 +1271,7 @@ certificates:
           - WWS 357
 
   - name: Applied and Computational Mathematics
+    short_name: ACM
     requirements:
       - type: core
         number: 5
@@ -1289,6 +1297,7 @@ certificates:
           # mathematical economics, typically offered by the economics, science, and engineering departments. 
       
   - name: Archaeology
+    short_name: ART
     requirements:
       - type: core
         number: 3
@@ -1328,14 +1337,17 @@ certificates:
           - GEO 370
           
   - name: Architecture and Engineering
+    short_name: architecture
     requirements:
       # There's virtually no information about the requirements for this minor
 
   - name: Biophysics
+    short_name: biophysics
     requirements:
       # There's virtually no information about the requirements for this minor
 
   - name: Cognitive Science
+    short_name: cognitive science
     requirements:
         # Students are required to take five courses in cognitive science, which
         # in combination satisfy the following requirements:
@@ -1409,6 +1421,7 @@ certificates:
           - WWS 340
 
   - name: Contemporary European Politics and Society
+    short_name: EPS
     requirements:
       - type: gateway
         number: 1
@@ -1444,6 +1457,7 @@ certificates:
       # thesis on modern Europe is not possible may petition the director to
       # have another piece of independent research meet this requirement.
   - name: Creative Writing
+    short_name: CWR
     requirements:
       - type: 200-lvl
         number: 2
@@ -1453,6 +1467,7 @@ certificates:
         courses: CWR >= 300
 
   - name: Dance
+    short_name: DAN
     requirements:
         - type: studio-performance
           number: 2
@@ -1494,6 +1509,7 @@ certificates:
              - DAN 310
 
   - name: East Asian Studies
+    short_name: EAS
     requirements:
       - type: core
         number: 4
@@ -1506,6 +1522,7 @@ certificates:
         courses: EAS >= 100
 
   - name: Engineering & Management Systems
+    short_name: EMS
     requirements:
       - type: core
         number: 2
@@ -1557,6 +1574,7 @@ certificates:
           - ELE 491
 
   - name: Engineering Biology
+    short name: engineering bio
     requirements:
       - type: biology
         number: 3
@@ -1594,6 +1612,7 @@ certificates:
           - COS >= 300
 
   - name: Engineering Physics
+    short_name: engineering physics
     requirements:
       - type: mathematics
         number: 2
@@ -1609,6 +1628,7 @@ certificates:
           - PHY >= 300
 
   - name: Entrepreneurship
+    short_name: entrepreneurship
     requirements:
       - type: intro
         number: 2
@@ -1643,68 +1663,71 @@ certificates:
           - SOC 346
           - WWS 340
 
-  - name: Environmental Studies
+  - name: Environmental Studies Generalist
+    short_name: ENV generalist
     requirements:
-    tracks:
-      "Generalist":
-        - type: foundation
-          number: 1
-          courses:
-            - ENV 200B
-            - ENV 200F
-            - ENV 201A
-            - ENV 201B
-            - ENV 302
-        - type: humanities
-          number: 1
-          courses: ART | PHI | ARC | ENG
-        - type: social-sciences
-          number: 1
-          courses: ECO | HIS | WWS | ANT | POL
-        - type: natural-sciences
-          number: 1
-          courses: CHM | EEB | GEO | PHY | MOL
-        - type: engineering
-          number: 1
-          courses: CEE | CBE | MAE
-      "Biodiversity and Conservation":
-        - type: env-science
-          number: 1
-          courses:
-            - ENV 302
-            - GEO 360
-            - EEB 321
-        - type: env-policy
-          number: 1
-          courses: WWS 350
-        - type: core
-          number: 3
-          courses:
-            - AMS 364
-            - CEE 307
-            - CEE 334
-            - CEE 391
-            - EEB >= 300
-            - ENV 200A
-            - ENV 200B
-            - ENV 200C
-            - ENV 200D
-            - ENV 200E
-            - ENV 200F
-            - ENV 302
-            - ENV 304
-            - ENV 316
-            - ENV 327
-            - ENV 357
-            - ENV 363
-            - GEO 201
-            - GEO 299
-            - GEO 366
-            - GEO 417
-            - GEO 427
-            - HIS 473
-            - NES 470
-      "Climate and Energy":
+      - type: foundation
+        number: 1
+        courses:
+          - ENV 200B
+          - ENV 200F
+          - ENV 201A
+          - ENV 201B
+          - ENV 302
+      - type: humanities
+        number: 1
+        courses: ART | PHI | ARC | ENG
+      - type: social-sciences
+        number: 1
+        courses: ECO | HIS | WWS | ANT | POL
+      - type: natural-sciences
+        number: 1
+        courses: CHM | EEB | GEO | PHY | MOL
+      - type: engineering
+        number: 1
+        courses: CEE | CBE | MAE
+  - name: Environmental Studies Biodiversity and Conservation
+    short_name: ENV biodiversity
+    requirements:
+      - type: env-science
+        number: 1
+        courses:
+          - ENV 302
+          - GEO 360
+          - EEB 321
+      - type: env-policy
+        number: 1
+        courses: WWS 350
+      - type: core
+        number: 3
+        courses:
+          - AMS 364
+          - CEE 307
+          - CEE 334
+          - CEE 391
+          - EEB >= 300
+          - ENV 200A
+          - ENV 200B
+          - ENV 200C
+          - ENV 200D
+          - ENV 200E
+          - ENV 200F
+          - ENV 302
+          - ENV 304
+          - ENV 316
+          - ENV 327
+          - ENV 357
+          - ENV 363
+          - GEO 201
+          - GEO 299
+          - GEO 366
+          - GEO 417
+          - GEO 427
+          - HIS 473
+          - NES 470
+  - name: Environmental Studies Climate and Energy
+    short_name: ENV climate
+    requirements:
         - type: env-science
           number: 1
           courses:
@@ -1759,7 +1782,9 @@ certificates:
             - MAE 427
             - NES 466
             - ORF 474
-      "Earth Systems":
+  - name: Environmental Studies Earth Systems
+    short_name: ENV earth systems
+    requirements:
         - type: env-science
           number: 1
           courses:
@@ -1805,7 +1830,9 @@ certificates:
             - GEO 427
             - GEO 430
             - GEO 470
-      "Environmental Policy":
+  - name: Environmental Studies Environmental Policy
+    short_name: ENV policy
+    requirements:
         - type: env-science
           number: 1
           courses:
@@ -1853,7 +1880,9 @@ certificates:
             - MAE 328
             - WWS 306
             - WWS 406
-      "Environment and Water":
+  - name: Environmental Studies Environment and Water
+    short_name: ENV water
+    requirements:
         - type: env-science
           number: 1
           courses:
@@ -1902,6 +1931,7 @@ certificates:
             - GEO 427
 
   - name: Ethnographic Studies
+    short_name: ethnographic studies
     requirements:
       - type: core
         number: 2
@@ -1962,6 +1992,7 @@ certificates:
           - URB 385
 
   - name: European Cultural Studies
+    short_name: ECS
     requirements:
       - type: core
         number: 1
@@ -1974,6 +2005,7 @@ certificates:
         courses: ECS >= 300
 
   - name: Finance
+    short_name: finance
     requirements:
       - type: prerequisite-math
         number: 3
@@ -2081,7 +2113,7 @@ certificates:
 
   - name: Geological Engineering
     url: https://ua.princeton.edu/academic-units/program-geological-engineering
-    short_name: Geo-Engineering
+    short_name: geo-engineering
     requirements:
       - type: bse
         name: Specific B.S.E. Requirements
@@ -2538,6 +2570,7 @@ certificates:
           - PSY 309
           - TRA 301
   - name: materials science and engineering
+    short_name: MSE
     requirements:
       - type: core
         number: 1
@@ -2598,6 +2631,7 @@ certificates:
           - MAT313
           - MAT597
   - name: neuroscience
+    short_name: NEU
     requirements:
       - type: core-part1
         number: 1
@@ -2609,12 +2643,14 @@ certificates:
         courses:
           -  NEU 202
   - name: planets and life
+    short_name: planets and life
     requirements:
       - type: core
         number: 1
         courses:
           - GEO 255
   - name: robotics and intelligent systems
+    short_name: robotics
     requirements:
       - type: math
         number: 1
@@ -2694,7 +2730,8 @@ certificates:
           - ORF467
           - PHI212
           - PSY345
-  - name: Visual arts
+  - name: Visual arts 
+    short_name: VIS
     requirements:
       - type: core
         number: 2
@@ -2703,6 +2740,7 @@ certificates:
           - VIS 416
 
   - name: Values and public life
+    short_name: values
     requirements:
         - type: philosophy
           number: 1
@@ -2717,6 +2755,7 @@ certificates:
             - POL 313
 
   - name: Urban studies
+    short_name: URB
     requirements: 
       - type: core
         number: 2
@@ -2787,6 +2826,7 @@ certificates:
           - GEO 102B
           - MAE 228
   - name: Translation and intercultural communication
+    short_name: TRA
     requirements:
       - type: core
         number: 2
@@ -2794,6 +2834,7 @@ certificates:
           - TRA 200
           - TRA 400
   - name: Technology and society energy track
+    short_name: T&S energy
     requirements:
       - type: core
         number: 1
@@ -2854,6 +2895,7 @@ certificates:
           - SOC 344
           - WWS 309
   - name: Technology and society information technology track
+    short_name: T&S IT
     requirements:
       - type: core
         number: 1
@@ -2934,6 +2976,7 @@ certificates:
           - STC 349
           - WWS 354
   - name: Teacher preparation
+    short_name: teacher prep
     requirements:
       - type: core
         number: 4
@@ -2943,6 +2986,7 @@ certificates:
           - TPP 401
           - TPP 402
   - name: Sustainable energy
+    short_name: sustainable energy
     requirements:
       - type: core
         number: 1
@@ -3012,6 +3056,7 @@ certificates:
           - WWS 334
           - WWS 340
   - name: Statistics and machine learning
+    short_name: SML
     requirements:
       - type: statistics
         number: 1
@@ -3061,6 +3106,7 @@ certificates:
           - POL 346
           - QCB 408
   - name: Portuguese 
+    short_name: POR
     requirements:
       - type: core
         number: 3
@@ -3070,6 +3116,7 @@ certificates:
           - POR 330
           - POR 562
   - name: Spanish
+    short_name: SPA
     requirements:
       - type: core-upper-level
         number: 3
@@ -3078,6 +3125,7 @@ certificates:
         number: 1
         courses: SPA >= 209
   - name: Russian language 
+    short_name: RUS lang
     requirements:
       - type: prerequisite
         number: 1
@@ -3098,6 +3146,7 @@ certificates:
           - SLA 312
           - SLA 413
   - name: Russian literature
+    short_name: RUS lit
     requirements:
       - type: prerequisite
         number: 1
@@ -3118,6 +3167,7 @@ certificates:
           - RUS 407
           - RUS 408   
   - name: Near Eastern studies
+    short_name: NES
     requirements:
       - type: language
         number: 4
@@ -3137,6 +3187,7 @@ certificates:
           - NES 438
           - REL 337
   - name: German
+    short_name: GER
     requirements:
       - type: core-upper-level
         number: 2
