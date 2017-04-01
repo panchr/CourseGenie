@@ -48,6 +48,9 @@ class Record(models.Model): # need an on_delete = ?
     
     object_id = models.PositiveIntegerField()
     parent = GenericForeignKey('content_type', 'object_id')
+    
+    def __str__(self):
+    	return '{} {} {}'.format(self.semester, self.course, self.grade)
 
 class Calendar(models.Model): # need an on_delete = ?
     major = models.ForeignKey(Major)
@@ -63,6 +66,9 @@ class Calendar(models.Model): # need an on_delete = ?
     object_id = models.PositiveIntegerField()
     parent = GenericForeignKey('content_type', 'object_id')
 
+    def __str__(self):
+    	return '{} {} {}'.format(self.major, self.certificates) # not sure if this works
+    	
 # preference is a property of a user's profile and consistent across calendars
 class Preference(models.Model):
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE,
@@ -76,13 +82,25 @@ class Preference(models.Model):
     wl_area = models.ManyToManyField(Area)
     wl_dept = models.ManyToManyField(Department)
     
+    def __str__(self):
+    	return "preference"
+
 class Semester(models.Model):
     courses = models.ManyToManyField(Course)
+
+    def __str__(self):
+    	return self.courses # not sure if this works
 
 class Area(models.Model): # distribution area
     name = models.CharField(max_length = 50)
     short_name = models.CharField(max_length = 3)
     
+    def __str__(self):
+    	return self.short_name
+    
 class Department(models.Model):
     name = models.CharField(max_length = 50)
     short_name = models.CharField(max_length = 3)
+
+    def __str__(self):
+    	return self.name
