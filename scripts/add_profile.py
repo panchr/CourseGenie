@@ -3,6 +3,8 @@
 # Date: April 1st, 2017
 # adds information from transcript into database
 
+# assuming data format is as displayed in output; see sample transcript data
+# does transcript parser grab everything? name? year?
 import os
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "coursegenie.settings")
 import django
@@ -22,5 +24,6 @@ for semester in t["courses"]:
 	for course in courses:
 		grade = t["grades"][course]
 		list_records.append(Record(course=course, grade=grade, semester=semester, parent=profile))
-
+# problem with above: haven't configured profile yet??
+# currently, this just adds transcript info in and does NOT create new Profile object in database
 Record.objects.bulk_create(list_records)
