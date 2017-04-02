@@ -97,7 +97,7 @@ class Area(models.Model): # distribution area
     
     def __str__(self):
     	return self.short_name
-    
+
 class Department(models.Model):
     name = models.CharField(max_length = 50)
     short_name = models.CharField(max_length = 3)

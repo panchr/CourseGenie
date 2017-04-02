@@ -12,8 +12,6 @@ import yaml
 django.setup()
 from core.models import *
 
-CURRENT_TERM = Course.TERM_SPRING
-
 with open("courses.json") as f:
 	raw_data = json.load(f)
 
@@ -45,8 +43,16 @@ for record in raw_data:
 						for c in k["courses"]:
 							dept = c[:3]
 							num = c[4:]
-							course = Course.objects.get(department=dept, number=num) 
-							req.courses.add(course) # best way to deal with: if course isn't in Course database?
+							try: # in case course isn't in database
+								course = Course.objects.get(department=dept, number=num) 
+								req.courses.add(course)
+							except Course.DoesNotExist: # either actually not in database, or is a cross listing
+								try:
+									crossed = CrossListing.objects.get(department=dept, number=num)
+									req.courses.add(crossed.course)
+								except CrossListing.DoesNotExist:
+									# do something to tell us c was not added
+									pass
 			
 				# add requirements that belong to the major
 				for key in maj["requirements"]:
@@ -60,8 +66,16 @@ for record in raw_data:
 					for c in key["courses"]:
 						dept = c[:3]
 						num = c[4:]
-						course = Course.objects.get(department=dept, number=num) 
-						req.courses.add(course) # best way to deal with: if course isn't in Course database?					
+						try: # in case course isn't in database
+							course = Course.objects.get(department=dept, number=num) 
+							req.courses.add(course)
+						except Course.DoesNotExist: # either actually not in database, or is a cross listing
+							try:
+								crossed = CrossListing.objects.get(department=dept, number=num)
+								req.courses.add(crossed.course)
+							except CrossListing.DoesNotExist:
+								# do something to tell us c was not added	
+								pass			
 
 	if record == "certificates":
 		for cert in raw_data[record]:
@@ -70,7 +84,7 @@ for record in raw_data:
 				certificate = Certificate.objects.get(name=name)
 			except Certificate.DoesNotExist:
 				short_name = cert["short_name"]
-				certificate = Certificate(name=name, short_name=short_name) # is it necessary to have a short_name for certificate? might be useful for display?
+				certificate = Certificate(name=name, short_name=short_name)
 				certificate.save()
 				
 				# add requirements that belong to the certificate
@@ -85,6 +99,46 @@ for record in raw_data:
 					for c in key["courses"]:
 						dept = c[:3]
 						num = c[4:]
-						course = Course.objects.get(department=dept, number=num) 
-						req.courses.add(course) # best way to deal with: if course isn't in Course database?
+						try: # in case course isn't in database
+							course = Course.objects.get(department=dept, number=num) 
+							req.courses.add(course)
+						except Course.DoesNotExist: # either actually not in database, or is a cross listing
+							try:
+								crossed = CrossListing.objects.get(department=dept, number=num)
+								req.courses.add(crossed.course)
+							except CrossListing.DoesNotExist:
+								# do something to tell us c was not added	
+								pass
 
+	if record == "degrees":
+		for deg in raw_data[record]:
+			name = deg["name"]
+			try:
+				degree = Degree.objects.get(name=name)
+			except Certificate.DoesNotExist:
+				short_name = deg["short_name"]
+				degree = Degree(name=name, short_name=short_name)
+				degree.save()
+				
+				# add requirements that belong to the degree
+				for key in deg["requirements"]:
+					name = key["name"]
+					t = key["type"]
+					number = key["number"]
+					notes = key["notes"] # not all data has this
+					req = Requirement(name=name, t=t, number=number, notes=notes, parent=degree)
+					req.save()
+					# add courses via loop, req.courses.add(course)
+					for c in key["courses"]:
+						dept = c[:3]
+						num = c[4:]
+						try: # in case course isn't in database
+							course = Course.objects.get(department=dept, number=num) 
+							req.courses.add(course)
+						except Course.DoesNotExist: # either actually not in database, or is a cross listing
+							try:
+								crossed = CrossListing.objects.get(department=dept, number=num)
+								req.courses.add(crossed.course)
+							except CrossListing.DoesNotExist:
+								# do something to tell us c was not added	
+								pass				
