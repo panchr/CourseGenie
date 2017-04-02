@@ -14,8 +14,6 @@ class Profile(models.Model):
     '''
     user = models.OneToOneField(User, on_delete = models.CASCADE) # Django User model
     year = models.IntegerField(max_length = 4) # graduation year
-    calendars = GenericRelation('Calendar', related_query_name = 'profile')
-    records = GenericRelation('Record', related_query_name = 'profile') # courses taken
     
     def all_records(self):
         '''Retrieve all records for the profile.'''
@@ -41,7 +39,8 @@ def create_user_profile(sender, instance, created, **kwargs):
 def save_user_profile(sender, instance, **kwargs)
     instance.profile.save()
 
-class Record(models.Model): # need an on_delete = ?
+class Record(models.Model):
+	profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='record')
     course = models.ForeignKey(Course)
     grade = models.CharField(max_length = 3)
     semester = models.CharField(max_length = 25)
@@ -52,19 +51,16 @@ class Record(models.Model): # need an on_delete = ?
     def __str__(self):
     	return '{} {} {}'.format(self.semester, self.course, self.grade)
 
-class Calendar(models.Model): # need an on_delete = ?
+class Calendar(models.Model):
+	profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='calendar')
     major = models.ForeignKey(Major)
     certificates = GenericRelation('Certificate', related_query_name = 'calendar')
     sandbox = GenericRelation('Course', related_query_name = 'sandbox')
-    semesters = GenericRelation('Semester', related_query_name='Calendar')
     
     def all_semesters(self):
     '''Retrieve all semesters for the calendar.'''
     return Record.objects.filter(
         models.Q(calendar = self))
-    
-    object_id = models.PositiveIntegerField()
-    parent = GenericForeignKey('content_type', 'object_id')
 
     def __str__(self):
     	return '{} {} {}'.format(self.major, self.certificates) # not sure if this works
@@ -86,6 +82,7 @@ class Preference(models.Model):
     	return "preference"
 
 class Semester(models.Model):
+	calendar = models.ForeignKey(Calendar, on_delete=models.CASCADE, related_name='semester')
     courses = models.ManyToManyField(Course)
 
     def __str__(self):
