@@ -3,6 +3,7 @@
 # Date: April 1st, 2017
 # models for user information
 
+# weird indenting ... seems to be a hard tabs/soft tabs issue
 from django.contrib.auth.models import User
 
 class Profile(models.Model):

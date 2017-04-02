@@ -33,11 +33,10 @@ for record in raw_data:
 					track = Track(major=major, name=name)
 					track.save()
 					for k in maj["tracks"][key]:
-						name = k["name"] # not sure if we need this; currently mostly missing
 						t = k["type"]
 						number = k["number"]
 						notes = k["notes"] # not all data has this
-						req = Requirement(name=name, t=t, number=number, notes=notes, parent=track)
+						req = Requirement(t=t, number=number, notes=notes, parent=track)
 						req.save()
 						# add courses via loop, req.courses.add(course)
 						for c in k["courses"]:
