@@ -19,16 +19,16 @@ class Profile(models.Model):
     def __str__(self):
         return self.user.username
 
-# automatically create/update profile when create/update user
+# automatically create profile when create user
 # according to https://simpleisbetterthancomplex.com/tutorial/2016/07/22/how-to-extend-django-user-model.html#onetoone
 @receiver(post_save, sender = User)
 def create_user_profile(sender, instance, created, **kwargs):
     if created: 
-        Profile.objects.create(user = instance)
+        Profile.objects.create(user=instance, year=0)
 
-@receiver(post_save, sender = User)
-def save_user_profile(sender, instance, **kwargs)
-    instance.profile.save()
+# not completed
+#class Satisfied_reqs(models.Model):
+#	profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='satisfied_reqs')
 
 class Record(models.Model):
 	profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='record')
