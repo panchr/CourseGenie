@@ -7,6 +7,9 @@ from django.conf.urls import url
 
 from core import views
 
+app_name='core'
 urlpatterns = [
-	url(r'^$', views.IndexView.as_view()),
+	url(r'^$', views.IndexView.as_view(), name='index'),
+	url(r'^post-transcript/$', views.TranscriptView.as_view(),
+		name='transcript-upload'),
 	]
