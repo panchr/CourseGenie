@@ -16,16 +16,6 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete = models.CASCADE) # Django User model
     year = models.IntegerField(max_length = 4) # graduation year
     
-    def all_records(self):
-        '''Retrieve all records for the profile.'''
-        return Record.objects.filter(
-            models.Q(profile = self))
-    
-    def all_calendars(self):
-        '''Retrieve all calendars for the profile.'''
-        return Calendar.objects.filter(
-            models.Q(profile = self))
-    
     def __str__(self):
         return self.user.username
 
@@ -45,9 +35,6 @@ class Record(models.Model):
     course = models.ForeignKey(Course)
     grade = models.CharField(max_length = 3)
     semester = models.CharField(max_length = 25)
-    
-    object_id = models.PositiveIntegerField()
-    parent = GenericForeignKey('content_type', 'object_id')
     
     def __str__(self):
     	return '{} {} {}'.format(self.semester, self.course, self.grade)
@@ -83,11 +70,12 @@ class Preference(models.Model):
     	return "preference"
 
 class Semester(models.Model):
+	name = models.CharField(max_length = 25)
 	calendar = models.ForeignKey(Calendar, on_delete=models.CASCADE, related_name='semester')
     courses = models.ManyToManyField(Course)
 
     def __str__(self):
-    	return self.courses # not sure if this works
+    	return self.name
 
 class Area(models.Model): # distribution area
     name = models.CharField(max_length = 50)

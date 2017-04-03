@@ -39,6 +39,11 @@ class Certificate(models.Model):
 	requirements = GenericRelation('Requirement',
 		related_query_name='certificate')
 
+	def all_requirements(self):
+		'''Retrieve all requirements for the major.'''
+		return Requirements.objects.filter(
+			models.Q(certificate=self) | models.Q(degree=self.degree_id))
+			
 	def __str__(self):
 		return self.short_name
 
@@ -60,6 +65,7 @@ class Course(models.Model):
 	name = models.CharField(max_length=255)
 	number = models.CharField(max_length=4)
 	department = models.CharField(max_length=3)
+	area = models.CharField(max_length=3)
 
 	TERM_FALL = 1
 	TERM_SPRING = 2

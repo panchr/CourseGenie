@@ -5,6 +5,7 @@
 
 # assuming data format is as displayed in output; see sample transcript data
 # does transcript parser grab everything? name? year?
+# assumes profile already exist; just adds in records from transcript
 import os
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "coursegenie.settings")
 import django
@@ -16,14 +17,14 @@ from core.models import *
 with open("sample_transcript_kathy.json") as f:
 	raw_data = json.load(f)
 
-user.username = raw_data["netid"]
+username = raw_data["netid"]
+profile = Profile.objects.get(user.username = username)
 t = raw_data["transcript"]
 list_records = []
 for semester in t["courses"]:
 	courses = t["courses"][semester]
 	for course in courses:
 		grade = t["grades"][course]
-		list_records.append(Record(course=course, grade=grade, semester=semester, parent=profile))
-# problem with above: haven't configured profile yet??
-# currently, this just adds transcript info in and does NOT create new Profile object in database
+		list_records.append(Record(course=course, grade=grade, semester=semester, profile=profile))
+
 Record.objects.bulk_create(list_records)
