@@ -3219,9 +3219,7 @@ certificates:
         name: Total Course Requirement
         number: 5
         unique: false
-    notes:
-      - maximum one PDF
-      - independent work (senior thesis, one junior paper)
+    notes: maximum one PDF, independent work required (senior thesis, one junior paper)
 
   - name: Geological Engineering
     url: https://ua.princeton.edu/academic-units/program-geological-engineering
@@ -3229,7 +3227,7 @@ certificates:
     requirements:
       - type: bse
         name: Specific B.S.E. Requirements
-        number: 3
+        number: 7
         courses:
           - MAT 103
           - MAT 104

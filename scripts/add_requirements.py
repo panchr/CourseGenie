@@ -256,48 +256,61 @@ for record in raw_data:
 					req.save()
 					# add courses via loop, req.courses.add(course)
 					for c in key["courses"]:
-							# DEPT>=NUMBER shortcut, REMOVE SPACES BEFORE PARSING
-							m = re.match(r"^([A-Z]{3}) ?>= ?([0-9]{3})$", c)
-							if m:
-								dept = m.group(1)
-								at_least = int(m.group(2))
-								satisfied = Course.objects.filter(department=dept, number__gte=n)
-								req.courses.add(satisfied)
-							# DEPT* shortcut
-							m = re.match(r"^([A-Z]{3})(\*)$", c)
-							if m:
-								dept = m.group(1)
-								satisfied = Course.objects.filter(department=dept)
-								req.courses.add(satisfied)							
-							# DEPT[AREA]>=NUMBER, REMOVE SPACES BEFORE PARSING
-							m = re.match(r"^([A-Z]{3})\[([A-Z]+)\] ?>= ?([0-9]{3})$", c)
-							if m:
-								dept = m.group(1)
-								area = m.group(2)
-								at_least = int(m.group(3))
-								satisfied = Course.objects.filter(department=dept, area=area, number__gte=n)
-								req.courses.add(satisfied)
-							# * shortcut
-							m = re.match(r"^(\*)$", c)
-							if m:
-								satisfied = Course.objects.all()
-								req.courses.add(satisfied)		
-							# *>=NUMBER
-							m = re.match(r"^\* ?>= ?([0-9]{3})$", c)
-							if m:
-								at_least = int(m.group(1))
-								satisfied = Course.objects.filter(number__gte=n)
-								req.courses.add(satisfied)						
-							# special
-							m = re.match(r"^special$", c)
-							if m:
-								pass					
-							# theme:something
-							m = re.match(r"^theme:", c)
-							if m:
-								pass			
-							# @RUSHY will handle OR 				
-							# regular course entry					
+						# DEPT>=NUMBER shortcut, REMOVE SPACES BEFORE PARSING
+						m = re.match(r"^([A-Z]{3}) ?>= ?([0-9]{3})$", c)
+						if m:
+							dept = m.group(1)
+							at_least = int(m.group(2))
+							satisfied = Course.objects.filter(department=dept, number__gte=n)
+							req.courses.add(satisfied)
+						# DEPT* shortcut
+						m = re.match(r"^([A-Z]{3})(\*)$", c)
+						if m:
+							dept = m.group(1)
+							satisfied = Course.objects.filter(department=dept)
+							req.courses.add(satisfied)							
+						# DEPT[AREA]>=NUMBER, REMOVE SPACES BEFORE PARSING
+						m = re.match(r"^([A-Z]{3})\[([A-Z]+)\] ?>= ?([0-9]{3})$", c)
+						if m:
+							dept = m.group(1)
+							area = m.group(2)
+							at_least = int(m.group(3))
+							satisfied = Course.objects.filter(department=dept, area=area, number__gte=n)
+							req.courses.add(satisfied)
+						# * shortcut
+						m = re.match(r"^(\*)$", c)
+						if m:
+							satisfied = Course.objects.all()
+							req.courses.add(satisfied)		
+						# *>=NUMBER
+						m = re.match(r"^\* ?>= ?([0-9]{3})$", c)
+						if m:
+							at_least = int(m.group(1))
+							satisfied = Course.objects.filter(number__gte=n)
+							req.courses.add(satisfied)						
+						# special
+						m = re.match(r"^special$", c)
+						if m:
+							pass					
+						# theme:something
+						m = re.match(r"^theme:", c)
+						if m:
+							pass			
+						# DEPT | etc -> ignore everything except first department
+						m = re.match(r"^([A-Z]{3}) ? |", c)
+						if m:
+							dept = m.group(1)
+							satisfied = Course.objects.filter(department=dept)
+							req.courses.add(satisfied)
+						# DEPT NUMBER | etc -> ignore everything except first department
+						m = re.match(r"^(([A-Z]{3}) ([0-9]{3})([A-Z]+) |)", c)
+						if m:
+							dept = m.group(1)
+							number = m.group(2)
+							letter = m.group(3)
+							satisfied = Course.objects.filter(department=dept, number=number, letter=letter)
+							req.courses.add(satisfied)
+						# regular course entry					
 						dept = c[:3]
 						num = c[4:]
 						try: # in case course isn't in database
