@@ -1,11 +1,9 @@
-# add_courses.py
-# Import courses from course file into database.
+# scripts/add_courses.py
+# CourseGenie
+# Author: Kathy Fan
+# Date: March 30th, 2017
+# Description: script to help add course data into database.
 
-import json
-import yaml
-import sys
-
-# Setup Django
 import os
 if os.path.dirname(os.getcwd()) == 'scripts':
 	os.chdir('..')

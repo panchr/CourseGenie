@@ -43,6 +43,7 @@ class Certificate(models.Model):
 		return self.short_name
 
 class Track(models.Model):
+	major = models.ForeignKey(Major, on_delete=models.CASCADE)
 	name = models.CharField(max_length=255)
 	short_name = models.CharField(max_length=15)
 	requirements = GenericRelation('Requirement', related_query_name='track')
@@ -74,6 +75,9 @@ class Course(models.Model):
 	def __str__(self):
 		return '{} {}'.format(self.department, self.number)
 
+	class Meta:
+		unique_together = ('number', 'department')
+
 class CrossListing(models.Model):
 	course = models.ForeignKey(Course, on_delete=models.CASCADE,
 		related_name='listings')
@@ -82,11 +86,15 @@ class CrossListing(models.Model):
 
 	def __str__(self):
 		return '{} {}'.format(self.department, self.number)
+
+	class Meta:
+		unique_together = ('course', 'number', 'department')
 	
 class Requirement(models.Model):
 	name = models.CharField(max_length=255)
 	t = models.CharField(max_length=50) # requirement type
 	number = models.PositiveIntegerField(default=0) # number required
+	notes = models.CharField(max_length=255, default='')
 
 	# Courses can be listed in many different requirements
 	courses = models.ManyToManyField(Course)
@@ -108,3 +116,6 @@ class Requirement(models.Model):
 
 	def __str__(self):
 		return '{}: {} ({})'.format(self.parent, self.t, self.number)
+
+	class Meta:
+		unique_together = ('object_id', 't')
