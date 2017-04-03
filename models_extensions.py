@@ -7,12 +7,6 @@
 from django.contrib.auth.models import User
 
 class Profile(models.Model):
-    ''' 
-    afaik User has various fields already, so for example, we can set the username = netid,
-    and make use of the first_name, last_name, email, etc fields. But does using the User
-    model work/make sense if we're doing a CAS authentication instead of Django's own 
-    authentication?
-    '''
     user = models.OneToOneField(User, on_delete = models.CASCADE) # Django User model
     year = models.IntegerField(max_length = 4) # graduation year
     
@@ -44,11 +38,6 @@ class Calendar(models.Model):
     major = models.ForeignKey(Major)
     certificates = GenericRelation('Certificate', related_query_name = 'calendar')
     sandbox = GenericRelation('Course', related_query_name = 'sandbox')
-    
-    def all_semesters(self):
-    '''Retrieve all semesters for the calendar.'''
-    return Record.objects.filter(
-        models.Q(calendar = self))
 
     def __str__(self):
     	return '{} {} {}'.format(self.major, self.certificates) # not sure if this works

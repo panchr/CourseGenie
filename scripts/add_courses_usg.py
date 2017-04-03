@@ -4,6 +4,7 @@
 # Date: April 3rd, 2017
 # adds in course data in usg data format; v2 of original add_courses.py
 
+import sys
 import os
 if os.path.dirname(os.getcwd()) == 'scripts':
 	os.chdir('..')
@@ -14,6 +15,7 @@ else:
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "coursegenie.settings")
 import django
 django.setup()
+import json
 
 from core.models import *
 
@@ -30,6 +32,7 @@ def main():
 
 	for record in raw_data:
 		name = record["title"]
+		#area = 
 		number = record["catalog_number"][:3]
 		if len(record["catalog_number"]) > 3:
 			letter = record["catalog_number"][3:4]

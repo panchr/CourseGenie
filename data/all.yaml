@@ -38,7 +38,7 @@ degrees:
 majors:
   - name: Mechanical and Aerospace Engineering
     short_name: MAE
-    degree: B.S.E
+    degree: B.S.E.
     requirements:
     - type: intro MAE 
       number: 5
@@ -89,7 +89,7 @@ majors:
         - MAE 324
         - MSE 201
     tracks:
-      - name: Mechanical Engineering - Dynamics Systems and Design
+      "Mechanical Engineering - Dynamics Systems and Design":
         - type: MAE 335 
           number: 1
           note: CBE 341 can replace MAE 423
@@ -125,7 +125,7 @@ majors:
           note: CEE 477 can be a substitute if you are gettng the Sustainable Energy Certificate
           courses:
             - MAE 412
-      - name: Mechanical Engineering - Energy Sciences
+      "Mechanical Engineering - Energy Sciences":
         - type: MAE 335 or MAE 423
           number: 1
           note: CBE 341 can replace MAE 423
@@ -158,7 +158,7 @@ majors:
           courses:
             - MAE 322
             - MAE 412
-      - name: Mechanical Engineering
+      "Mechanical Engineering":
         - type: MAE 335 or MAE 423
           number: 1
           note: CBE 341 can replace MAE 423
@@ -191,7 +191,7 @@ majors:
           courses:
             - MAE 322
             - MAE 412
-      - name: Aerospace Engineering
+      "Aerospace Engineering":
         - type: CEE 312 or CEE 361
           number: 1
           courses:
@@ -278,7 +278,7 @@ majors:
           - MAE 345
           - PHI 312
           - ORF 309
-    - type: independent
+      - type: independent
         number: 1
         courses: 
           - COS 397 | COS 398 | COS 497 | COS 498
@@ -951,8 +951,8 @@ majors:
           - ORF 335
           - ORF 411
       - type: math
-      	number: 1
-      	courses:
+        number: 1
+        courses:
           - MAT 320
           - MAT 322
           - MAT 375
@@ -965,8 +965,8 @@ majors:
           - MAT 486
           - MAT 522
       - type: departmental
-      	number: 8
-      	courses:
+        number: 8
+        courses:
           - ORF 311
           - ORF 350
           - ORF 360
@@ -2595,12 +2595,12 @@ certificates:
             - DAN 408
             - DAN 431
             - DAN 432
-         - type: studio-gen
-           number: 1
-           courses: DAN >= 300
-         - type: co-curricular
-           number: 2
-           courses:
+        - type: studio-gen
+          number: 1
+          courses: DAN >= 300
+        - type: co-curricular
+          number: 2
+          courses:
              - DAN 204
              - DAN 207
              - DAN 209
@@ -2610,9 +2610,9 @@ certificates:
              - DAN 211
              - DAN 322
              - DAN 315
-         - type: seminar
-           number: 1
-           courses:
+        - type: seminar
+          number: 1
+          courses:
              - DAN 316
              - DAN 215
              - DAN 321
@@ -3551,6 +3551,7 @@ certificates:
       - type: interdiscriplinary
         name: Interdiscriplinary
         number: 1
+        courses:
           - ECO*
           - HIS*
           - POL*
@@ -4009,51 +4010,50 @@ certificates:
           - NEU 202
       - type: electives
       - number: 4
-      - note: must come from 3 of the four areas; 
-      if you decide to concentrate you must tak NEU 201 without credit
+      - note: must come from 3 of the four areas. If you decide to concentrate you must tak NEU 201 without credit
       - courses:
-        # molecular/cellular/disease
-        NEU 301
-        NEU 403
-        NEU 413
-        NEU 447
-        NEU 451
-        MOL 459
-        MOL 458
-        NEU 501A 
-        # neural computation
-        NEU 330
-        NEU 338
-        NEU 340
-        NEU 437
-        NEU 457
-        COS 402
-        COS 424
-        COS 495
-        # systems and circuits
-        NEU 260
-        NEU 316
-        NEU 301
-        NEU 336
-        NEU 325
-        NEU 413
-        NEU 427
-        NEU 457
-        NEU 501A
-        NEU 502B
-        # social and cognitive neuroscience
-        NEU 306
-        NEU 316
-        NEU 330
-        NEU 331
-        NEU 337
-        NEU 338
-        NEU 349
-        NEU 405
-        NEU 451
-        NEU 480
-        NEU 516
-        NEU 502B
+          # molecular/cellular/disease
+          - NEU 301
+          - NEU 403
+          - NEU 413
+          - NEU 447
+          - NEU 451
+          - MOL 459
+          - MOL 458
+          - NEU 501A 
+          # neural computation
+          - NEU 330
+          - NEU 338
+          - NEU 340
+          - NEU 437
+          - NEU 457
+          - COS 402
+          - COS 424
+          - COS 495
+          # systems and circuits
+          - NEU 260
+          - NEU 316
+          - NEU 301
+          - NEU 336
+          - NEU 325
+          - NEU 413
+          - NEU 427
+          - NEU 457
+          - NEU 501A
+          - NEU 502B
+          # social and cognitive neuroscience
+          - NEU 306
+          - NEU 316
+          - NEU 330
+          - NEU 331
+          - NEU 337
+          - NEU 338
+          - NEU 349
+          - NEU 405
+          - NEU 451
+          - NEU 480
+          - NEU 516
+          - NEU 502B
   - name: planets and life
     short_name: planets and life
     requirements:
@@ -4150,10 +4150,10 @@ certificates:
         number: 1
         courses:
           - CBE 445
-          ELE 301
-          MAE 345
-          MAE 433
-          MAE 434
+          - ELE 301
+          - MAE 345
+          - MAE 433
+          - MAE 434
       - type: cognition
         number: 1
         courses:
@@ -4706,9 +4706,9 @@ certificates:
           - NES 394
           - NES 438
           - REL 337
-        - type: social-sciences
-          number: 2
-          notes: courses should treat the Near East and be chosen from the the Departments of ANT, NES, POL, REL, SOC, and WWS.
+      - type: social-sciences
+        number: 2
+        notes: courses should treat the Near East and be chosen from the the Departments of ANT, NES, POL, REL, SOC, and WWS.
   - name: German
     short_name: GER
     requirements:
