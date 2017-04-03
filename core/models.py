@@ -67,10 +67,11 @@ class Track(models.Model):
 
 class Course(models.Model):
 	name = models.CharField(max_length=255)
-	number = models.IntegerField()
+	course_id = models.CharField(max_length=10)
+	number = models.PositiveIntegerField()
 	letter = models.CharField(max_length=1, default="")
 	department = models.CharField(max_length=3)
-	#area = models.CharField(max_length=3)
+	area = models.CharField(max_length=3, default="")
 
 	TERM_FALL = 1
 	TERM_SPRING = 2
@@ -92,9 +93,11 @@ class Course(models.Model):
 class CrossListing(models.Model):
 	course = models.ForeignKey(Course, on_delete=models.CASCADE,
 		related_name='listings')
-	number = models.CharField(max_length=4)
+	course_id = models.CharField(max_length=10)
+	number = models.PositiveIntegerField()
 	letter = models.CharField(max_length=1, default="")
 	department = models.CharField(max_length=3)
+	area = models.CharField(max_length=3, default="")
 
 	def __str__(self):
 		return '{} {} {}'.format(self.department, self.number, self.letter)
