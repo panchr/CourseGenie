@@ -4,17 +4,21 @@
 	License: pixelarity.com/license
 */
 
+function cssPath(p) {
+	return skelCSSUrl + '/' + p;
+	}
+
 (function($) {
 
 	skel.init({
 		reset: 'full',
 		breakpoints: {
-			'global':	{ range: '*', href: 'css/style.css', containers: 1400, grid: { gutters: 40 } },
-			'wide':		{ range: '-1680', href: 'css/style-wide.css', containers: 1200 },
-			'normal':	{ range: '-1280', href: 'css/style-normal.css', containers: 1000 },
-			'narrow':	{ range: '-1080', href: 'css/style-narrow.css', containers: '95%', grid: { gutters: 20 } },
-			'narrower':	{ range: '-960', href: 'css/style-narrower.css', containers: '95%!', grid: { collapse: true } },
-			'mobile':	{ range: '-736', href: 'css/style-mobile.css', containers: '90%!', viewport: { scalable: false } }
+			'global':	{ range: '*', href: cssPath('style.css'), containers: 1400, grid: { gutters: 40 } },
+			'wide':		{ range: '-1680', href: cssPath('style-wide.css'), containers: 1200 },
+			'normal':	{ range: '-1280', href: cssPath('style-normal.css'), containers: 1000 },
+			'narrow':	{ range: '-1080', href: cssPath('style-narrow.css'), containers: '95%', grid: { gutters: 20 } },
+			'narrower':	{ range: '-960', href: cssPath('style-narrower'), containers: '95%!', grid: { collapse: true } },
+			'mobile':	{ range: '-736', href: cssPath('style-mobile.css'), containers: '90%!', viewport: { scalable: false } }
 		},
 		plugins: {
 			layers: {

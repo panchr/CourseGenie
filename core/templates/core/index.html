@@ -1,32 +1,9 @@
 <!DOCTYPE HTML>
-<!--
-	Concentric by Pixelarity
-	pixelarity.com @pixelarity
-	License: pixelarity.com/license
--->
 <html>
-	<head>
-		<title> </title>
-		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-		<meta name="description" content="" />
-		<meta name="keywords" content="" />
-		<!--[if lte IE 8]><script src="css/ie/html5shiv.js"></script><![endif]-->
-		<script src="js/jquery.min.js"></script>
-		<script src="js/jquery.dropotron.min.js"></script>
-		<script src="js/skel.min.js"></script>
-		<script src="js/skel-layers.min.js"></script>
-		<script src="js/init.js"></script>
-		<noscript>
-			<link rel="stylesheet" href="css/skel.css" />
-			<link rel="stylesheet" href="css/style.css" />
-			<link rel="stylesheet" href="css/style-wide.css" />
-		</noscript>
-		<!--[if lte IE 8]><link rel="stylesheet" href="css/ie/v8.css" /><![endif]-->
-	</head>
 	<body class="homepage">
-
-		<!-- Header -->
-
+			
+		{% load static %}
+		{% include 'core/base.html' %}
 
 		<!-- Banner -->
 			<div id="banner">
@@ -107,11 +84,11 @@
 							<h2>The Genies</h2>
 						</header>
 						<ul class="staff">
-							<li><img src="images/kathy.jpg" alt=""><p>Kathy</p></li>
-							<li><img src="images/anya.png" alt=""><p>Anya</p></li>
-							<li><img src="images/rushy.jpg" alt=""><p>Rushy</p></li>
-							<li><img src="images/fiona.jpg" alt=""><p>Fiona</p></li>
-							<li><img src="images/simi.jpg" alt=""><p>Simisola</p></li>
+							<li><img src="{% static 'core/images/kathy.jpg' %}" alt=""><p>Kathy</p></li>
+							<li><img src="{% static 'core/images/anya.png' %}" alt=""><p>Anya</p></li>
+							<li><img src="{% static 'core/images/rushy.jpg' %}" alt=""><p>Rushy</p></li>
+							<li><img src="{% static 'core/images/fiona.jpg' %}" alt=""><p>Fiona</p></li>
+							<li><img src="{% static 'core/images/simi.jpg' %}" alt=""><p>Simisola</p></li>
 						</ul>
 					</section>
 				</div>
