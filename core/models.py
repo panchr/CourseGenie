@@ -64,7 +64,7 @@ class Track(models.Model):
 class Course(models.Model):
 	name = models.CharField(max_length=255)
 	number = models.CharField(max_length=3)
-	letter = models.CharField(max_length=1, default="")
+	#letter = models.CharField(max_length=1, default="")
 	department = models.CharField(max_length=3)
 	area = models.CharField(max_length=3)
 
@@ -80,8 +80,8 @@ class Course(models.Model):
 		), default=TERM_INCONSISTENT)
 
 	def __str__(self):
-		return '{} {}'.format(self.department, self.number, self.letter)
-
+		#return '{} {} {}'.format(self.department, self.number, self.letter)
+		return '{} {}'.format(self.department, self.number)
 	class Meta:
 		unique_together = ('number', 'department')
 
@@ -93,8 +93,8 @@ class CrossListing(models.Model):
 	department = models.CharField(max_length=3)
 
 	def __str__(self):
-		return '{} {}'.format(self.department, self.number, self.letter)
-
+		#return '{} {} {}'.format(self.department, self.number, self.letter)
+		return '{} {}'.format(self.department, self.number)
 	class Meta:
 		unique_together = ('course', 'number', 'department')
 	
