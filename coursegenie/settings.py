@@ -136,3 +136,4 @@ STATICFILES_FINDERS = (
 
 # Installed Application Configuration
 CAS_SERVER_URL = os.environ.get('CAS_URL')
+TRANSCRIPT_API_URL = os.environ.get('TRANSCRIPT_API_URL')
