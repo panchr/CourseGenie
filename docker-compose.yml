@@ -3,26 +3,27 @@
 # Date: March 8th, 2017
 # Description: Defines services required for Docker with Django.
 
-version: '2'
+version: '2.1'
 services:
   # Database (Postgres)
   db:
-    image: postgres:9.6.2
+    extends:
+      file: docker/compose/default.yml
+      service: db
 
   # Primary web server
   web:
-    build: .
-    command: ['docker/wait-for-it.sh', 'db:5432', '--', 'python', 'manage.py',
-      'runserver', '0.0.0.0:8000']
+    extends:
+      file: docker/compose/default.yml
+      service: web
     volumes:
-      - .:/server
+      - .:${APP_DIR}
     ports:
       - "8000:8000"
+    environment:
+      - ENV=development
+      - PORT=8000
     links:
       - db
     depends_on:
       - db
-    environment:
-      - DATABASE_URL=postgres://postgres:postgres@db:5432/postgres
-      - CAS_URL=https://cast.cs.princeton.edu/
-      - TRANSCRIPT_API_URL=https://transcriptapi.tigerapps.org

@@ -1,0 +1,29 @@
+# docker/compose/default.yml
+# Author: Rushy Panchal
+# Date: April 4th, 2017
+# Description: Default Docker Compose configuration.
+
+version: '2.1'
+services:
+  # Database (Postgres)
+  db:
+    image: postgres:9.6.2
+
+  web:
+    build:
+      context: ../..
+      args:
+        APP_DIR: ${APP_DIR}
+        PYTHON_VERSION: ${PYTHON_VERSION}
+        ENV: ${ENV}
+        PORT: ${PORT}
+    command: /bin/bash docker/services/web.sh
+    environment:
+      - PORT=80
+      - ENV=production
+      - DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+      - CAS_URL=https://cast.cs.princeton.edu/
+      - TRANSCRIPT_API_URL=https://transcriptapi.tigerapps.org
+    volumes: []
+
+    restart: always

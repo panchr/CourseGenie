@@ -3,12 +3,37 @@
 # Date: March 8th, 2017
 # Description: Docker services configuration.
 
-FROM python:2.7.9
-ENV PYTHONUNBUFFERED 1
+FROM debian:8.7
 
-# Install local code to server
-RUN if [ ! -e /server ]; then mkdir /server; fi
-WORKDIR /server
-ADD requirements.txt /server/
+RUN apt-get update
+
+### Python ###
+ENV PYTHONUNBUFFERED 1
+RUN apt-get install -y git make python-dev build-essential libssl-dev \
+	zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm \
+	libncurses5-dev
+
+ENV PYENV_ROOT "/pyenv"
+ENV PATH $PYENV_ROOT/shims:$PYENV_ROOT/bin:$PATH
+
+RUN if [ ! -e "$PYENV_ROOT" ]; then mkdir "$PYENV_ROOT"; fi
+WORKDIR "$PYENV_ROOT"
+RUN git clone git://github.com/yyuu/pyenv.git "$PYENV_ROOT"
+
+ARG PYTHON_VERSION
+RUN pyenv install "$PYTHON_VERSION"
+RUN pyenv global "$PYTHON_VERSION"
+RUN pyenv rehash
+
+### Project Deployment ###
+ARG APP_DIR
+RUN if [ ! -e "$APP_DIR" ]; then mkdir "$APP_DIR"; fi
+WORKDIR "$APP_DIR"
+COPY requirements.txt "$APP_DIR/requirements.txt"
+RUN apt-get install -y libpq-dev libyaml-dev
 RUN pip install -r requirements.txt
-ADD . /server/
+COPY . "$APP_DIR/"
+
+# Port to expose
+ARG PORT
+EXPOSE $PORT
