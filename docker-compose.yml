@@ -18,6 +18,8 @@ services:
       service: web
     volumes:
       - .:${APP_DIR}
+      # prevents syncing back, see: http://jdlm.info/articles/2016/03/06/lessons-building-node-app-docker.html
+      - ${APP_DIR}/node_modules
     ports:
       - "8000:8000"
     environment:
