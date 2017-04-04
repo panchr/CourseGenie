@@ -25,6 +25,12 @@ RUN pyenv install "$PYTHON_VERSION"
 RUN pyenv global "$PYTHON_VERSION"
 RUN pyenv rehash
 
+### Node ###
+ARG NODE_VERSION
+RUN apt-get install -y curl
+COPY docker/install-node.sh install-node.sh
+RUN NODE_VERSION="$NODE_VERSION" /bin/bash install-node.sh
+
 ### Project Deployment ###
 ARG APP_DIR
 RUN if [ ! -e "$APP_DIR" ]; then mkdir "$APP_DIR"; fi

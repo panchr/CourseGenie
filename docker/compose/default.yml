@@ -15,6 +15,7 @@ services:
       args:
         APP_DIR: ${APP_DIR}
         PYTHON_VERSION: ${PYTHON_VERSION}
+        NODE_VERSION: ${NODE_VERSION}
         ENV: ${ENV}
         PORT: ${PORT}
     command: /bin/bash docker/services/web.sh
