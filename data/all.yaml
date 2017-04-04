@@ -8,7 +8,7 @@ degrees:
       courses:
         - MAT 103
         - MAT 104
-    - type: mutivariable calculus
+    - type: multivariable calculus
       number: 1
       courses:
         - MAT 201
@@ -42,7 +42,7 @@ majors:
     requirements:
     - type: intro MAE 
       number: 5
-      note: normally completed by end of sophomore year
+      notes: normally completed by end of sophomore year
       courses:
         - MAE 206
         - MAE 221
@@ -51,13 +51,11 @@ majors:
         - MAE 224
     - type: math 1
       number: 1
-      note: MAT 201 taken with MAT 202; MAT 203 taken with MAT 204
       courses: 
         - MAT 201
         - MAT 203
     - type: math 2
       number: 1
-      note: MAT 201 taken with MAT 202; MAT 203 taken with MAT 204
       courses: 
         - MAT 202
         - MAT 204
@@ -67,7 +65,7 @@ majors:
         - MAE 305
     - type: math elective
       number: 1
-      note: alternatives must be approved by the Departmental Representative
+      notes: alternatives must be approved by the Departmental Representative
       courses:
         - MAE 306
         - ORF 245
@@ -92,7 +90,7 @@ majors:
       "Mechanical Engineering - Dynamics Systems and Design":
         - type: MAE 335 
           number: 1
-          note: CBE 341 can replace MAE 423
+          notes: CBE 341 can replace MAE 423
           courses: 
             - MAE 335
         - type: CEE 361 or CEE 312
@@ -122,13 +120,13 @@ majors:
           # DESIGN COURSES
         - type: MAE 412
           number: 1
-          note: CEE 477 can be a substitute if you are gettng the Sustainable Energy Certificate
+          notes: CEE 477 can be a substitute if you are gettng the Sustainable Energy Certificate
           courses:
             - MAE 412
       "Mechanical Engineering - Energy Sciences":
         - type: MAE 335 or MAE 423
           number: 1
-          note: CBE 341 can replace MAE 423
+          notes: CBE 341 can replace MAE 423
           courses: 
             - MAE 335
             - MAE 423
@@ -154,14 +152,14 @@ majors:
           # DESIGN COURSES
         - type: MAE 322 OR MAE 412
           number: 1
-          note: CEE 477 can be a substitute if you are gettng the Sustainable Energy Certificate
+          notes: CEE 477 can be a substitute if you are gettng the Sustainable Energy Certificate
           courses:
             - MAE 322
             - MAE 412
       "Mechanical Engineering":
         - type: MAE 335 or MAE 423
           number: 1
-          note: CBE 341 can replace MAE 423
+          notes: CBE 341 can replace MAE 423
           courses: 
             - MAE 335
             - MAE 423
@@ -187,7 +185,7 @@ majors:
           # DESIGN COURSE
         - type: MAE 322 OR MAE 412
           number: 1
-          note: CEE 477 can be a substitute if you are gettng the Sustainable Energy Certificate
+          notes: CEE 477 can be a substitute if you are gettng the Sustainable Energy Certificate
           courses:
             - MAE 322
             - MAE 412
@@ -197,9 +195,6 @@ majors:
           courses:
             - CEE 312
             - CEE 361
-        - type: core
-          number:
-          courses:
         - type: MAE 426 or 427
           number: 1
           courses:
@@ -213,7 +208,7 @@ majors:
         # DESIGN COURSE
         - type: MAE 332 or MAE 342
           number: 1
-          note: CEE 477 can be a substitute if you are gettng the Sustainable Energy Certificate
+          notes: CEE 477 can be a substitute if you are gettng the Sustainable Energy Certificate
           courses:
             - MAE 332
             - MAE 342
@@ -304,7 +299,7 @@ majors:
           - MAE 306
           - ORF 309 # ORF 309 can be used to fulfill the math requirement or a concentration requirement, but not both
           - COS 340 
-      - type: deptelective
+      - type: dept-elective
         number: 1
         courses:
           - ELE >= 300
@@ -365,11 +360,11 @@ majors:
       # counted towards this requirement must be closely related to the student’s
       # academic program.
       # I separated the departmentals into the 5 ELE departmentals and 3 other miscellaneous departmentals 
-      - type: eledepartmental
+      - type: ele-departmental
         number: 5
         courses: 
           - ELE >= 300
-      - type: miscdepartmental
+      - type: misc-departmental
         # Courses outside electrical engineering counted towards this requirement 
         # must be closely related to the student’s academic program.
         number: 3
@@ -408,7 +403,7 @@ majors:
     # Graduate courses can be included in a concentration with departmental 
     # representative permission.
       "Circuits and Systems":
-        - type: reqconcentration
+        - type: req-concentration
           number: 1
           courses: 
             - ELE 304
@@ -422,7 +417,7 @@ majors:
             - ELE 464
             - ELE 482
       "Data and Information":
-        - type: eleconcentration
+        - type: ele-concentration
           number: 2
           courses:
             - ELE 381
@@ -431,7 +426,7 @@ majors:
             - ELE 486
             - ELE 488
             - ELE 535
-        - type: miscconcentration
+        - type: misc-concentration
           number: 1
           courses:
             - ELE 381
@@ -445,11 +440,11 @@ majors:
             - COS 424
             - COS 429
       "Computer Systems":
-        - type: reqconcentration
+        - type: req-concentration
           number: 1
           courses:
             - ELE 375
-        - type: eleconcentration
+        - type: ele-concentration
           number: 1
           courses:
             - ELE 461
@@ -457,7 +452,7 @@ majors:
             - ELE 464
             - ELE 470
             - ELE 475
-        - type: miscconcentration
+        - type: misc-concentration
           number: 1
           courses:
             - ELE 461
@@ -469,14 +464,14 @@ majors:
             - COS 320
             - COS 461
       "Robotics and Cyber-physical Systems":
-        - type: eleconcentration
+        - type: ele-concentration
           number: 2
           courses:
             - ELE 304
             - ELE 375
             - ELE 464
             - ELE 488
-        - type: miscconcentration
+        - type: misc-concentration
           number: 1
           courses:
             - ELE 304
@@ -488,7 +483,7 @@ majors:
             - MAE 345
             - MAE 433
       "Quantum Information and Applied Physics":
-        - type: reqconcentration
+        - type: req-concentration
           number: 1
           courses:
             - ELE 342
@@ -501,17 +496,17 @@ majors:
             - ELE 456
             - ELE 568
       "Security and Privacy":
-        - type: reqconcentration
+        - type: req-concentration
           number: 1
           courses:
             - ELE 432
-        - type: eleconcentration
+        - type: ele-concentration
           number: 1
           courses: 
             - ELE 375
             - ELE 464
             - ELE 470
-        - type: miscconcentration
+        - type: misc-concentration
           number: 1
           courses:
             - ELE 375
@@ -521,18 +516,18 @@ majors:
             - COS 433
             - COS 461 
       "Electronic Devices and Materials":
-        - type: reqconcentration
+        - type: req-concentration
           number: 1
           courses:
             - ELE 341
-        - type: eleconcentration
+        - type: ele-concentration
           number: 1
           courses: 
             - ELE 304
             - ELE 342
             - ELE 431
             - ELE 441
-        - type: miscconcentration
+        - type: misc-concentration
           number: 1
           courses:
             - ELE 304
@@ -544,7 +539,7 @@ majors:
             - MSE 505
             - MAE 324 
       "Biomedical Engineering":
-        - type: eleconcentration
+        - type: ele-concentration
           number: 2
           courses:
             - ELE 304
@@ -552,7 +547,7 @@ majors:
             - ELE 455
             - ELE 480
             - ELE 488
-        - type: miscconcentration
+        - type: misc-concentration
           number: 1
           courses:
             - ELE 304
@@ -565,7 +560,7 @@ majors:
             - NEU 427
             - NEU 437
       "Optics and Photonics":
-        - type: reqconcentration
+        - type: req-concentration
           number: 1
           courses:
             - ELE 351
@@ -2326,6 +2321,7 @@ certificates:
         number: 3
         courses:
           # Three electives, from three different departments outside the student's major
+          - special 
       
   - name: Applications of Computing
     short_name: Computing
@@ -2388,6 +2384,7 @@ certificates:
       - type: core
         number: 5
         courses:
+          - special
           # A total of five courses normally 300 level or higher (pass/D/fail not accepted),
           # at least two of which are not from your home department and you are not using to
           # satisfy the requirements of your major concentration.
@@ -2447,16 +2444,7 @@ certificates:
           - GEO 103
           - GEO 203
           - GEO 370
-          
-  - name: Architecture and Engineering
-    short_name: architecture
-    requirements:
-      # There's virtually no information about the requirements for this minor
-
-  - name: Biophysics
-    short_name: biophysics
-    requirements:
-      # There's virtually no information about the requirements for this minor
+      
 
   - name: Cognitive Science
     short_name: cognitive science
@@ -2573,65 +2561,71 @@ certificates:
     requirements:
       - type: 200-lvl
         number: 2
-        courses: CWR >= 200
+        courses: 
+          - CWR >= 200
       - type: 300-lvl
         number: 2
-        courses: CWR >= 300
+        courses: 
+          - CWR >= 300
 
   - name: Dance
     short_name: DAN
     requirements:
-        - type: studio-performance
-          number: 2
-          courses:
-            - DAN 319
-            - DAN 320
-            - DAN 419
-            - DAN 420
-        - type: studio-spring
-          number: 1
-          courses:
-            - DAN 307
-            - DAN 408
-            - DAN 431
-            - DAN 432
-        - type: studio-gen
-          number: 1
-          courses: DAN >= 300
-        - type: co-curricular
-          number: 2
-          courses:
-             - DAN 204
-             - DAN 207
-             - DAN 209
-             - DAN 210
-             - DAN 213
-             - DAN 214
-             - DAN 211
-             - DAN 322
-             - DAN 315
-        - type: seminar
-          number: 1
-          courses:
-             - DAN 316
-             - DAN 215
-             - DAN 321
-             - DAN 312
-             - DAN 497
-             - DAN 310
+      - type: studio-performance
+        number: 2
+        courses:
+          - DAN 319
+          - DAN 320
+          - DAN 419
+          - DAN 420
+      - type: studio-spring
+        number: 1
+        courses:
+          - DAN 307
+          - DAN 408
+          - DAN 431
+          - DAN 432
+      - type: studio-gen
+        number: 1
+        courses: 
+          - DAN >= 300
+      - type: co-curricular
+        number: 2
+        courses:
+          - DAN 204
+           - DAN 207
+           - DAN 209
+           - DAN 210
+           - DAN 213
+           - DAN 214
+           - DAN 211
+           - DAN 322
+           - DAN 315
+      - type: seminar
+        number: 1
+        courses:
+           - DAN 316
+           - DAN 215
+           - DAN 321
+           - DAN 312
+           - DAN 497
+           - DAN 310
 
   - name: East Asian Studies
     short_name: EAS
     requirements:
       - type: core
         number: 4
-        courses: CHI | JPN | KOR
+        courses: 
+          - CHI | JPN | KOR
       - type: general-200
         number: 1
-        courses: EAS >= 200
+        courses: 
+          - EAS >= 200
       - type: general-other
         number: 3
-        courses: EAS >= 100
+        courses: 
+          - EAS >= 100
 
   - name: Engineering & Management Systems
     short_name: EMS
@@ -2664,7 +2658,8 @@ certificates:
           - MAE 433
       - type: probability
         number: 1
-        courses: ORF 309
+        courses: 
+          - ORF 309
       - type: uncertainty
         number: 1
         courses:
@@ -2686,7 +2681,7 @@ certificates:
           - ELE 491
 
   - name: Engineering Biology
-    short name: engineering bio
+    short_name: engineering bio
     requirements:
       - type: biology
         number: 3
@@ -2728,7 +2723,8 @@ certificates:
     requirements:
       - type: mathematics
         number: 2
-        courses: MAT >= 300
+        courses: 
+          - MAT >= 300
       - type: physics
         number: 6
         courses:
@@ -2788,16 +2784,20 @@ certificates:
           - ENV 302
       - type: humanities
         number: 1
-        courses: ART | PHI | ARC | ENG
+        courses: 
+          - ART | PHI | ARC | ENG
       - type: social-sciences
         number: 1
-        courses: ECO | HIS | WWS | ANT | POL
+        courses: 
+          - ECO | HIS | WWS | ANT | POL
       - type: natural-sciences
         number: 1
-        courses: CHM | EEB | GEO | PHY | MOL
+        courses: 
+          - CHM | EEB | GEO | PHY | MOL
       - type: engineering
         number: 1
-        courses: CEE | CBE | MAE
+        courses: 
+          - CEE | CBE | MAE
   - name: Environmental Studies Biodiversity and Conservation
     short_name: ENV biodiversity
     requirements:
@@ -2809,7 +2809,8 @@ certificates:
           - EEB 321
       - type: env-policy
         number: 1
-        courses: WWS 350
+        courses: 
+          - WWS 350
       - type: core
         number: 3
         courses:
@@ -2848,7 +2849,8 @@ certificates:
             - EEB 321
         - type: env-policy
           number: 1
-          courses: WWS 350
+          courses: 
+            - WWS 350
         - type: core
           number: 3
           courses:
@@ -2905,7 +2907,8 @@ certificates:
             - EEB 321
         - type: env-policy
           number: 1
-          courses: WWS 350
+          courses: 
+            - WWS 350
         - type: core
           number: 3
           courses:
@@ -2953,7 +2956,8 @@ certificates:
             - EEB 321
         - type: env-policy
           number: 1
-          courses: WWS 350
+          courses: 
+            - WWS 350
         - type: core
           number: 3
           courses:
@@ -3003,7 +3007,8 @@ certificates:
             - EEB 321
         - type: env-policy
           number: 1
-          courses: WWS 350
+          courses: 
+            - WWS 350
         - type: core
           number: 3
           courses:
@@ -3114,7 +3119,8 @@ certificates:
           - HUM 219
       - type: electives
         number: 2
-        courses: ECS >= 300
+        courses: 
+          - ECS >= 300
 
   - name: Finance
     short_name: finance
@@ -3215,11 +3221,6 @@ certificates:
           - theme:culture & representation
           - theme:politics & social change
           - theme:historical perspectives
-      - type: total
-        name: Total Course Requirement
-        number: 5
-        unique: false
-    notes: maximum one PDF, independent work required (senior thesis, one junior paper)
 
   - name: Geological Engineering
     url: https://ua.princeton.edu/academic-units/program-geological-engineering
@@ -3239,7 +3240,8 @@ certificates:
       - type: thesis
         name: Senior Thesis
         number: 1
-        courses: special
+        courses:
+          - special
       - type: program
         name: General Program Courses
         number: 4
@@ -3283,7 +3285,7 @@ certificates:
       - type: elective
         name: Program Electives
         number: 4
-        course:
+        courses:
           - AMS 306
           - AMS 379
           - ANT 403
@@ -3327,11 +3329,13 @@ certificates:
       - type: summer-research
         name: Summer Research Project
         number: 1
-        courses: special
+        courses: 
+          - special
       - type: thesis
         name: Senior Thesis
         number: 1
-        courses: special
+        courses: 
+          - special
 
   - name: Hellenic Studies
     url: http://www.princeton.edu/hellenic/undergraduate/
@@ -3367,7 +3371,8 @@ certificates:
       - type: thesis
         name: Senior Thesis
         number: 1
-        courses: special
+        courses: 
+          - special
 
   - name: History and the Practice of Diplomacy
     url: http://hpd.princeton.edu/requirements
@@ -3389,7 +3394,8 @@ certificates:
       - type: internship
         name: Summer Internship
         number: 1
-        courses: special
+        courses: 
+          - special
 
   - name: Humanistic Studies
     url: https://humstudies.princeton.edu/
@@ -3405,24 +3411,22 @@ certificates:
           - HUM 219
           - HUM 233
           - HUM 234
-      - type: interdiscriplinary
-        name: Interdiscriplinary Courses
-        number: 3
-        courses:
-          - '*'
       - type: capstone
         name: Capstone Seminar
         number: 1
-        courses: special
+        courses: 
+          - special
       - type: elective
         name: Program Electives
         number: 2
-        courses: special
+        courses: 
+          - special
         notes: must be approved by advisor
       - type: thesis
         name: Senior Thesis or Interdiscriplinary Research Paper
         number: 1
-        courses: special
+        courses: 
+          - special
 
   - name: Jazz Studies
     url: http://www.princeton.edu/music/certificate-in-jazz-studi/
@@ -3470,11 +3474,13 @@ certificates:
       - type: ensemble
         name: Jazz Ensemble
         number: 1
-        courses: special
+        courses: 
+          - special
       - type: independent-work
         name: Independent Work
         number: 1
-        courses: special
+        courses: 
+          - special
 
   - name: Judaic Studies course track
     url: http://www.princeton.edu/judaic/certificate-program/
@@ -3522,7 +3528,8 @@ certificates:
       - type: thesis
         name: Senior Thesis
         number: 1
-        courses: special
+        courses: 
+          - special
 
   - name: Latin American Studies LAS track
     url: http://www.princeton.edu/plas/programs/certificate-program/
@@ -3538,7 +3545,8 @@ certificates:
       - type: thesis
         name: Senior Thesis
         number: 1
-        courses: special
+        courses: 
+          - special
 
       - type: core
         name: Core Requirements
@@ -3572,7 +3580,8 @@ certificates:
       - type: thesis
         name: Senior Thesis
         number: 1
-        courses: special
+        courses: 
+          - special
       - type: core
         name: Core Requirements
         number: 2
@@ -3609,7 +3618,8 @@ certificates:
       - type: independent-work
         name: Independent Work
         number: 1
-        courses: special
+        courses: 
+          - special
 
   - name: East Asian Studies Chinese track
     url: http://www.princeton.edu/eas/undergraduate/certificates/
@@ -3623,7 +3633,8 @@ certificates:
       - type: thesis
         name: Senior Thesis or Independent Work
         number: 1
-        courses: special
+        courses: 
+          - special
       - type: language
         name: Language
         number: 4
@@ -3647,7 +3658,8 @@ certificates:
       - type: thesis
         name: Senior Thesis or Independent Work
         number: 1
-        courses: special
+        courses: 
+          - special
       - type: language
         name: Language
         number: 4
@@ -3671,7 +3683,8 @@ certificates:
       - type: thesis
         name: Senior Thesis or Independent Work
         number: 1
-        courses: special
+        courses: 
+          - special
 
       - type: language
         name: Language
@@ -3709,7 +3722,8 @@ certificates:
       - type: independent-work
         name: Independent Work
         number: 1
-        courses: special
+        courses: 
+          - special
 
   - name: linguistics
     short_name: LIN
@@ -4009,9 +4023,9 @@ certificates:
         courses:
           - NEU 202
       - type: electives
-      - number: 4
-      - note: must come from 3 of the four areas. If you decide to concentrate you must tak NEU 201 without credit
-      - courses:
+        number: 4
+        notes: must come from 3 of the four areas. If you decide to concentrate you must tak NEU 201 without credit
+        courses:
           # molecular/cellular/disease
           - NEU 301
           - NEU 403
@@ -4632,11 +4646,13 @@ certificates:
       - type: core-upper-level
         number: 3
         notes: cannot be PDF'ed
-        courses: SPA >= 300
+        courses: 
+          - SPA >= 300
       - type: core-general
         number: 1
         notes: cannot be PDF'ed
-        courses: SPA >= 209
+        courses: 
+          - SPA >= 209
   - name: Russian language 
     short_name: RUS lang
     requirements:
@@ -4644,7 +4660,7 @@ certificates:
         number: 1
         notes: cannot be PDF'ed
         courses:
-            RUS 207
+          - RUS 207
       - type: language
         number: 2
         notes: cannot be PDF'ed
@@ -4668,7 +4684,7 @@ certificates:
         number: 1
         notes: cannot be PDF'ed
         courses:
-          RUS 207
+          - RUS 207
       - type: literature
         number: 2
         notes: cannot be PDF'ed
@@ -4709,6 +4725,8 @@ certificates:
       - type: social-sciences
         number: 2
         notes: courses should treat the Near East and be chosen from the the Departments of ANT, NES, POL, REL, SOC, and WWS.
+        courses:
+          - special
   - name: German
     short_name: GER
     requirements:

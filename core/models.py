@@ -67,7 +67,7 @@ class Track(models.Model):
 
 class Course(models.Model):
 	name = models.CharField(max_length=255)
-	course_id = models.CharField(max_length=10)
+	course_id = models.CharField(max_length=10, default="")
 	number = models.PositiveIntegerField()
 	letter = models.CharField(max_length=1, default="")
 	department = models.CharField(max_length=3)
@@ -93,11 +93,9 @@ class Course(models.Model):
 class CrossListing(models.Model):
 	course = models.ForeignKey(Course, on_delete=models.CASCADE,
 		related_name='listings')
-	course_id = models.CharField(max_length=10)
 	number = models.PositiveIntegerField()
 	letter = models.CharField(max_length=1, default="")
 	department = models.CharField(max_length=3)
-	area = models.CharField(max_length=3, default="")
 
 	def __str__(self):
 		return '{} {} {}'.format(self.department, self.number, self.letter)
@@ -166,14 +164,14 @@ class Calendar(models.Model):
 	profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='calendar')
 	major = models.ForeignKey(Major)
 	certificates = GenericRelation('Certificate', related_query_name = 'calendar')
-	sandbox = GenericRelation('Course', related_query_name = 'sandbox')
+	sandbox = models.ManyToManyField(Course)
 	
 	def __str__(self):
-		return '{} {} {}'.format(self.major, self.certificates) # not sure if this works
+		return '{} {}'.format(self.major, self.certificates) # not sure if this works
  
 
 class Area(models.Model): # distribution area
-	name = models.CharField(max_length = 50)
+	#name = models.CharField(max_length = 50)
 	short_name = models.CharField(max_length = 3)
     
 	def __str__(self):
@@ -184,20 +182,20 @@ class Department(models.Model):
 	short_name = models.CharField(max_length = 3)
 
 	def __str__(self):
-		return self.name
+		return self.short_name
 		    	
 # preference is a property of a user's profile and consistent across calendars
 class Preference(models.Model):
 	profile = models.ForeignKey(Profile, on_delete=models.CASCADE,
         related_name='preferences')
-    # bl: black listed. NOTE: not sure if these related_query_names work
+    # bl: black listed. NOTE: not sure if these related_names work
 	bl_courses = models.ManyToManyField(Course)
-	bl_area = models.ManyToManyField(Area, related_name='bl_area')
-	bl_dept = models.ManyToManyField(Department, related_name='bl_dept')
+	bl_areas = models.ManyToManyField(Area, related_name='bl_area')
+	bl_depts = models.ManyToManyField(Department, related_name='bl_dept')
     
     # wl: white listed
-	wl_area = models.ManyToManyField(Area, related_name='wl_course')
-	wl_dept = models.ManyToManyField(Department, related_name='wl_dept')
+	wl_areas = models.ManyToManyField(Area, related_name='wl_course')
+	wl_depts = models.ManyToManyField(Department, related_name='wl_dept')
 
 	def __str__(self):
 		return "preference"

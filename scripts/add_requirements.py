@@ -40,77 +40,103 @@ for deg in entry:
 			name = key.get("name", t.replace('-', ' ').title())
 			number = key["number"]
 			notes = key.get("notes", "")
+			'''
+			try:
+				#req = Requirement.objects.get(name=name, t=t, number=number, notes=notes, parent=degree)
+				req = Requirement.objects.get(object_id=requirements.id, object_ct=ContentType.objects.get_for_model(requirements))
+			except Requirement.DoesNotExist:
+				req = Requirement(name=name, t=t, number=number, notes=notes, parent=degree)
+				req.save()
+			'''
 			req = Requirement(name=name, t=t, number=number, notes=notes, parent=degree)
 			req.save()
 			# add courses via loop, req.courses.add(course)
 			for c in key["courses"]:
-				# DEPT>=NUMBER shortcut, REMOVE SPACES BEFORE PARSING
+				# DEPT>=NUMBER shortcut
 				m = re.match(r"^([A-Z]{3}) ?>= ?([0-9]{3})$", c)
 				if m:
 					dept = m.group(1)
 					n = int(m.group(2))
 					satisfied = Course.objects.filter(department=dept, number__gte=n)
-					req.courses.add(satisfied, bulk=True)
+					for s in satisfied:
+						req.courses.add(s)
+					break
 				# DEPT* shortcut
 				m = re.match(r"^([A-Z]{3})(\*)$", c)
 				if m:
 					dept = m.group(1)
 					satisfied = Course.objects.filter(department=dept)
-					req.courses.add(satisfied, bulk=True)							
-				# DEPT[AREA]>=NUMBER, REMOVE SPACES BEFORE PARSING
+					for s in satisfied:
+						req.courses.add(s)
+					break							
+				# DEPT[AREA]>=NUMBER
 				m = re.match(r"^([A-Z]{3})\[([A-Z]+)\] ?>= ?([0-9]{3})$", c)
 				if m:
 					dept = m.group(1)
 					area = m.group(2)
 					n = int(m.group(3))
 					satisfied = Course.objects.filter(department=dept, area=area, number__gte=n)
-					req.courses.add(satisfied, bulk=True)
+					for s in satisfied:
+						req.courses.add(s)
+					break
 				# * shortcut
 				m = re.match(r"^(\*)$", c)
 				if m:
 					satisfied = Course.objects.all()
-					req.courses.add(satisfied, bulk=True)		
+					for s in satisfied:
+						req.courses.add(s)	
+					break	
 				# *>=NUMBER
 				m = re.match(r"^\* ?>= ?([0-9]{3})$", c)
 				if m:
 					n = int(m.group(1))
 					satisfied = Course.objects.filter(number__gte=n)
-					req.courses.add(satisfied, bulk=True)						
+					for s in satisfied:
+						req.courses.add(s)	
+					break					
 				# special
-				m = re.match(r"^special$", c)
+				m = re.match(r"^special", c)
 				if m:
-					pass					
+					break					
 				# theme:something
 				m = re.match(r"^theme:", c)
 				if m:
-					pass			
+					break			
 				# DEPT | etc -> ignore everything except first department
 				m = re.match(r"^([A-Z]{3}) ? |", c)
 				if m:
 					dept = m.group(1)
 					satisfied = Course.objects.filter(department=dept)
-					req.courses.add(satisfied, bulk=True)
+					for s in satisfied:
+						req.courses.add(s)
+					break
 				# DEPT NUMBER | etc -> ignore everything except first department
-				m = re.match(r"^(([A-Z]{3}) ([0-9]{3})([A-Z]+) |)", c)
+				m = re.match(r"^([A-Z]{3}) ([0-9]{3})([A-Z]?) |", c)
 				if m:
 					dept = m.group(1)
 					number = m.group(2)
 					letter = m.group(3)
 					satisfied = Course.objects.filter(department=dept, number=number, letter=letter)
-					req.courses.add(satisfied, bulk=True)
-				# regular course entry					
-				dept = c[:3]
-				num = c[4:]
-				try: # in case course isn't in database
-					course = Course.objects.get(department=dept, number=num) 
-					req.courses.add(course)
-				except Course.DoesNotExist: # either actually not in database, or is a cross listing
-					try:
-						crossed = CrossListing.objects.get(department=dept, number=num)
-						req.courses.add(crossed.course)
-					except CrossListing.DoesNotExist:
-						# do something to tell us c was not added	
-						print "could not find a course"	
+					for s in satisfied:
+						req.courses.add(s)
+					break
+				# regular course entry	
+				m = re.match(r"^([A-Z]{3}) ([0-9]{3})([A-Z]?)", c)
+				if m:			
+					dept = m.group(1)
+					number = m.group(2)
+					letter = m.group(3)
+					try: # in case course isn't in database
+						course = Course.objects.get(department=dept, number=num, letter=letter) 
+						req.courses.add(course)
+					except Course.DoesNotExist: # either actually not in database, or is a cross listing
+						try:
+							crossed = CrossListing.objects.get(department=dept, number=num, letter=letter)
+							req.courses.add(crossed.course)
+						except CrossListing.DoesNotExist:
+							# do something to tell us c was not added	
+							pass	
+
 entry = raw_data["majors"]		
 for maj in entry:
 	name = maj["name"]
@@ -126,16 +152,27 @@ for maj in entry:
 		if "tracks" in maj:
 			for key in maj["tracks"]:
 				name = key
-				track = Track(major=major, name=name)
-				track.save()
+				try:
+					track = Track.objects.get(major=major, name=name)
+				except Track.DoesNotExist:
+					track = Track(major=major, name=name)
+					track.save()
 				for k in maj["tracks"][key]:
 					t = k["type"]
 					name = k.get("name", t.replace('-', ' ').title())
 					number = k["number"]
 					notes = k.get("notes", "")
+					'''
+					try:
+						#req = Requirement.objects.get(name=name, t=t, number=number, notes=notes, parent=track)
+						req = Requirement.objects.get(object_id=requirements.id, object_ct=ContentType.objects.get_for_model(requirements))
+					except Requirement.DoesNotExist:
+						req = Requirement(name=name, t=t, number=number, notes=notes, parent=track)
+						req.save()
+					'''
 					req = Requirement(name=name, t=t, number=number, notes=notes, parent=track)
 					req.save()
-					# add courses via loop, req.courses.add(course)
+					# add courses via loop
 					for c in k["courses"]:
 						# DEPT>=NUMBER shortcut, REMOVE SPACES BEFORE PARSING
 						m = re.match(r"^([A-Z]{3}) ?>= ?([0-9]{3})$", c)
@@ -145,12 +182,15 @@ for maj in entry:
 							satisfied = Course.objects.filter(department=dept, number__gte=n)
 							for s in satisfied:
 								req.courses.add(s)
+							break
 						# DEPT* shortcut
 						m = re.match(r"^([A-Z]{3})(\*)$", c)
 						if m:
 							dept = m.group(1)
 							satisfied = Course.objects.filter(department=dept)
-							req.courses.add(satisfied, bulk=True)							
+							for s in satisfied:
+								req.courses.add(s)	
+							break					
 						# DEPT[AREA]>=NUMBER, REMOVE SPACES BEFORE PARSING
 						m = re.match(r"^([A-Z]{3})\[([A-Z]+)\] ?>= ?([0-9]{3})$", c)
 						if m:
@@ -160,26 +200,30 @@ for maj in entry:
 							satisfied = Course.objects.filter(department=dept, area=area, number__gte=n)
 							for s in satisfied:
 								req.courses.add(s)
+							break
 						# * shortcut
 						m = re.match(r"^(\*)$", c)
 						if m:
 							satisfied = Course.objects.all()
-							req.courses.add(satisfied, bulk=True)		
+							for s in satisfied:
+								req.courses.add(s)
+							break	
 						# *>=NUMBER
 						m = re.match(r"^\* ?>= ?([0-9]{3})$", c)
 						if m:
 							n = int(m.group(1))
 							satisfied = Course.objects.filter(number__gte=n)
 							for s in satisfied:
-								req.courses.add(s)						
+								req.courses.add(s)	
+							break					
 						# special
-						m = re.match(r"^special$", c)
+						m = re.match(r"^special", c)
 						if m:
-							pass					
+							break					
 						# theme:something
 						m = re.match(r"^theme:", c)
 						if m:
-							pass			
+							break			
 						# DEPT | etc -> ignore everything except first department
 						m = re.match(r"^([A-Z]{3}) ? |", c)
 						if m:
@@ -187,28 +231,33 @@ for maj in entry:
 							satisfied = Course.objects.filter(department=dept)
 							for s in satisfied:
 								req.courses.add(s)
+							break
 						# DEPT NUMBER | etc -> ignore everything except first department
-						m = re.match(r"^(([A-Z]{3}) ([0-9]{3})([A-Z]+) |)", c)
+						m = re.match(r"^([A-Z]{3}) ([0-9]{3})([A-Z]?) |", c)
 						if m:
 							dept = m.group(1)
 							number = m.group(2)
 							letter = m.group(3)
 							satisfied = Course.objects.filter(department=dept, number=number, letter=letter)
 							for s in satisfied:
-								req.courses.add(s)			
-						# regular course entry
-						dept = c[:3]
-						num = c[4:]
-						try: # in case course isn't in database
-							course = Course.objects.get(department=dept, number=num) 
-							req.courses.add(course)
-						except Course.DoesNotExist: # either actually not in database, or is a cross listing
-							try:
-								crossed = CrossListing.objects.get(department=dept, number=num)
-								req.courses.add(crossed.course)
-							except CrossListing.DoesNotExist:
-								# do something to tell us c was not added
-								print "could not find a course"	
+								req.courses.add(s)
+							break			
+						# regular course entry	
+						m = re.match(r"^([A-Z]{3}) ([0-9]{3})([A-Z]?)", c)
+						if m:			
+							dept = m.group(1)
+							number = m.group(2)
+							letter = m.group(3)
+							try: # in case course isn't in database
+								course = Course.objects.get(department=dept, number=num, letter=letter) 
+								req.courses.add(course)
+							except Course.DoesNotExist: # either actually not in database, or is a cross listing
+								try:
+									crossed = CrossListing.objects.get(department=dept, number=num, letter=letter)
+									req.courses.add(crossed.course)
+								except CrossListing.DoesNotExist:
+									# do something to tell us c was not added	
+									pass	
 				
 		# add requirements that belong to the major
 		for key in maj["requirements"]:
@@ -216,6 +265,14 @@ for maj in entry:
 			name = key.get("name", t.replace('-', ' ').title())
 			number = key["number"]
 			notes = key.get("notes", "")
+			'''
+			try:
+				#req = Requirement.objects.get(name=name, t=t, number=number, notes=notes, parent=major)
+				req = Requirement.objects.get(object_id=requirements.id, object_ct=ContentType.objects.get_for_model(requirements))
+			except:
+				req = Requirement(name=name, t=t, number=number, notes=notes, parent=major)
+				req.save()
+			'''
 			req = Requirement(name=name, t=t, number=number, notes=notes, parent=major)
 			req.save()
 			# add courses via loop, req.courses.add(course)
@@ -228,13 +285,15 @@ for maj in entry:
 					satisfied = Course.objects.filter(department=dept, number__gte=n)
 					for s in satisfied:
 						req.courses.add(s)
+					break
 				# DEPT* shortcut
 				m = re.match(r"^([A-Z]{3})(\*)$", c)
 				if m:
 					dept = m.group(1)
 					satisfied = Course.objects.filter(department=dept)
 					for s in satisfied:
-						req.courses.add(s)						
+						req.courses.add(s)	
+					break					
 				# DEPT[AREA]>=NUMBER, REMOVE SPACES BEFORE PARSING
 				m = re.match(r"^([A-Z]{3})\[([A-Z]+)\] ?>= ?([0-9]{3})$", c)
 				if m:
@@ -244,27 +303,30 @@ for maj in entry:
 					satisfied = Course.objects.filter(department=dept, area=area, number__gte=n)
 					for s in satisfied:
 						req.courses.add(s)
+					break
 				# * shortcut
 				m = re.match(r"^(\*)$", c)
 				if m:
 					satisfied = Course.objects.all()
 					for s in satisfied:
-						req.courses.add(s)		
+						req.courses.add(s)	
+					break	
 				# *>=NUMBER
 				m = re.match(r"^\* ?>= ?([0-9]{3})$", c)
 				if m:
 					n = int(m.group(1))
 					satisfied = Course.objects.filter(number__gte=n)
 					for s in satisfied:
-						req.courses.add(s)					
+						req.courses.add(s)	
+					break				
 				# special
-				m = re.match(r"^special$", c)
+				m = re.match(r"^special", c)
 				if m:
-					pass					
+					break					
 				# theme:something
 				m = re.match(r"^theme:", c)
 				if m:
-					pass			
+					break			
 				# DEPT | etc -> ignore everything except first department
 				m = re.match(r"^([A-Z]{3}) ? |", c)
 				if m:
@@ -272,28 +334,33 @@ for maj in entry:
 					satisfied = Course.objects.filter(department=dept)
 					for s in satisfied:
 						req.courses.add(s)
+					break
 				# DEPT NUMBER | etc -> ignore everything except first department
-				m = re.match(r"^(([A-Z]{3}) ([0-9]{3})([A-Z]+) |)", c)
+				m = re.match(r"^([A-Z]{3}) ([0-9]{3})([A-Z]?) |", c)
 				if m:
 					dept = m.group(1)
 					number = m.group(2)
 					letter = m.group(3)
 					satisfied = Course.objects.filter(department=dept, number=number, letter=letter)
 					for s in satisfied:
-						req.courses.add(s)			
-				# regular course entry					
-				dept = c[:3]
-				num = c[4:]
-				try: # in case course isn't in database
-					course = Course.objects.get(department=dept, number=num) 
-					req.courses.add(course)
-				except Course.DoesNotExist: # either actually not in database, or is a cross listing
-					try:
-						crossed = CrossListing.objects.get(department=dept, number=num)
-						req.courses.add(crossed.course)
-					except CrossListing.DoesNotExist:
-						# do something to tell us c was not added	
-						print "could not find a course"				
+						req.courses.add(s)	
+					break		
+				# regular course entry	
+				m = re.match(r"^([A-Z]{3}) ([0-9]{3})([A-Z]?)", c)
+				if m:			
+					dept = m.group(1)
+					number = m.group(2)
+					letter = m.group(3)
+					try: # in case course isn't in database
+						course = Course.objects.get(department=dept, number=num, letter=letter) 
+						req.courses.add(course)
+					except Course.DoesNotExist: # either actually not in database, or is a cross listing
+						try:
+							crossed = CrossListing.objects.get(department=dept, number=num, letter=letter)
+							req.courses.add(crossed.course)
+						except CrossListing.DoesNotExist:
+							# do something to tell us c was not added	
+							pass			
 
 entry = raw_data["certificates"]
 for cert in entry:
@@ -312,9 +379,18 @@ for cert in entry:
 				name = key.get("name", t.replace('-', ' ').title())
 				number = key["number"]
 				notes = key.get("notes", "")
+				'''
+				try:
+					#req = Requirement.objects.get(name=name, t=t, number=number, notes=notes, parent=certificate)
+					req = Requirement.objects.get(object_id=requirements.id, object_ct=ContentType.objects.get_for_model(requirements))
+				except Requirement.DoesNotExist:
+					req = Requirement(name=name, t=t, number=number, notes=notes, parent=certificate)
+					req.save()
+				'''
 				req = Requirement(name=name, t=t, number=number, notes=notes, parent=certificate)
 				req.save()
 				# add courses via loop, req.courses.add(course)
+				#print name #for debugging purposes
 				for c in key["courses"]:
 					# DEPT>=NUMBER shortcut, REMOVE SPACES BEFORE PARSING
 					m = re.match(r"^([A-Z]{3}) ?>= ?([0-9]{3})$", c)
@@ -359,7 +435,7 @@ for cert in entry:
 							req.courses.add(s)	
 						break				
 					# special
-					m = re.match(r"^special$", c)
+					m = re.match(r"^special", c)
 					if m:
 						break					
 					# theme:something
@@ -375,7 +451,7 @@ for cert in entry:
 							req.courses.add(s)
 						break
 					# DEPT NUMBER | etc -> ignore everything except first department
-					m = re.match(r"^(([A-Z]{3}) ([0-9]{3})([A-Z]+) |)", c)
+					m = re.match(r"^([A-Z]{3}) ([0-9]{3})([A-Z]?) |", c)
 					if m:
 						dept = m.group(1)
 						number = m.group(2)
@@ -384,18 +460,21 @@ for cert in entry:
 						for s in satisfied:
 							req.courses.add(s)	
 						break			
-					# regular course entry				
-					dept = c[:3]
-					num = c[4:]
-					try: # in case course isn't in database
-						course = Course.objects.get(department=dept, number=num) 
-						req.courses.add(course)
-					except Course.DoesNotExist: # either actually not in database, or is a cross listing
-						try:
-							crossed = CrossListing.objects.get(department=dept, number=num)
-							req.courses.add(crossed.course)
-						except CrossListing.DoesNotExist:
-							# do something to tell us c was not added	
-							print "could not find a course"	
+					# regular course entry	
+					m = re.match(r"^([A-Z]{3}) ([0-9]{3})([A-Z]?)", c)
+					if m:			
+						dept = m.group(1)
+						number = m.group(2)
+						letter = m.group(3)
+						try: # in case course isn't in database
+							course = Course.objects.get(department=dept, number=num, letter=letter) 
+							req.courses.add(course)
+						except Course.DoesNotExist: # either actually not in database, or is a cross listing
+							try:
+								crossed = CrossListing.objects.get(department=dept, number=num, letter=letter)
+								req.courses.add(crossed.course)
+							except CrossListing.DoesNotExist:
+								# do something to tell us c was not added	
+								pass
 
 			
