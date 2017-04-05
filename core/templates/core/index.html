@@ -1,10 +1,8 @@
-<!DOCTYPE HTML>
-<html>
-	<body class="homepage">
-			
-		{% load static %}
-		{% include 'core/base.html' %}
+{% extends 'core/base.html' %}
+{% load static %}
 
+{% block body %}
+	<body class="homepage">
 		<!-- Banner -->
 			<div id="banner">
 				<div class="container">
@@ -93,28 +91,5 @@
 					</section>
 				</div>
 			</div>
-
-		<!-- Tweet -->
-
-		<!-- Contact -->
-
-
-		<!-- Footer -->
-			<section id="footer">
-				<div class="container">
-
-					<!-- Lists -->
-
-					<!-- Social -->
-
-
-					<!-- Copyright -->
-						<div class="copyright">
-							&copy; 2017 Princeton University. All Rights Reserved.
-						</div>
-
-				</div>
-			</section>
-
 	</body>
-</html>
+{% endblock %}

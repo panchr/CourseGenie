@@ -1,11 +1,8 @@
-<!DOCTYPE HTML>
-<html>
-	{% load static %}
-	{% include 'core/base.html' %}
-	
-	<body class="left-sidebar">
+{% extends 'core/base.html' %}
+{% load static %}
 
-		<!-- Header -->
+{% block body %}
+	<body class="left-sidebar">
 		<!-- Main -->
 		<div id="transcript">
 			<div class="container">
@@ -13,7 +10,7 @@
 					<header><h2>Past Courses</h2>
 				<div class="row 50%">
 					<div class="12u">
-					<span class="byline">Click <a href="{{ transcript_api_url }}">here</a> to upload your transcript, or simply enter your courses below</span>
+					<span class="byline">Click <a href="{{ transcript_api_url }}" class="button">here</a> to upload your transcript, or simply enter your courses below</span>
 				</div></div></header>
 			</section>
 			</div>
@@ -27,11 +24,11 @@
 						<div class="row 50%">
 							<div class="3u">
 								<h1>Department</h1>
-								<input name="text" placeholder="e.g. COS" type="text" class="text" />
+								<input name="text" placeholder="COS" type="text" class="text" />
 							</div>
 							<div class="3u">
 								<h1>Number</h1>
-								<input name="number" placeholder="e.g. 333" type="number" class="number" />
+								<input name="number" placeholder="333" type="number" class="number" />
 							</div>
 							<div class="1u">
 								<h2>Number</h2>
@@ -42,6 +39,7 @@
 						<div class="row 50%">
 							<div class="12u">
 								<h1>Courses Entered</h1>
+								<div class="course-area" id="added-courses"></div>
 								<div class="course-area">None yet!</div>
 							</div>
 						</div>
@@ -55,9 +53,5 @@
 					</form>
 				</div>
 			</div>
-
-		<!-- Footer -->
-
-
 	</body>
-</html>
+{% endblock %}
