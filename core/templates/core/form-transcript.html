@@ -10,7 +10,7 @@
 					<header><h2>Past Courses</h2>
 				<div class="row 50%">
 					<div class="12u">
-					<span class="byline">Click <a href="{{ transcript_api_url }}" class="button">here</a> to upload your transcript, or simply enter your courses below</span>
+					<span class="byline">Click <a href="{{ transcript_service_url }}" class="button">here</a> to upload your transcript, or simply enter your courses below</span>
 				</div></div></header>
 			</section>
 			</div>
@@ -53,5 +53,10 @@
 					</form>
 				</div>
 			</div>
+
+		<script>
+			var transcript_url = "{{ transcript_url }}";
+		</script>
+		<script src="{% static 'core/js/bundle/form-transcript.js' %}"></script>
 	</body>
 {% endblock %}

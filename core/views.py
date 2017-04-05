@@ -15,15 +15,26 @@ class IndexView(TemplateView):
 	template_name = 'core/index.html'
 
 class DashboardView(LoginRequiredMixin, TemplateView):
-	template_name = 'core/form-transcript.html'
 
+	def get_template_names(self):
+		user = self.request.user
+		profile = Profile.objects.get(user=user)
+		records = Record.objects.filter(profile=profile)
+		if records.count() == 0:
+			template_name = 'core/form-transcript.html'
+		else:
+			template_name = 'core/dashboard.html'
+
+		return [template_name]
+		
 	def get_context_data(self, **kwargs):
 		context = super(DashboardView, self).get_context_data(**kwargs)
 		service_url = '{base}?redirect={redirect}'.format(
 			base=settings.TRANSCRIPT_API_URL,
 			redirect=self.request.build_absolute_uri(
-				reverse('core:transcript-upload')))
-		context['transcript_api_url'] = service_url
+				reverse('core:dashboard')))
+		context['transcript_service_url'] = service_url
+		context['transcript_url'] = '{}/transcript/?ticket='.format(settings.TRANSCRIPT_API_URL)
 		return context
 
 class TranscriptView(LoginRequiredMixin, TemplateView):
@@ -43,6 +54,8 @@ class TranscriptView(LoginRequiredMixin, TemplateView):
 		request = urllib2.Request(url, headers={'User-Agent': 'CourseGenie/0.1'})
 		response = urllib2.urlopen(request)
 		transcript_data = json.load(response)
+
+		# store user's transcript data
 
 		context['transcript'] = transcript_data
 		return context

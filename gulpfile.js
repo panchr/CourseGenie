@@ -21,7 +21,7 @@ var gulp = require('gulp'),
 var ENVIRONMENT = process.env.ENV || 'development',
 	DEBUG = (ENVIRONMENT == 'development' || process.env.DEBUG),
 	ARGV = require('minimist')(process.argv.slice(2)),
-	CONFIG = {'shared': 'core/static/core/js/external.js'};
+	CONFIG = {'shared': 'core/static/core/js'};
 
 /* Promise-based equivalents of fs functions. */
 var fs_lstat = Promise.denodeify(fs.lstat),

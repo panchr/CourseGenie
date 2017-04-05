@@ -1,6 +1,8 @@
 
 # Created by https://www.gitignore.io/api/python,sublimetext,macos,windows,django,node
 
+*.js
+
 ### Django ###
 *.log
 *.pot

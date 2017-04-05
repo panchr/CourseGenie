@@ -3,7 +3,9 @@
   "version": "0.1.0",
   "description": "Customized course recommendations based on concentration.",
   "dependencies": {
+    "jquery": "^3.2.1",
     "moment": "^2.14.1",
+    "query-string": "^4.3.2",
     "react": "^0.14.8",
     "react-dom": "^0.14.8"
   },
