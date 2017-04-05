@@ -13,6 +13,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.core.validators import MaxValueValidator, MinValueValidator
 
 
 class Degree(models.Model):
@@ -26,7 +27,7 @@ class Degree(models.Model):
 class Major(models.Model):
 	name = models.CharField(max_length=255)
 	short_name = models.CharField(max_length=15)
-	degree = models.ForeignKey(Degree, on_delete=models.CASCADE)
+	degree = models.ForeignKey(Degree, on_delete=models.CASCADE, related_name='majors')
 	requirements = GenericRelation('Requirement', related_query_name='major')
 
 	def all_requirements(self):
@@ -52,7 +53,7 @@ class Certificate(models.Model):
 		return self.short_name
 
 class Track(models.Model):
-	major = models.ForeignKey(Major, on_delete=models.CASCADE)
+	major = models.ForeignKey(Major, on_delete=models.CASCADE, related_name='tracks')
 	name = models.CharField(max_length=255)
 	short_name = models.CharField(max_length=15)
 	requirements = GenericRelation('Requirement', related_query_name='track')
@@ -68,7 +69,7 @@ class Track(models.Model):
 class Course(models.Model):
 	name = models.CharField(max_length=255)
 	course_id = models.CharField(max_length=10, default="")
-	number = models.PositiveIntegerField()
+	number = models.PositiveSmallIntegerField()
 	letter = models.CharField(max_length=1, default="")
 	department = models.CharField(max_length=3)
 	area = models.CharField(max_length=3, default="")
@@ -93,7 +94,7 @@ class Course(models.Model):
 class CrossListing(models.Model):
 	course = models.ForeignKey(Course, on_delete=models.CASCADE,
 		related_name='listings')
-	number = models.PositiveIntegerField()
+	number = models.PositiveSmallIntegerField()
 	letter = models.CharField(max_length=1, default="")
 	department = models.CharField(max_length=3)
 
@@ -106,7 +107,7 @@ class CrossListing(models.Model):
 class Requirement(models.Model):
 	name = models.CharField(max_length=255)
 	t = models.CharField(max_length=50) # requirement type
-	number = models.PositiveIntegerField(default=0) # number required
+	number = models.PositiveSmallIntegerField(default=0) # number required
 	notes = models.CharField(max_length=255, default='')
 
 	# Courses can be listed in many different requirements
@@ -135,7 +136,7 @@ class Requirement(models.Model):
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete = models.CASCADE) # Django User model
-    year = models.IntegerField() # graduation year
+    year = models.PositiveSmallIntegerField(validators=[MinValueValidator(2015)]) # graduation year
     
     def __str__(self):
         return self.user.username
@@ -147,12 +148,8 @@ def create_user_profile(sender, instance, created, **kwargs):
     if created: 
         Profile.objects.create(user=instance, year=0)
 
-# not completed
-#class Satisfied_reqs(models.Model):
-#	profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='satisfied_reqs')
-
 class Record(models.Model):
-	profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='record')
+	profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='records')
 	course = models.ForeignKey(Course)
 	grade = models.CharField(max_length = 3)
 	semester = models.CharField(max_length = 25)
@@ -161,14 +158,27 @@ class Record(models.Model):
 		return '{} {} {}'.format(self.semester, self.course, self.grade)
 
 class Calendar(models.Model):
-	profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='calendar')
+	profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='calendars')
 	major = models.ForeignKey(Major)
 	certificates = GenericRelation('Certificate', related_query_name = 'calendar')
 	sandbox = models.ManyToManyField(Course)
+	last_accessed = models.DateTimeField(auto_now=True)
+
+	class Meta: # most recently accessed is returned first
+		ordering = ['-last_accessed']
 	
 	def __str__(self):
 		return '{} {}'.format(self.major, self.certificates) # not sure if this works
  
+ # a calendar has progresses corresponding to all requirements
+class Progress(models.Model):
+	calendar = models.ForeignKey(Calendar, on_delete=models.CASCADE, related_name='progress')
+	courses_taken = models.ManyToManyField(Course)
+	number_taken = models.PositiveSmallIntegerField(default=0)
+	completed = models.BooleanField(default=False)
+	requirement = models.ForeignKey(Requirement, related_name='progress') # check if this is what I intend; shouldn't change parent of requirement
+	# should be able to access degree/major/certificate via requirement
+
 
 class Area(models.Model): # distribution area
 	#name = models.CharField(max_length = 50)
