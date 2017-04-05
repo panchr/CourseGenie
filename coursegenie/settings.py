@@ -129,6 +129,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
 STATIC_URL = '/static/'
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+)
 
 # Installed Application Configuration
 CAS_SERVER_URL = os.environ.get('CAS_URL')
+TRANSCRIPT_API_URL = os.environ.get('TRANSCRIPT_API_URL')

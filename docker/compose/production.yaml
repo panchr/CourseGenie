@@ -1,0 +1,32 @@
+# docker/compose/production.yml
+# Author: Rushy Panchal
+# Date: April 4th, 2017
+# Description: Production Docker Compose configuration.
+
+version: '2.1'
+services:
+  db:
+    extends:
+      file: default.yml
+      service: db
+
+  # Primary web server
+  web:
+    extends:
+      file: default.yml
+      service: web
+    build:
+      args:
+        PORT: 80
+        ENV: production
+    ports:
+      - "80:80"
+    environment:
+      - ENV=production
+      - PORT=80
+      - DJANGO_HOST=transcriptapi.tigerapps.org
+      - CLOUDFLARE=1
+    links:
+      - db
+    depends_on:
+      - db
