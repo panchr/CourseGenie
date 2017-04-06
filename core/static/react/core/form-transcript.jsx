@@ -6,7 +6,8 @@ var React = require('react'),
 
 var CourseDisplay = require('core/components/CourseDisplay.jsx'),
 	ListView = require('core/components/ListView.jsx'),
-	ErrorAlert = require('core/components/ErrorAlert.jsx');
+	ErrorAlert = require('core/components/ErrorAlert.jsx'),
+	Icon = require('core/components/Icon.jsx');
 
 function main() {
 	console.log('main called');
@@ -27,28 +28,24 @@ class CourseForm extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			transcript_data: null,
-			transcript_courses: new Object(),
-			added_courses: new Array(),
+			courses: new Array(),
 			errorMsg: '',
 			requestErrorMsg: '',
 			};
 		this.elems = {};
-
-		this.allCourses = new Array();
+		this.renderCourse = this.renderCourse.bind(this);
+		this.removeCourse = this.removeCourse.bind(this);
 		}
 
 	componentWillMount() {
 		if (this.props.transcript_url) {
 			this.transcriptRequest = jQuery.get(this.props.transcript_url)
 				.done((data) => {
-					this.setState({transcript_courses: data.transcript.courses,
-						transcript_data: data});
-					this.allCourses = [];
-					Object.keys(data.transcript.courses).map((term) => {
-						this.allCourses = this.allCourses.concat(
-							data.transcript.courses[term]);
-						});
+					var courses = [];
+					for (var term in data.transcript.courses) {
+						courses = courses.concat(data.transcript.courses[term]);
+						}
+					this.setState({courses: courses});
 					})
 				.fail(() => {
 					// need generic request error handling
@@ -67,12 +64,19 @@ class CourseForm extends React.Component {
 
 	renderCourse(c) {
 		var split = c.split(" ");
-		return (<CourseDisplay department={split[0]} number={split[1]} />);
+		return (<div>
+			<CourseDisplay department={split[0]} number={split[1]} />
+			&nbsp;
+			<Icon i='ios-close-outline' onClick={() => {this.removeCourse(c)}}
+				style={{color: 'red'}} />
+			</div>);
+		}
+
+	removeCourse(c) {
+		this.setState({courses: this.state.courses.filter((x) => x != c)});
 		}
 
 	render() {
-		var courses = this.state.transcript_courses;
-
 		return (<div>
 				<ErrorAlert msg={this.state.errorMsg} />
 				<ErrorAlert msg={this.state.requestErrorMsg} />
@@ -105,7 +109,7 @@ class CourseForm extends React.Component {
 									if (department == '' || number == '') {
 										this.setState({errorMsg: 'Cannot input a blank course'});
 										}
-									else if (this.allCourses.indexOf(c) != -1) {
+									else if (this.state.courses.indexOf(c) != -1) {
 										this.setState({errorMsg: c + ' is already added!'});
 										}
 									else if (! /^\w{3}$/.test(department)) {
@@ -118,9 +122,8 @@ class CourseForm extends React.Component {
 										this.setState({
 											// need to use concat instead of push to return a new
 											// array, which signals an update.
-											added_courses: this.state.added_courses.concat(c)
+											courses: this.state.courses.concat(c)
 											});
-										this.allCourses.push(c);
 										}
 									}}>Add</a>
 							</div>
@@ -130,16 +133,9 @@ class CourseForm extends React.Component {
 							<div className="12u">
 								<h1>Courses Entered</h1>
 								<div className='center'> 
-									<ListView t={this.renderCourse}
-										data={this.state.added_courses} />
-									{Object.keys(courses).map((term) => {
-									return (<div key={'term-'+Math.random()}>
-										<h3>{term}</h3>
-										<ListView blankText='None yet!' t={this.renderCourse}
-											data={courses[term]} />
-										</div>);
-										})}
-									</div>
+									<ListView t={this.renderCourse} data={this.state.courses}
+										blankText='None yet!' />
+								</div>
 							</div>
 						</div>
 					</section>
