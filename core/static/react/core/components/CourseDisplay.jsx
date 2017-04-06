@@ -1,19 +1,14 @@
+/*
+* core/components/CourseDisplay.jsx
+* Author: Rushy Panchal
+* Date: April 5th, 2017
+* Description: Provides a list of rendered data.
+*/
 
 var React = require('react');
 
-class CourseDisplay extends React.Component {
-	/*
-	* Required Props
-	* 	String department
-	* 	String number
-	*/
-	constructor(props) {
-		super(props);
-		}
-
-	render() {
-		return (<span>{this.props.department} {this.props.number}</span>);
-		}
+function CourseDisplay(props) {
+	return (<span>{props.department} {props.number}</span>);
 	}
 
 CourseDisplay.propTypes = {

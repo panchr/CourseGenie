@@ -1,0 +1,29 @@
+.title {
+	padding-bottom: 1em;
+	}
+
+.list-view .list-item {
+	display: block;
+	}
+
+.center {
+	text-align: center;
+	}
+
+.alert {
+	padding: 15px;
+  margin-bottom: 20px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  padding-bottom: 0;
+	}
+
+.danger {
+  color: #a94442;
+  background-color: #f2dede;
+  border-color: #ebccd1;
+	}
+
+.button.fit {
+	padding: 0.5em 2em 0.5em 2em;
+	}
