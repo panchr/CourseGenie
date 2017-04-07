@@ -50,10 +50,11 @@ for deg in entry:
 			'''
 			req = Requirement(name=name, t=t, number=number, notes=notes, parent=degree)
 			req.save()
+			dn = re.compile(r"^([A-Z]{3}) ?>= ?([0-9]{3})$") # COMPILE FIRST
 			# add courses via loop, req.courses.add(course)
 			for c in key["courses"]:
 				# DEPT>=NUMBER shortcut
-				m = re.match(r"^([A-Z]{3}) ?>= ?([0-9]{3})$", c)
+				m = dn.match(c)
 				if m:
 					dept = m.group(1)
 					n = int(m.group(2))
@@ -79,7 +80,7 @@ for deg in entry:
 					for s in satisfied:
 						req.courses.add(s)
 					break
-				# * shortcut
+				# * shortcut # possibly with optional quote marks
 				m = re.match(r"^(\*)$", c)
 				if m:
 					satisfied = Course.objects.all()
