@@ -25,7 +25,7 @@ function main() {
 	else {
 		var url = '';
 		}
-	ReactDOM.render(<CourseForm transcript_url={url} />,
+	ReactDOM.render(<CourseForm transcript_url={url} action={form_action} />,
 		document.getElementById('course-form'));
 	}
 
@@ -120,7 +120,13 @@ class CourseForm extends React.Component {
 				},
 			graduation_year: this.elems.year_input.value
 			};
-		event.preventDefault();
+
+		if (data.user.first_name == '' || data.user.last_name == '') {
+			event.preventDefault(); // prevent form submission
+			this.setState({errorMsg: 'A first and last name must be provided!'});
+			}
+
+		this.elems.data_out.value = JSON.stringify(data);
 		}
 
 	render() {
@@ -128,8 +134,13 @@ class CourseForm extends React.Component {
 				<ErrorAlert msg={this.state.errorMsg} />
 				<ErrorAlert msg={this.state.requestErrorMsg} />
 				<div className="container">
-					<form method="post" action="" onSubmit={this.submitForm}>
+					<form method="post" action={this.props.action}
+						onSubmit={this.submitForm}>
 						<section><section>
+						<input type="hidden" name="data"
+							ref={(e) => this.elems.data_out = e} />
+						<input type="hidden" name="csrfmiddlewaretoken"
+							value={window._csrf_token}/>
 						<div className="row 50%">
 							<div className="3u">
 								<h1>Department</h1>

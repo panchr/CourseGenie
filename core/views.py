@@ -28,10 +28,14 @@ class DashboardView(LoginRequiredMixin, TemplateView):
 		
 	def get_context_data(self, **kwargs):
 		context = super(DashboardView, self).get_context_data(**kwargs)
+		dashboard_url = self.request.build_absolute_uri(reverse('core:dashboard'))
 		service_url = '{base}?redirect={redirect}'.format(
-			base=settings.TRANSCRIPT_API_URL,
-			redirect=self.request.build_absolute_uri(
-				reverse('core:dashboard')))
+			base=settings.TRANSCRIPT_API_URL, redirect=dashboard_url)
 		context['transcript_service_url'] = service_url
 		context['transcript_url'] = '{}/transcript/?ticket='.format(settings.TRANSCRIPT_API_URL)
+		context['form_action'] = dashboard_url
 		return context
+
+	def post(self, request):
+		data = request.POST['data']
+		return render(request, 'core/data.html', {'data': data})

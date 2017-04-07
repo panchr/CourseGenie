@@ -24,7 +24,16 @@
 		</noscript>
 		<!--[if lte IE 8]><link rel="stylesheet" href="{% static 'core/css/ie/v8.css' %}" /><![endif]-->
 		<link rel="stylesheet" href="{% static 'core/css/custom.css' %}" />
+		<script type="text/javascript">
+			/* This ensures that the CSRF cookie is set for pages that require it.
+			The cookie is ignored if requests are safe, so there is no harm in
+			including it by default.
+
+			NOTE: This must run *before* the React code. */
+			window._csrf_token = "{{ csrf_token }}";
+		</script>
 	</head>
+
 
 	{% block body %}{% endblock %}
 	<section id="footer">
