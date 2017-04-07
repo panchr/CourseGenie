@@ -1,3 +1,9 @@
+/*
+* core/form-transcript.jsx
+* Author: Rushy Panchal
+* Date: April 6th, 2017
+* Description: Main user input form.
+*/
 
 var React = require('react'),
 	ReactDOM = require('react-dom'),
@@ -10,7 +16,6 @@ var CourseDisplay = require('core/components/CourseDisplay.jsx'),
 	Icon = require('core/components/Icon.jsx');
 
 function main() {
-	console.log('main called');
 	var queryParameters = queryString.parse(window.location.search);
 	var ticket = queryParameters.ticket;
 
@@ -29,12 +34,15 @@ class CourseForm extends React.Component {
 		super(props);
 		this.state = {
 			courses: new Array(),
+			user: new Object(),
 			errorMsg: '',
 			requestErrorMsg: '',
 			};
 		this.elems = {};
 		this.renderCourse = this.renderCourse.bind(this);
 		this.removeCourse = this.removeCourse.bind(this);
+		this.addCourse = this.addCourse.bind(this);
+		this.submitForm = this.submitForm.bind(this);
 		}
 
 	componentWillMount() {
@@ -45,15 +53,14 @@ class CourseForm extends React.Component {
 					for (var term in data.transcript.courses) {
 						courses = courses.concat(data.transcript.courses[term]);
 						}
-					this.setState({courses: courses});
+					this.setState({courses: courses, user: data.user});
+					this.elems.first_name_input.value = data.user.first_name;
+					this.elems.last_name_input.value = data.user.last_name;
 					})
 				.fail(() => {
 					// need generic request error handling
 					// - see Quizzera's utils.handleAPIError
 					this.setState({requestErrorMsg: 'transcript request failed - blame Kathy'});
-					})
-				.always(() => {
-					// probably mark off that request has finished
 					});
 			}
 		}
@@ -68,7 +75,7 @@ class CourseForm extends React.Component {
 			<CourseDisplay department={split[0]} number={split[1]} />
 			&nbsp;
 			<Icon i='ios-close-outline' onClick={() => {this.removeCourse(c)}}
-				style={{color: 'red'}} />
+				style={{color: 'red'}} className='btn' />
 			</div>);
 		}
 
@@ -76,12 +83,52 @@ class CourseForm extends React.Component {
 		this.setState({courses: this.state.courses.filter((x) => x != c)});
 		}
 
+	addCourse(c) {
+		var department = this.elems.department_input.value,
+			number = this.elems.number_input.value,
+			c = (department + " " + number).toUpperCase();
+
+		this.setState({errorMsg: ''});
+
+		if (department == '' || number == '') {
+			this.setState({errorMsg: 'Cannot input a blank course'});
+			}
+		else if (this.state.courses.indexOf(c) != -1) {
+			this.setState({errorMsg: c + ' is already added!'});
+			}
+		else if (! /^\w{3}$/.test(department)) {
+			this.setState({errorMsg: 'The department must be 3 letters.'});
+			}
+		else if (! /^\d{3}\w?$/.test(number)) {
+			this.setState({errorMsg: 'The course number must be a number, optionally followed by a letter.'});
+			}
+		else {
+			this.setState({
+				// need to use concat instead of push to return a new
+				// array, which signals an update.
+				courses: this.state.courses.concat(c)
+				});
+			}
+		}
+
+	submitForm(event) {
+		var data = {
+			courses: this.state.courses,
+			user: {
+				first_name: this.elems.first_name_input.value,
+				last_name: this.elems.last_name_input.value,
+				},
+			graduation_year: this.elems.year_input.value
+			};
+		event.preventDefault();
+		}
+
 	render() {
 		return (<div>
 				<ErrorAlert msg={this.state.errorMsg} />
 				<ErrorAlert msg={this.state.requestErrorMsg} />
 				<div className="container">
-					<form method="post" action="#">
+					<form method="post" action="" onSubmit={this.submitForm}>
 						<section><section>
 						<div className="row 50%">
 							<div className="3u">
@@ -100,32 +147,8 @@ class CourseForm extends React.Component {
 								{/* refs are required (as callbacks) to get input */}
 							</div>
 							<div className="3u">
-								<a className="button button-add fit"
-								onClick={() => {
-									var department = this.elems.department_input.value,
-										number = this.elems.number_input.value;
-									var c = (department + " " + number).toUpperCase();
-									this.setState({errorMsg: ''});
-									if (department == '' || number == '') {
-										this.setState({errorMsg: 'Cannot input a blank course'});
-										}
-									else if (this.state.courses.indexOf(c) != -1) {
-										this.setState({errorMsg: c + ' is already added!'});
-										}
-									else if (! /^\w{3}$/.test(department)) {
-										this.setState({errorMsg: 'The department must be 3 letters.'});
-										}
-									else if (! /^\d{3}\w?$/.test(number)) {
-										this.setState({errorMsg: 'The course number must be a number, optionally followed by a letter.'});
-										}
-									else {
-										this.setState({
-											// need to use concat instead of push to return a new
-											// array, which signals an update.
-											courses: this.state.courses.concat(c)
-											});
-										}
-									}}>Add</a>
+								<a className="button button-add fit btn"
+									onClick={this.addCourse}>Add</a>
 							</div>
 						</div>
 					</section>
@@ -138,11 +161,33 @@ class CourseForm extends React.Component {
 								</div>
 							</div>
 						</div>
+					<hr/>
+					<div className="row 50%">
+						<div className="6u"><h1>First Name</h1></div>
+						<div className="6u$"><h1>Last Name</h1></div>
+						<div className="6u">
+							<input type="text"
+							ref={(e) => this.elems.first_name_input = e} />
+						</div>
+						<div className="6u">
+							<input type="text"
+								ref={(e) => this.elems.last_name_input = e} />
+						</div>
+					</div>
+					<div className="row 50%">
+						<div className="6u$">
+							<h1>Graduation Year</h1>
+						</div>
+						<div className="6u">
+							<input defaultValue={(new Date()).getFullYear() + 3}
+								type="number" className="number"
+								ref={(e) => this.elems.year_input = e} />
+						</div>
+					</div>
 					</section>
 						<div className="row 50%">
-							<div className="12u">
-								<a href="./form-name.html" className="button">Back</a>
-								<a href="./form-interests.html" className="button">Next</a>
+							<div className="12u center">
+								<input type="submit" className="button btn" value="Get Started"/>
 							</div>
 						</div>
 					</form>

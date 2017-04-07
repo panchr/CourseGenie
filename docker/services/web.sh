@@ -5,4 +5,4 @@
 # Description: Run TranscriptAPI web service.
 
 cd "$APP_DIR"
-docker/wait-for-it.sh db:5432 -- python manage.py runserver "0.0.0.0:$PORT"
+docker/wait-for-it.sh -t 0 --strict db:5432 -- python manage.py runserver "0.0.0.0:$PORT"

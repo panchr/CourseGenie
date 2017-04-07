@@ -15,7 +15,6 @@ class IndexView(TemplateView):
 	template_name = 'core/index.html'
 
 class DashboardView(LoginRequiredMixin, TemplateView):
-
 	def get_template_names(self):
 		user = self.request.user
 		profile = Profile.objects.get(user=user)

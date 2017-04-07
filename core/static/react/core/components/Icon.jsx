@@ -24,6 +24,7 @@ function Icon(props) {
 		className = 'ionicons ion-' + iconName;
 	if (fontSize) style.fontSize = fontSize;
 	if (props.style) Object.assign(style, props.style);
+	if (props.className) className += ' ' + props.className;
 
 	return (<i {...props} className={className} style={style}></i>);
 	}
