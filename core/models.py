@@ -151,16 +151,16 @@ def create_user_profile(sender, instance, created, **kwargs):
 class Record(models.Model):
 	profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='records')
 	course = models.ForeignKey(Course)
-	grade = models.CharField(max_length = 3)
-	semester = models.CharField(max_length = 25)
+	semester = models.CharField(max_length = 25, default="")
 	
 	def __str__(self):
 		return '{} {} {}'.format(self.semester, self.course, self.grade)
 
 class Calendar(models.Model):
 	profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='calendars')
+	degree = models.ForeignKey(Degree)
 	major = models.ForeignKey(Major)
-	certificates = GenericRelation('Certificate', related_query_name = 'calendar')
+	certificates = models.ManyToManyField(Certificate)
 	sandbox = models.ManyToManyField(Course)
 	last_accessed = models.DateTimeField(auto_now=True)
 
@@ -170,14 +170,14 @@ class Calendar(models.Model):
 	def __str__(self):
 		return '{} {}'.format(self.major, self.certificates) # not sure if this works
  
- # a calendar has progresses corresponding to all requirements
+# a calendar has progresses corresponding to all requirements
 class Progress(models.Model):
 	calendar = models.ForeignKey(Calendar, on_delete=models.CASCADE, related_name='progress')
 	courses_taken = models.ManyToManyField(Course)
 	number_taken = models.PositiveSmallIntegerField(default=0)
 	completed = models.BooleanField(default=False)
 	requirement = models.ForeignKey(Requirement, related_name='progress') # check if this is what I intend; shouldn't change parent of requirement
-	# should be able to access degree/major/certificate via requirement
+	# should be able to access degree/major/certificate via requirement; parent isn't changed to a progress
 
 
 class Area(models.Model): # distribution area

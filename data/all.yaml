@@ -905,7 +905,7 @@ majors:
           name: Engineering Science
           number: 3
           courses:
-            - CEE
+            - CEE*
         - type: engineering-science-300
           name: Engineering Science
           number: 2
