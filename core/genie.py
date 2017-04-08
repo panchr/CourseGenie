@@ -5,65 +5,40 @@
 # functions related to profiles
 
 import json
+import re
 
-# store user’s records for transcript input
-# assuming data format is as displayed in output; see sample transcript data. NEED TO CONFIRM
-# assumes profile already exist; just adds in records from transcript
-# NEED TO CHANGE FORMAT
-# NEED TO CHANGE HOW TO ACCESS PROFILE
-# MAY NEED TO CHECK: IF COURSE WAS FILLED MANUALLY BY CONFUSED USER
-def store_transcript(profile, json_data):
-	raw_data = json.loads(json_data)
-	u = raw_data["user"]
-	id = u["netid"]
-	profile = Profile.objects.get(user__username=id)
-	t = raw_data["transcript"]
-	list_records = []
-	for semester in t["courses"]:
-		courses = t["courses"][semester]
-		for c in courses: # need to actually get the Course object
-			dept = c[:3]
-			num = c[4:7]
-			letter = ""
-			if len(c) > 7:
-				letter = c[7:8]
-			try: # in case course isn't in database
-				course = Course.objects.get(department=dept, number=num, letter=letter) 
-				list_records.append(Record(course=course, semester=semester, profile=profile))
-			except Course.DoesNotExist: # either actually not in database, or is a cross listing
-				try:
-					crossed = CrossListing.objects.get(department=dept, number=num, letter=letter)
-					list_records.append(Record(course=crossed.course, semester=semester, profile=profile))
-				except CrossListing.DoesNotExist:
-					# do something to tell us c was not added	
-					pass	
+from core.models import *
 
-	Record.objects.bulk_create(list_records)
-
-# store user’s records for manual input of courses
+# store user's records for manual input of courses
 # REQUESTED sample input from manual form:
 # ["PHY 104", "WRI 105", "FRS 118", "ECO 101A"]
 # BASICALLY FINISHED
 # NEED TO CHANGE HOW TO ACCESS PROFILE
 # MAY NEED TO CHECK: IF COURSE IS ALREADY IN TRANSCRIPT AND USER WAS STUPID
-def store_manual(raw_data):
+def store_manual(user, courses):
 	list_records = []
-	for item in courses: # need to actually get the Course object
-		dept = item[:3]
-		num = item[4:7]
-		letter = ""
-		if len(item) > 7:
-			letter = item[7:8]
+	course_re = re.compile(r'^(?P<dept>[A-Z]{3}) (?P<num>\d{3})(?P<letter>[A-Z]?)$')
+	profile = user.profile
+	existing_courses = set(str(r.course) for r in profile.records.all().prefetch_related('course'))
+
+	for item in set(courses) - existing_courses:
+		matches = course_re.match(item)
+		if not matches:
+			continue
+		dept = matches.group('dept')
+		num = matches.group('num')
+		letter = matches.group('letter')
 		try: # in case course isn't in database
 			course = Course.objects.get(department=dept, number=num, letter=letter) 
-			list_records.append(Record(course=course, semester=semester, profile=profile))
+			list_records.append(Record(course=course, profile=profile))
 		except Course.DoesNotExist: # either actually not in database, or is a cross listing
 			try:
 				crossed = CrossListing.objects.get(department=dept, number=num, letter=letter)
-				list_records.append(Record(course=crossed.course, semester=semester, profile=profile))
+				list_records.append(Record(course=crossed.course, profile=profile))
 			except CrossListing.DoesNotExist:
 				# do something to tell us c was not added	
 				pass
+	Record.objects.bulk_create(list_records)
 
 # store rest of info from form: name, year, partial preferences (interests)
 # from form_name: list of strings ['first name', 'last name', 'year']
@@ -145,7 +120,7 @@ def calculate_progress(calendar, requirement):
 	degree_requirements = Degree.requirements.all()
 	for requirement in degree_requirements:
 		progress = Progress(calendar=calendar, requirement=requirement)
-			progress.save()
+		progress.save()
 
 		number_taken = 0
 		number_required = requirement.number
@@ -177,7 +152,7 @@ def calculate_progress(calendar, requirement):
 def calculate_progress_certificate():
 	pass
 
-# recommend courses from student’s past courses, degree requirements, 
+# recommend courses from student's past courses, degree requirements, 
 # major requirements, and certificate requirements
 # IN PROGRESS; needs planning before coding
 def recommend():
