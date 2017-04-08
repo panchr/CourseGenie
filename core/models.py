@@ -17,16 +17,16 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 
 
 class Degree(models.Model):
-	name = models.CharField(max_length=255)
-	short_name = models.CharField(max_length=15)
+	name = models.CharField(max_length=255, unique=True)
+	short_name = models.CharField(max_length=15, unique=True)
 	requirements = GenericRelation('Requirement', related_query_name='degree')
 
 	def __str__(self):
 		return self.short_name
 
 class Major(models.Model):
-	name = models.CharField(max_length=255)
-	short_name = models.CharField(max_length=15)
+	name = models.CharField(max_length=255, unique=True)
+	short_name = models.CharField(max_length=15, unique=True)
 	degree = models.ForeignKey(Degree, on_delete=models.CASCADE, related_name='majors')
 	requirements = GenericRelation('Requirement', related_query_name='major')
 
@@ -38,9 +38,12 @@ class Major(models.Model):
 	def __str__(self):
 		return self.short_name
 
+	class Meta:
+		unique_together = ('name', 'degree')
+
 class Certificate(models.Model):
-	name = models.CharField(max_length=255)
-	short_name = models.CharField(max_length=50)
+	name = models.CharField(max_length=255, unique=True)
+	short_name = models.CharField(max_length=50, unique=True)
 	requirements = GenericRelation('Requirement',
 		related_query_name='certificate')
 
@@ -65,6 +68,9 @@ class Track(models.Model):
 
 	def __str__(self):
 		return self.short_name
+
+	class Meta:
+		unique_together = ('major', 'name')
 
 class Course(models.Model):
 	name = models.CharField(max_length=255)
@@ -134,8 +140,14 @@ class Requirement(models.Model):
 	class Meta:
 		unique_together = ('object_id', 't')
 
+# belongs under a requirement
+class NestedReq(models.Model):
+	number = models.PositiveSmallIntegerField()
+	courses = models.ManyToManyField(Course)
+	requirement = models.ForeignKey(Requirement, on_delete=models.CASCADE, related_name='nested_reqs')
+
 class Profile(models.Model):
-    user = models.OneToOneField(User, on_delete = models.CASCADE) # Django User model
+    user = models.OneToOneField(User, on_delete = models.CASCADE, unique=True) # Django User model
     year = models.PositiveSmallIntegerField(validators=[MinValueValidator(2015)]) # graduation year
     
     def __str__(self):
@@ -160,6 +172,7 @@ class Calendar(models.Model):
 	profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='calendars')
 	degree = models.ForeignKey(Degree)
 	major = models.ForeignKey(Major)
+	track = models.ForeignKey(Track, blank=True, null=True) # optional 
 	certificates = models.ManyToManyField(Certificate)
 	sandbox = models.ManyToManyField(Course)
 	last_accessed = models.DateTimeField(auto_now=True)
@@ -179,17 +192,19 @@ class Progress(models.Model):
 	requirement = models.ForeignKey(Requirement, related_name='progress') # check if this is what I intend; shouldn't change parent of requirement
 	# should be able to access degree/major/certificate via requirement; parent isn't changed to a progress
 
+	class Meta:
+		unique_together = ('calendar', 'requirement')
 
 class Area(models.Model): # distribution area
 	#name = models.CharField(max_length = 50)
-	short_name = models.CharField(max_length = 3)
+	short_name = models.CharField(max_length = 3, unique=True)
     
 	def __str__(self):
 		return self.short_name
 
 class Department(models.Model):
-	name = models.CharField(max_length = 50)
-	short_name = models.CharField(max_length = 3)
+	name = models.CharField(max_length = 50, unique=True)
+	short_name = models.CharField(max_length = 3, unique=True)
 
 	def __str__(self):
 		return self.short_name
@@ -211,7 +226,7 @@ class Preference(models.Model):
 		return "preference"
 
 class Semester(models.Model):
-	name = models.CharField(max_length = 25)
+	name = models.CharField(max_length = 25, unique=True)
 	calendar = models.ForeignKey(Calendar, on_delete=models.CASCADE, related_name='semester')
 	courses = models.ManyToManyField(Course)
 
