@@ -5,33 +5,39 @@ degrees:
     requirements:
     - type: calculus
       number: 2
+      score: 2
       courses:
         - MAT 103
         - MAT 104
     - type: multivariable calculus
       number: 1
+      score: 2
       courses:
         - MAT 201
         - MAT 203
         - MAT 218
     - type: physics 1
       number: 1
+      score: 2
       courses:
         - PHY 103
         - PHY 105
     - type: physics 2
       number: 1
+      score: 2
       courses:
         - PHY 104
         - PHY 106
     - type: computer proficiency
       number: 1
+      score: 2
       courses:
         - COS 126
         - COS 217
         - COS 226
     - type: chemistry
       number: 1
+      score: 2
       courses:
         - CHM 201
         - CHM 207
@@ -42,6 +48,7 @@ majors:
     requirements:
     - type: intro MAE 
       number: 5
+      score: 2
       notes: normally completed by end of sophomore year
       courses:
         - MAE 206
@@ -49,22 +56,20 @@ majors:
         - MAE 222
         - MAE 223
         - MAE 224
-    - type: math 1
+    - type: math
       number: 1
-      courses: 
-        - MAT 201
-        - MAT 203
-    - type: math 2
-      number: 1
+      score: 2
       courses: 
         - MAT 202
         - MAT 204
     - type: required math
       number: 1
+      score: 2
       courses:
         - MAE 305
     - type: math elective
       number: 1
+      score: 1
       notes: alternatives must be approved by the Departmental Representative
       courses:
         - MAE 306
@@ -78,11 +83,13 @@ majors:
         - PHY 403
     - type: core
       number: 2
+      score: 2
       courses:
         - MAE 433
         - MAE 321
     - type: MAE 324 or MSE 301
       number: 1
+      score: 1
       courses:
         - MAE 324
         - MSE 201
@@ -90,16 +97,19 @@ majors:
       "Mechanical Engineering - Dynamics Systems and Design":
         - type: MAE 335 
           number: 1
+          score: 2
           notes: CBE 341 can replace MAE 423
           courses: 
             - MAE 335
         - type: CEE 361 or CEE 312
           number: 1
+          score: 2
           courses:
             - CEE 361
             - CEE 312
         - type: electives
           number: 1
+          score: 0
           courses: 
             - MAE 331
             - MAE 341
@@ -120,23 +130,27 @@ majors:
           # DESIGN COURSES
         - type: MAE 412
           number: 1
+          score: 1
           notes: CEE 477 can be a substitute if you are gettng the Sustainable Energy Certificate
           courses:
             - MAE 412
       "Mechanical Engineering - Energy Sciences":
         - type: MAE 335 or MAE 423
           number: 1
+          score: 2
           notes: CBE 341 can replace MAE 423
           courses: 
             - MAE 335
             - MAE 423
         - type: CEE 361 or CEE 312
           number: 1
+          score: 2
           courses:
             - CEE 361
             - CEE 312
         - type: electives
           number: 1
+          score: 0
           courses: 
             - MAE 331
             - MAE 341
@@ -152,6 +166,7 @@ majors:
           # DESIGN COURSES
         - type: MAE 322 OR MAE 412
           number: 1
+          score: 1
           notes: CEE 477 can be a substitute if you are gettng the Sustainable Energy Certificate
           courses:
             - MAE 322
@@ -159,17 +174,20 @@ majors:
       "Mechanical Engineering":
         - type: MAE 335 or MAE 423
           number: 1
+          score: 2
           notes: CBE 341 can replace MAE 423
           courses: 
             - MAE 335
             - MAE 423
         - type: CEE 361 or CEE 312
+          score: 2
           number: 1
           courses:
             - CEE 361
             - CEE 312
         - type: engineering science electives
           number: 1
+          score: 0
           courses: 
             - MAE 331
             - MAE 341
@@ -185,6 +203,7 @@ majors:
           # DESIGN COURSE
         - type: MAE 322 OR MAE 412
           number: 1
+          score: 2
           notes: CEE 477 can be a substitute if you are gettng the Sustainable Energy Certificate
           courses:
             - MAE 322
@@ -192,22 +211,26 @@ majors:
       "Aerospace Engineering":
         - type: CEE 312 or CEE 361
           number: 1
+          score: 2
           courses:
             - CEE 312
             - CEE 361
         - type: MAE 426 or 427
           number: 1
+          score: 2
           courses:
             - MAE 426 
             - MAE 427
         - type: core flight requirements
           number: 1
+          score: 2
           courses:
             - MAE 331
             - MAE 341
         # DESIGN COURSE
         - type: MAE 332 or MAE 342
           number: 1
+          score: 2
           notes: CEE 477 can be a substitute if you are gettng the Sustainable Energy Certificate
           courses:
             - MAE 332
@@ -218,12 +241,14 @@ majors:
     requirements:
       - type: prerequisite
         number: 3
+        score: 2
         courses:
           - COS 126
           - COS 217
           - COS 226
       - type: theory
         number: 2
+        score: 1
         courses:
           - COS 340 
           - COS 423 
@@ -236,6 +261,7 @@ majors:
           - COS 511
       - type: systems
         number: 2
+        score: 1
         courses:
           - COS 306
           - COS 318
@@ -248,6 +274,7 @@ majors:
           - COS 475
       - type: applications
         number: 2
+        score: 1
         courses:
           - COS 314
           - COS 323
@@ -262,8 +289,10 @@ majors:
           - COS 435
           - COS 436
           - COS 455
-      - type: departmentals # Also includes "any 300- or 400- level Math or ELE or Physics or ORF course that does not duplicate COS content" and some 500 level COS courses upon approval
+      - type: departmentals 
         number: 2
+        score: 0
+        notes: Also includes "any 300- or 400- level Math or ELE or Physics or ORF course that does not duplicate COS content" and some 500 level COS courses upon approval
         courses:
           - COS >= 300 # 500 level courses only upon approval
           - MOL 437
@@ -275,6 +304,7 @@ majors:
           - ORF 309
       - type: independent
         number: 1
+        score: 1
         courses: 
           - COS 397 | COS 398 | COS 497 | COS 498
 
@@ -284,6 +314,7 @@ majors:
     requirements:
       - type: core
         number: 6
+        score: 2
         courses:
           - ELE 201
           - ELE 203
@@ -293,14 +324,17 @@ majors:
           - ELE 302
       - type: math
         number: 1
+        score: 1
+        notes: ORF 309 can be used to fulfill the math requirement or a concentration requirement, but not both
         courses:
           - MAT >= 300
           - MAE 305
           - MAE 306
-          - ORF 309 # ORF 309 can be used to fulfill the math requirement or a concentration requirement, but not both
+          - ORF 309 
           - COS 340 
       - type: dept-elective
         number: 1
+        score: 0
         courses:
           - ELE >= 300
           - COS 318
@@ -315,10 +349,9 @@ majors:
           - PHY 208 & PHY 305
       - type: science
         number: 1
-        courses: # the following is a non-exhaustive list of possibilities
-        # Please Note: The course used to satisfy the Engineering Science 
-        # requirement cannot also be used to satisfy the concentration requirement or the
-        # breadth requirement, nor can it be counted as a Departmental requirement
+        score: 1
+        notes: the following is a non-exhaustive list of possibilities; course used to satisfy the Engineering Science requirement can’t be used to satisfy the concentration or breadth requirements, and can’t be counted as a Departmental requirement
+        courses: 
           - COS 217
           - COS 226
           - COS 320
@@ -362,12 +395,13 @@ majors:
       # I separated the departmentals into the 5 ELE departmentals and 3 other miscellaneous departmentals 
       - type: ele-departmental
         number: 5
-        courses: 
+        score: 0
+        courses:
           - ELE >= 300
       - type: misc-departmental
-        # Courses outside electrical engineering counted towards this requirement 
-        # must be closely related to the student’s academic program.
         number: 3
+        score: 0
+        notes: courses taken outside electrical engineering counted towards this requirement must be closely related to the student's academic program
         courses:
           - CEE >= 300
           - CHM >= 300
@@ -382,9 +416,9 @@ majors:
           - ORF >= 300
           - PHY >= 300
       - type: design
-        # This requirement may also be satisfied with junior or senior independent work,
-        # if that work contains a substantial design component.
         number: 1
+        score: 1
+        notes: this requirement may also be satisfied with junior or senior independent work, if that work contains a substantial design component
         courses:
           - ELE 352
           - ELE 375
@@ -582,6 +616,7 @@ majors:
             - ELE 455
             - ELE 557
             - MAE 424
+  
   - name: Civil and Environmental Engineering
     url: https://www.princeton.edu/cee/forms/Yellow_Book_for_Class_of_2019_Sept.2016.pdf
     short_name: CEE
@@ -589,7 +624,8 @@ majors:
     requirements:
       - type: thesis
         name: Senior Thesis
-        number: 2
+        number: 1
+        score: 1
         courses:
           - CEE 478 # thesis
     tracks:
@@ -597,6 +633,7 @@ majors:
         - type: engineering-science
           name: Engineering Science
           number: 8
+          score: 2
           courses:
             - CEE 205
             - CEE 262A
@@ -609,12 +646,14 @@ majors:
         - type: engineering-design
           name: Engineering Design
           number: 2
+          score: 1
           courses:
             - CEE 366
             - CEE 461 | CEE 462
         - type: track-specific
           name: Track Specific
           number: 3
+          score: 2
           courses:
             - ARC 203
             - ARC 204
@@ -622,26 +661,30 @@ majors:
         - type: statistics
           name: Statistics (Additional Math)
           number: 1
+          score: 1
+          notes: waived with 5 in AP STAT
           courses:
             - ORF 245
             - ORF 309
-          notes: waived with 5 in AP STAT
         - type: additional-math
-          name: Additional Path
+          name: Additional Math
           number: 1
+          score: 1
           courses:
             - MAE 305
         - type: additional-science
           name: Additional Science
           number: 1
+          score: 1
+          notes: waived with 5 in AP BIO
           courses:
             - EEB 211
             - MOL 214
             - MOL 215
-          notes: waived with 5 in AP BIO
         - type: elective
           name: Program Electives
           number: 1
+          score: 0
           courses:
             - CEE 439
             - CEE 460
@@ -658,6 +701,7 @@ majors:
         - type: engineering-science
           name: Engineering Science
           number: 6
+          score: 2
           courses:
             - CEE 205
             - CEE 262A
@@ -668,22 +712,26 @@ majors:
         - type: engineering-design
           name: Engineering Design
           number: 2
+          score: 1
           courses:
             - CEE 366
             - CEE 461 | CEE 462
         - type: track-specific
           name: Track Specific
           number: 6
+          score: 2
+          notes: ARC 350 is junior indepent work; ARC 351 is senior independent work
           courses:
             - ARC 203
             - ARC 204
             - ARC 403
             - ARC 404
-            - ARC 350 # junior independent work
-            - ARC 351 # Senior independent work
+            - ARC 350
+            - ARC 351 
         - type: elective
           name: Program Electives
           number: 2
+          score: 0
           courses:
             - CEE 439
             - CEE 460
@@ -724,6 +772,7 @@ majors:
         - type: engineering-science
           name: Engineering Science
           number: 8
+          score: 2
           courses:
             - CEE 205
             - CEE 207 | CEE 304
@@ -735,32 +784,37 @@ majors:
         - type: statistics
           name: Statistics (Additional Math)
           number: 1
+          score: 1
+          notes: waived with 5 in AP STAT
           courses:
             - ORF 245
             - ORF 309
-          notes: waived with 5 in AP STAT
         - type: additional-math
           name: Additional Math
           number: 1
+          score: 1
           courses:
             - MAE 305
         - type: additional-science
-          name: Additioanl Science
+          name: Additional Science
           number: 1
+          score: 1
+          notes: waived with 5 in AP BIO
           courses:
             - EEB 211
             - MOL 214
             - MOL 215
-          notes: waived with 5 in AP BIO
         - type: engineering-design
           name: Engineering Design
           number: 2
+          score: 1
           courses:
             - CEE 471
             - CEE 477
         - type: elective
           name: Program Electives
           number: 3
+          score: 0
           courses:
             - CEE 334
             - CEE 361
@@ -784,6 +838,7 @@ majors:
         - type: engineering-science
           name: Engineering Science
           number: 8
+          score: 2
           courses:
             - CEE 205
             - CEE 207 | CEE 302
@@ -796,33 +851,38 @@ majors:
         - type: statistics
           name: Statistics (Additional Math)
           number: 1
+          score: 1
+          notes: waived with 5 in AP STAT
           courses:
             - ORF 245
             - ORF 309
-          notes: waived with 5 in AP STAT
         - type: additional-math
           name: Additional Math
           number: 1
+          score: 1
           courses:
             - MAE 305
         - type: additional-science
           name: Additional Science
           number: 1
+          score: 1
+          notes: waived with 5 in AP BIO
           courses:
             - GEO 203
             - EEB 211
             - MOL 214
             - MOL 215
-          notes: waived with 5 in AP BIO
         - type: engineering-design
           name: Engineering Design
           number: 2
+          score: 1
           courses:
             - CEE 471
             - CEE 477
         - type: elective
           name: Program Electives
           number: 3
+          score: 1
           courses:
             - CEE 311
             - CEE 460
@@ -840,6 +900,7 @@ majors:
         - type: engineering-science
           name: Engineering Science
           number: 6
+          score: 2
           courses:
             - CEE 205
             - CEE 262A
@@ -850,6 +911,7 @@ majors:
         - type: engineering-science-additional
           name: Engineering Science
           number: 2
+          score: 1
           courses:
             - CEE 364
             - CEE 365
@@ -857,33 +919,38 @@ majors:
         - type: statistics
           name: Statistics (Additional Math)
           number: 1
+          score: 1
+          notes: waived with 5 in AP STAT
           courses:
             - ORF 245
             - ORF 309
-          notes: waived with 5 in AP STAT
         - type: additional-math
           name: Additional Math
           number: 1
+          score: 1
           courses:
             - MAE 305
         - type: additional-science
           name: Additional Science
           number: 1
+          score: 1
+          notes: waived with 5 in AP BIO
           courses:
             - GEO 203
             - EEB 211
             - MOL 214
             - MOL 215
-          notes: waived with 5 in AP BIO
         - type: engineering-design
           name: Engineering Desing
           number: 2
+          score: 1
           courses:
             - CEE 366
             - CEE 461
         - type: elective
           name: Program Electives
           number: 3
+          score: 0
           courses:
             - CEE 376
             - CEE 439
@@ -904,26 +971,31 @@ majors:
         - type: engineering-science
           name: Engineering Science
           number: 3
+          score: 2
           courses:
             - CEE*
         - type: engineering-science-300
           name: Engineering Science
           number: 2
+          score: 1
           courses:
             - CEE>=300
         - type: engineering-science-300-stl
           name: Engineering Science
           number: 1
+          score: 1
           courses:
             - CEE[STL]>=300
         - type: elective
           name: Program Electives
           number: 4
+          score: 1
           courses:
             - '*'
         - type: elective-300
           name: Program Electives
           number: 3
+          score: 1
           courses:
             - '*>=300'
         - type: 300+
@@ -938,6 +1010,7 @@ majors:
     requirements:
       - type: core
         number: 6
+        score: 2
         courses:
           - ORF 245
           - ORF 307
@@ -947,6 +1020,7 @@ majors:
           - ORF 411
       - type: math
         number: 1
+        score: 1
         courses:
           - MAT 320
           - MAT 322
@@ -961,6 +1035,7 @@ majors:
           - MAT 522
       - type: departmental
         number: 8
+        score: 0
         courses:
           - ORF 311
           - ORF 350
@@ -1019,6 +1094,7 @@ majors:
     requirements:
       - type: core
         number: 8
+        score: 2
         notes: must take 2 semesters of senior thesis in area of concentration, or take 1 semester independent work + approved technical elective
         courses:
           - CBE 245
@@ -1031,13 +1107,15 @@ majors:
           - CBE 454
       - type: advanced-stem-differential-equations
         number: 1
+        score: 1
+        notes: must be completed by end of fall term junior year
         courses:
           - MAE 305
           - MAT 427
           - APC 350
-        notes: must be completed by end of fall term junior year
       - type: advanced-stem-chemistry
         number: 1
+        score: 1
         notes: cannot be independent work or PDF'ed course
         courses:
           - CHM 304
@@ -1069,15 +1147,18 @@ majors:
           - GEO 418
       - type: advanced-chemical-engineering
         number: 1
-        courses: CBE >= 300
+        score: 1
         notes: cannot be independent work or PDF'ed course
+        courses: CBE >= 300
       - type: advanced-stem-organic-chemistry
         number: 1
+        score: 1
         courses:
           CHM 303
           CHM 304
           CHM 304B
       - type: advanced-stem-molecular-biology
+        score: 1
         number: 1
         courses:
           MOL 214
@@ -1086,6 +1167,7 @@ majors:
       "Bioengineering and biotechnology":
         - type: concentration
           number: 3
+          score: 2
           courses: 
             - CBE 419
             - CBE 423
@@ -1137,6 +1219,7 @@ majors:
             - QCB 511
         - type: breadth
           number: 2
+          score: 0
           notes: please double check that these two courses are from different tracks outside your concentration
           courses: 
             - CBE 260
@@ -1271,6 +1354,7 @@ majors:
       "Entrepreneurship and management":
         - type: concentration
           number: 3
+          score: 2
           courses:
             - CBE 260
             - CEE 334
@@ -1296,6 +1380,7 @@ majors:
             - WWS 373
         - type: breadth
           number: 2
+          score: 0
           notes: please double check that these two courses are from different tracks outside your concentration
           courses:
             - CBE 419
@@ -1456,6 +1541,7 @@ majors:
       "Energy and environmental technology":
         - type: concentration
           number: 3
+          score: 1
           courses:
             - AST 309
             - CBE 335
@@ -1498,6 +1584,7 @@ majors:
             - WWS 306
         - type: breadth
           number: 2
+          score: 0
           notes: please double check that these two courses are from different tracks outside your concentration
           courses: 
             - CBE 419
@@ -1641,6 +1728,7 @@ majors:
       "Materials and product engineering":
         - type: concentration
           number: 3
+          score: 2
           courses:
             - CBE 415
             - CBE 422
@@ -1666,6 +1754,7 @@ majors:
             - MSE 531
         - type: breadth
           number: 2
+          score: 0
           notes: please double check that these two courses are from different tracks outside your concentration
           courses:
             - CBE 419
@@ -1826,6 +1915,7 @@ majors:
       "Optimization, dynamics, and information technology":
         - type: concentration
           number: 3
+          score: 2
           courses:
             - CBE 422
             - CBE 445
@@ -1850,6 +1940,7 @@ majors:
             - ORF 417
         - type: breadth
           number: 2
+          score: 0
           notes: please double check that these two courses are from different tracks outside your concentration
           courses:
             - CBE 419
@@ -2011,6 +2102,7 @@ majors:
       "Science and engineering for new technologies":
         - type: concentration
           number: 3
+          score: 2
           courses:
             - CBE 342
             - CBE 425
@@ -2039,6 +2131,7 @@ majors:
             - ELE 442 
         - type: breadth
           number: 2
+          score: 0
           notes: please double check that these two courses are from different tracks outside your concentration
           courses:
             - CBE 419
@@ -2199,10 +2292,13 @@ certificates:
     requirements:
       - type: core
         number: 1
+        score: 2
         courses:
           - AAS 201
-      - type: survey # At least one survey course shoud be a pre-20th century course
+      - type: survey
         number: 2
+        score: 1
+        notes: at least one survey course shoud be a pre-20th century course
         courses:
           - AAS 353
           - AAS 366
@@ -2210,6 +2306,7 @@ certificates:
           - AAS 367
       - type: subfield
         number: 2
+        score: 0
         courses:
           - AFS 400
           - AFS 427
@@ -2285,6 +2382,7 @@ certificates:
     requirements:
       - type: core 
         number: 1
+        score: 2
         courses:
           - ART 237
           - ART 260
@@ -2320,7 +2418,7 @@ certificates:
       - type: electives
         number: 3
         courses:
-          # Three electives, from three different departments outside the student's major
+        notes: three electives, from three different departments outside the student's major
           - special 
       
   - name: Applications of Computing
@@ -2342,8 +2440,8 @@ certificates:
           - COS >= 300 # (except not 397, 398, 497, 498, or 323 if it was used as one of the core classes)
       - type: additional
         number: 1
+        notes: including but not limited to these courses
         courses:
-          # Including but not limited to
           - APC 524
           - ARC 374
           - CBE 422
@@ -2383,6 +2481,7 @@ certificates:
     requirements:
       - type: core
         number: 5
+        score: 2
         courses:
           - special
           # A total of five courses normally 300 level or higher (pass/D/fail not accepted),
@@ -2410,16 +2509,17 @@ certificates:
     requirements:
       - type: core
         number: 3
+        score: 2
+        notes: ART 304 can be replaced by fieldwork and must be approved by the program's executive committee ahead of time
         courses:
           - ART 100
           - ART 401
-          - ART 304 # Or its equivalent (must be fieldwork of some sort) and must be approved by the program's executive committee ahead of time
+          - ART 304 
       - type: breadth
         number: 3
+        score: 0
+        notes: At least one must be offered in the Department of Art and Archaeology in the Ancient area, and at least one must be a course outside of the Department of Art and Archaeology
         courses:
-          # At least one must be offered in the Department of Art and Archaeology
-          # in the Ancient area, and at least one must be a course outside of the
-          # Department of Art and Archaeology
           - ANT 206
           - ANT 308
           - ANT 374
@@ -2464,10 +2564,9 @@ certificates:
         # 5. At most, one course may be taken P/D/F.
       - type: core
         number: 5
+        score: 2
+        notes: Other cognitive science related courses, including graduate courses, may be counted toward certificate completion with the approval of the director.
         courses:
-          # Other cognitive science related courses, including graduate courses, 
-          # may be counted toward certificate completion with the approval of the 
-          # director.
           - COS 109
           - COS 126
           - COS 402
@@ -2525,16 +2624,16 @@ certificates:
     requirements:
       - type: gateway
         number: 1
+        score: 2
         courses:
           - EPS 300
           - EPS 301
           - EPS 302
       - type: core
         number: 4
+        score: 2
+        notes: Of the four courses, at least one must be chosen from among offerings in history and at least one must be chosen from among offerings in the other social sciences.
         courses:
-          # Of the four courses, at least one must be chosen from among offerings
-          # in history and at least one must be chosen from among offerings in 
-          # the other social sciences.
           # I cannot access all of the possible core classes
           - EPS 227
           - EPS 300
@@ -2561,9 +2660,11 @@ certificates:
     requirements:
       - type: 200-lvl
         number: 2
+        score: 2
         courses: 
           - CWR >= 200
       - type: 300-lvl
+        score: 2
         number: 2
         courses: 
           - CWR >= 300
@@ -2573,6 +2674,7 @@ certificates:
     requirements:
       - type: studio-performance
         number: 2
+        score: 2
         courses:
           - DAN 319
           - DAN 320
@@ -2580,6 +2682,7 @@ certificates:
           - DAN 420
       - type: studio-spring
         number: 1
+        score: 2
         courses:
           - DAN 307
           - DAN 408
@@ -2587,10 +2690,12 @@ certificates:
           - DAN 432
       - type: studio-gen
         number: 1
+        score: 2
         courses: 
           - DAN >= 300
       - type: co-curricular
         number: 2
+        score: 2
         courses:
           - DAN 204
            - DAN 207
@@ -2603,6 +2708,7 @@ certificates:
            - DAN 315
       - type: seminar
         number: 1
+        score: 2
         courses:
            - DAN 316
            - DAN 215
@@ -2616,14 +2722,17 @@ certificates:
     requirements:
       - type: core
         number: 4
+        score: 2
         courses: 
           - CHI | JPN | KOR
       - type: general-200
         number: 1
+        score: 1
         courses: 
           - EAS >= 200
       - type: general-other
         number: 3
+        score: 1
         courses: 
           - EAS >= 100
 
@@ -2632,11 +2741,13 @@ certificates:
     requirements:
       - type: core
         number: 2
+        score: 2
         courses:
           - MAT 201
           - MAT 202
       - type: statistics
         number: 1
+        score: 1
         courses:
           - ORF 245
           - ECO 202
@@ -2650,6 +2761,7 @@ certificates:
           - ECO 312
       - type: optimization
         number: 1
+        score: 1
         courses:
           - ORF 307
           - ORF 363
@@ -2658,10 +2770,12 @@ certificates:
           - MAE 433
       - type: probability
         number: 1
+        score: 1
         courses: 
           - ORF 309
       - type: uncertainty
         number: 1
+        score: 1
         courses:
           - ORF 311
           - ORF 360
@@ -2674,6 +2788,7 @@ certificates:
           - WWS 340
       - type: entrepreneurship/management
         number: 1
+        score: 1
         courses:
           - ORF 411
           - CBE 442
@@ -2685,18 +2800,21 @@ certificates:
     requirements:
       - type: biology
         number: 3
+        score: 2
         courses:
           - EEB >= 100
           - MOL >= 100
           - QCB >= 100
       - type: adv-biology
         number: 2
+        score: 1
         courses:
           - EEB >= 300
           - MOL >= 300
           - ACB >= 300
       - type: engineering
         number: 3
+        score: 2
         courses:
           - CBE >= 100
           - CEE >= 100
@@ -2708,6 +2826,7 @@ certificates:
           - COS >= 100
       - type: adv-engineering
         number: 2
+        score: 2
         courses:
           - CBE >= 300
           - CEE >= 300
@@ -2723,9 +2842,11 @@ certificates:
     requirements:
       - type: mathematics
         number: 2
+        score: 2
         courses: 
           - MAT >= 300
       - type: physics
+        score: 2
         number: 6
         courses:
           - PHY 205
@@ -2740,10 +2861,12 @@ certificates:
     requirements:
       - type: intro
         number: 2
+        score: 2
         courses:
           - EGR 200
           - EGR 201
       - type: core
+        score: 2
         number: 2
         courses:
           - ANT 300
@@ -2756,6 +2879,7 @@ certificates:
           - SOC 345
       - type: breadth
         number: 1
+        score: 0
         courses:
           - ANT 301
           - ECO 317
@@ -2776,6 +2900,7 @@ certificates:
     requirements:
       - type: foundation
         number: 1
+        score: 2
         courses:
           - ENV 200B
           - ENV 200F
@@ -2784,35 +2909,55 @@ certificates:
           - ENV 302
       - type: humanities
         number: 1
+        score: 1
         courses: 
-          - ART | PHI | ARC | ENG
+          - ART* 
+          - PHI*
+          - ARC*
+          - ENG*
       - type: social-sciences
         number: 1
+        score: 1
         courses: 
-          - ECO | HIS | WWS | ANT | POL
+          - ECO*
+          - HIS*
+          - WWS*
+          - ANT*
+          - POL*
       - type: natural-sciences
         number: 1
+        score: 1
         courses: 
-          - CHM | EEB | GEO | PHY | MOL
+          - CHM*
+          - EEB*
+          - GEO* 
+          - PHY*
+          - MOL*
       - type: engineering
         number: 1
+        score: 1
         courses: 
-          - CEE | CBE | MAE
+          - CEE*
+          - CBE* 
+          - MAE*
   - name: Environmental Studies Biodiversity and Conservation
     short_name: ENV biodiversity
     requirements:
       - type: env-science
         number: 1
+        score: 1
         courses:
           - ENV 302
           - GEO 360
           - EEB 321
       - type: env-policy
         number: 1
+        score: 1
         courses: 
           - WWS 350
       - type: core
         number: 3
+        score: 2
         courses:
           - AMS 364
           - CEE 307
@@ -2843,16 +2988,19 @@ certificates:
     requirements:
         - type: env-science
           number: 1
+          score: 1
           courses:
             - ENV 302
             - GEO 360
             - EEB 321
         - type: env-policy
           number: 1
+          score: 1
           courses: 
             - WWS 350
         - type: core
           number: 3
+          score: 2
           courses:
             - AMS 364
             - ARC 406
@@ -2901,16 +3049,19 @@ certificates:
     requirements:
         - type: env-science
           number: 1
+          score: 1
           courses:
             - ENV 302
             - GEO 360
             - EEB 321
         - type: env-policy
           number: 1
+          score: 1
           courses: 
             - WWS 350
         - type: core
           number: 3
+          score: 2
           courses:
             - AMS 364
             - CEE 391
@@ -2950,16 +3101,19 @@ certificates:
     requirements:
         - type: env-science
           number: 1
+          score: 1
           courses:
             - ENV 302
             - GEO 360
             - EEB 321
         - type: env-policy
           number: 1
+          score: 1
           courses: 
             - WWS 350
         - type: core
           number: 3
+          score: 2
           courses:
             - ANT 204
             - AMS 364
@@ -3001,16 +3155,19 @@ certificates:
     requirements:
         - type: env-science
           number: 1
+          score: 1
           courses:
             - ENV 302
             - GEO 360
             - EEB 321
         - type: env-policy
           number: 1
+          score: 1
           courses: 
             - WWS 350
         - type: core
           number: 3
+          score: 2
           courses:
             - AMS 364
             - CBE 335
@@ -3052,11 +3209,13 @@ certificates:
     requirements:
       - type: core
         number: 2
+        score: 2
         courses:
           - ANT 301A
           - ANT 300A
       - type: electives
         number: 3
+        score: 0
         courses:
           - AAS 201
           - AMS 311
@@ -3113,12 +3272,14 @@ certificates:
     requirements:
       - type: core
         number: 1
+        score: 2
         courses:
           - ECS 301
           - EPS 302
           - HUM 219
       - type: electives
         number: 2
+        score: 0
         courses: 
           - ECS >= 300
 
@@ -3127,12 +3288,14 @@ certificates:
     requirements:
       - type: prerequisite-math
         number: 3
+        score: 2
         courses:
           - MAT 201
           - MAT 202
           - ECO 310
       - type: prerequisite-statistics
         number: 1
+        score: 2
         courses:
           - ECO 202
           - MAT 222
@@ -3145,11 +3308,13 @@ certificates:
           - PHY 301
       - type: core
         number: 2
+        score: 2
         courses:
           - ECO 363
           - ECO 362
       - type: electives
         number: 3
+        score: 0
         courses:
           - APC 350
           - CEE 460
@@ -3204,16 +3369,19 @@ certificates:
       - type: introductory
         name: Introductory
         number: 1
+        score: 2
         courses:
           - GSS 201
       - type: additional
         name: Additional 300+
         number: 1
+        score: 0
         courses:
           - GSS>=300
       - type: thematic
         name: Thematic Clustered Courses
         number: 3
+        score: 1
         courses:
           - theme:transnational/global perspectives
           - theme:gender, race, & ethnicity
@@ -3226,9 +3394,10 @@ certificates:
     url: https://ua.princeton.edu/academic-units/program-geological-engineering
     short_name: geo-engineering
     requirements:
-      - type: bse
+      - type: B.S.E.
         name: Specific B.S.E. Requirements
         number: 7
+        score: 2
         courses:
           - MAT 103
           - MAT 104
@@ -3245,6 +3414,7 @@ certificates:
       - type: program
         name: General Program Courses
         number: 4
+        score: 0
         courses:
           - GEO>=300
           - CEE>=300
@@ -3256,6 +3426,7 @@ certificates:
       - type: science-prerequisite
         name: Basic Science Prerequisites
         number: 1
+        score: 2
         courses:
           - EEB 210
           - EEB 211
@@ -3266,6 +3437,7 @@ certificates:
       - type: statistics
         name: Statistics
         number: 1
+        score: 1
         courses:
           - ECO 202
           - EEB 355
@@ -3279,12 +3451,14 @@ certificates:
       - type: core
         name: Core Courses
         number: 2
+        score: 2
         courses:
           - GHP 350
           - GHP 351
       - type: elective
         name: Program Electives
         number: 4
+        score: 0
         courses:
           - AMS 306
           - AMS 379
@@ -3329,11 +3503,13 @@ certificates:
       - type: summer-research
         name: Summer Research Project
         number: 1
+        score: 2
         courses: 
           - special
       - type: thesis
         name: Senior Thesis
         number: 1
+        score: 1
         courses: 
           - special
 
@@ -3344,6 +3520,7 @@ certificates:
       - type: introductory
         name: Introductory
         number: 1
+        score: 2
         courses:
           - HLS 107
           - HLS 206
@@ -3357,6 +3534,7 @@ certificates:
       - type: seminar
         name: Upperclass Seminars
         number: 2
+        score: 1
         courses:
           - HLS 324
           - HLS 330
@@ -3371,6 +3549,7 @@ certificates:
       - type: thesis
         name: Senior Thesis
         number: 1
+        score: 1
         courses: 
           - special
 
@@ -3381,19 +3560,22 @@ certificates:
       - type: core
         name: Core Course
         number: 1
+        score: 2
         courses:
           - WWS 315
       - type: elective
         name: Program Electives
         number: 4
+        score: 2
+        notes: needs approval; 8 required if in HIS/WWS/POL
         courses:
           - HIS*
           - WWS*
           - POL*
-        notes: needs approval; 8 required if in HIS/WWS/POL
       - type: internship
         name: Summer Internship
         number: 1
+        score: 2
         courses: 
           - special
 
@@ -3404,6 +3586,7 @@ certificates:
       - type: prerequisite
         name: Prerequisites
         number: 2
+        score: 2
         courses:
           - HUM 216
           - HUM 217
@@ -3414,17 +3597,20 @@ certificates:
       - type: capstone
         name: Capstone Seminar
         number: 1
+        score: 1
         courses: 
           - special
       - type: elective
         name: Program Electives
         number: 2
+        score: 0
         courses: 
           - special
         notes: must be approved by advisor
       - type: thesis
         name: Senior Thesis or Interdiscriplinary Research Paper
         number: 1
+        score: 1
         courses: 
           - special
 
@@ -3435,12 +3621,14 @@ certificates:
       - type: history
         name: Jazz History
         number: 1
+        score: 2
         courses:
           - MUS 262
           - MUS 320
       - type: theory
         name: Jazz Theory & Composition
         number: 1
+        score: 2
         courses:
           - MUS 311
           - MUS 312
@@ -3449,12 +3637,14 @@ certificates:
       - type: performance
         name: Jazz Performance
         number: 1
+        score: 2
         courses:
           - MUS 215
           - MUS 321
       - type: elective
         name: Historical/Cultural Context Electives
         number: 1
+        score: 0
         courses:
           - AAS 201
           - AAS 305
@@ -3474,11 +3664,13 @@ certificates:
       - type: ensemble
         name: Jazz Ensemble
         number: 1
+        score: 2
         courses: 
           - special
       - type: independent-work
         name: Independent Work
         number: 1
+        score: 1
         courses: 
           - special
 
@@ -3486,14 +3678,16 @@ certificates:
     url: http://www.princeton.edu/judaic/certificate-program/
     short_name: JDS-course
     requirements:
-      - type: prerequisite
+      - type: prerequisites
         name: Prerequisites
         number: 1
+        score: 2
         courses:
           - JDS 202
       - type: premodern
         name: Pre-Modern Period Courses
         number: 1
+        score: 1
         courses:
           - JDS 248
           - JDS 303
@@ -3501,6 +3695,7 @@ certificates:
       - type: core
         name: Core Requirements
         number: 3
+        score: 2
         courses:
           - JDS*
           
@@ -3511,11 +3706,13 @@ certificates:
       - type: prerequisite
         name: Prerequisites
         number: 1
+        score: 2
         courses:
           - JDS 202
       - type: premodern
         name: Pre-Modern Period Courses
         number: 1
+        score: 1
         courses:
           - JDS 248
           - JDS 303
@@ -3523,11 +3720,13 @@ certificates:
       - type: core
         name: Core Requirements
         number: 1
+        score: 2
         courses:
           - JDS*
       - type: thesis
         name: Senior Thesis
         number: 1
+        score: 1
         courses: 
           - special
 
@@ -3537,6 +3736,7 @@ certificates:
     requirements:
       - type: prerequisite
         name: Prerequisites
+        score: 2
         number: 1
         courses:
           - SPA 107
@@ -3544,13 +3744,14 @@ certificates:
           - FRE 107
       - type: thesis
         name: Senior Thesis
+        score: 1
         number: 1
         courses: 
           - special
-
       - type: core
         name: Core Requirements
         number: 3
+        score: 2
         courses:
           - ANT 335
           - ECO 351
@@ -3559,6 +3760,7 @@ certificates:
       - type: interdiscriplinary
         name: Interdiscriplinary
         number: 1
+        score: 0
         courses:
           - ECO*
           - HIS*
@@ -3573,6 +3775,7 @@ certificates:
       - type: prerequisite
         name: Prerequisites
         number: 1
+        score: 2
         courses:
           - SPA 107
           - POR 109
@@ -3580,16 +3783,19 @@ certificates:
       - type: thesis
         name: Senior Thesis
         number: 1
+        score: 1
         courses: 
           - special
       - type: core
         name: Core Requirements
         number: 2
+        score: 2
         courses:
           - LAS*
       - type: brazilian-culture
         name: Brazilian Culture
         number: 1
+        score: 1
         courses:
           - theme:brazilian culture
             
@@ -3600,6 +3806,7 @@ certificates:
       - type: core
         name: Core Requirements
         number: 2
+        score: 2
         courses:
           - HLS>=300
           - CLA>=300
@@ -3609,6 +3816,7 @@ certificates:
       - type: core-200
         name: Core Requirements
         number: 1
+        score: 2
         courses:
           - HLS>=200
           - CLA>=200
@@ -3618,6 +3826,7 @@ certificates:
       - type: independent-work
         name: Independent Work
         number: 1
+        score: 1
         courses: 
           - special
 
@@ -3628,21 +3837,25 @@ certificates:
       - type: core
         name: Core Requirements
         number: 1
+        score: 2
         courses:
           - EAS*
       - type: thesis
         name: Senior Thesis or Independent Work
         number: 1
+        score: 1
         courses: 
           - special
       - type: language
         name: Language
         number: 4
+        score: 1
         courses:
           - CHI*
       - type: language-proficiency
         name: Language Proficiency
         number: 3
+        score: 1
         courses:
           - CHI>=107
             
@@ -3652,22 +3865,26 @@ certificates:
     requirements:
       - type: core
         name: Core Requirements
+        score: 2
         number: 1
         courses:
           - EAS*
       - type: thesis
         name: Senior Thesis or Independent Work
         number: 1
+        score: 1
         courses: 
           - special
       - type: language
         name: Language
         number: 4
+        score: 1
         courses:
           - JPN*
       - type: language-proficiency
         name: Language Proficiency
         number: 3
+        score: 1
         courses:
           - JPN>=107
             
@@ -3678,22 +3895,26 @@ certificates:
       - type: core
         name: Core Requirements
         number: 1
+        score: 2
         courses:
           - EAS*
       - type: thesis
         name: Senior Thesis or Independent Work
         number: 1
+        score: 1
         courses: 
           - special
 
       - type: language
         name: Language
         number: 4
+        score: 1
         courses:
           - KOR*
       - type: language-proficiency
         name: Language Proficiency
         number: 3
+        score: 1
         courses:
           - KOR>=107
             
@@ -3704,6 +3925,7 @@ certificates:
       - type: prerequisite
         name: Prerequisites
         number: 1
+        score: 2
         courses:
           - FRE 211
           - FRE 215
@@ -3716,12 +3938,14 @@ certificates:
       - type: departmental
         name: Departmental Requirements
         number: 3
+        score: 1
         courses:
           - FRE>=300
           - ITA>=300
       - type: independent-work
         name: Independent Work
         number: 1
+        score: 1
         courses: 
           - special
 
@@ -3730,10 +3954,12 @@ certificates:
     requirements: 
       - type: prerequisite
         number: 1
+        score: 2
         courses: 
           - LIN 201
       - type: additional
         number: 4
+        score: 0
         note: one of these courses can be substituted from outside department with department approval
         courses:
           - LIN 220
@@ -3751,12 +3977,14 @@ certificates:
     requirements:
       - type: core materials
         number: 1
+        score: 2
         courses:
           - MSE 301
           - CEE 364
           - MAE 324
       - type: thermodynamics 
         number: 1
+        score: 2
         courses:
           - CBE 246
           - CHM 306
@@ -3765,34 +3993,40 @@ certificates:
           - MAE 221
           - PHY 301
       - type: experimental methods
+        score: 2
         number: 1
         courses:
           - MSE 302
           - CHM 371
       - type: math 1
         number: 1
+        score: 2
         courses:
           - MAT 202
           - MAT 204
           - MAT 217
       - type: math 2
         number: 1
+        score: 2
         courses:
           - MAT 201
           - MAT 203
           - MAT 217
       - type: physics 1
         number: 1
+        score: 2
         courses:
           - PHY 103
           - PHY 105
       - type: physics 2
         number: 1
+        score: 2
         courses:
           - PHY 104
           - PHY 106
       - type: approved electives
         number: 3
+        score: 0
         note: take 3 courses in at least 2 different areas
         courses:
           # numerical methods
@@ -3857,6 +4091,7 @@ certificates:
     requirements:
       - type: theater
         number: 1
+        score: 2
         courses:
           - THR 344
           - THR 385
@@ -3877,6 +4112,7 @@ certificates:
           - THR 451
       - type: music
         number: 1
+        score: 2
         courses:
           - MUS 327
           - MUS 212
@@ -3909,6 +4145,7 @@ certificates:
           - MUS 302 
       - type: dance
         number: 1
+        score: 2
         courses:
           - DAN 204
           - DAN 209
@@ -3926,6 +4163,7 @@ certificates:
           - LCA 101
       - type: electives
         number: 1
+        score: 0
         notes: other courses can be taken with departmental approval
         courses:
           - DAN 321
@@ -3951,11 +4189,13 @@ certificates:
     requirements:
       - type: intro theory 
         number: 2
+        score: 2
         courses:
           - MUS 105
           - MUS 106
       - type: performance 
         number: 1
+        score: 2
         note: must be taken for 2 semesters
         courses:
           - MUS 213
@@ -3965,6 +4205,7 @@ certificates:
           - MUS 314
       - type: departmentals
         number: 2
+        score: 1
         courses:
           - MUS 205
           - MUS 206
@@ -4015,14 +4256,17 @@ certificates:
     requirements:
       - type: core-part1
         number: 1
+        score: 2
         courses:
           - NEU 175
           - NEU 201
       - type: core-part2
         number: 1
+        score: 2
         courses:
           - NEU 202
       - type: electives
+        score: 0
         number: 4
         notes: must come from 3 of the four areas. If you decide to concentrate you must tak NEU 201 without credit
         courses:
@@ -4073,11 +4317,13 @@ certificates:
     requirements:
       - type: core
         number: 1
+        score: 2
         courses:
           - GEO 255
       - type: cognate
         number: 4
-        note: only two can be in the student's departement of concentration or requiremnts of major; only CHM 202 OR CHM 201 will count; only CHM 303 OR CHM 304 will count
+        score: 0
+        note: only two can be in the student's departement of concentration or requiremnts of major
         courses:
           # astrophysical sciences
           - AST 204
@@ -4089,11 +4335,9 @@ certificates:
           - AST 541
           - AST 542
           # chemistry
-          - CHM 201 # ISSUE: CHM 202 OR CHM 201 
-          - CHM 202
+          - CHM 201 | CHM 202
           - CHM 215
-          - CHM 303
-          - CHM 304 # ISSUE: 303 OR 304 
+          - CHM 303 | CHM 304
           - CHM 305
           - CHM 306
           - CHM 405
@@ -4145,23 +4389,27 @@ certificates:
     short_name: robotics
     requirements:
       - type: math
-        number: 1
+        number: 2
+        score: 1
         courses:
           - MAT 202
           - MAT 204
       - type: computing
-        number: 1
+        number: 2
+        score: 1
         courses:
           - COS 126
           - ORF 201
       - type: lab
         number: 1
+        score: 2
         courses:
           - ELE 206
           - MAE 224
           - PHY 210
       - type: control-system
         number: 1
+        score: 2
         courses:
           - CBE 445
           - ELE 301
@@ -4170,63 +4418,66 @@ certificates:
           - MAE 434
       - type: cognition
         number: 1
+        score: 2
         courses:
-          - CGS207
-          - CGS255
-          - PSY258
-          - PSY259
-          - PSY330
-          - NEU316
-          - PSY321
-          - NEU331
+          - CGS 207
+          - CGS 255
+          - PSY 258
+          - PSY 259
+          - PSY 330
+          - NEU 316
+          - PSY 321
+          - NEU 331
       - type: electives
         number: 3
+        score: 0
         courses:
-          - CBE442
-          - CBE447
-          - CBE448
-          - CEE361
-          - COS217
-          - COS226
-          - COS333
-          - COS340
-          - COS402
-          - COS424
-          - COS426
-          - COS429
-          - COS461
-          - ECO202
-          - ELE201
-          - ELE302
-          - ELE381
-          - ELE486
-          - ELE488
-          - LIN306
-          - LIN412
-          - MAE206
-          - MAE321
-          - MAE322
-          - MAE331
-          - MAE332
-          - MAE341
-          - MAE342
-          - MAE412
-          - MOL408
-          - ORF245
-          - ORF307
-          - ORF309
-          - ORF311
-          - ORF363
-          - ORF405
-          - ORF411
-          - ORF467
-          - PHI212
-          - PSY345
+          - CBE 442
+          - CBE 447
+          - CBE 448
+          - CEE 361
+          - COS 217
+          - COS 226
+          - COS 333
+          - COS 340
+          - COS 402
+          - COS 424
+          - COS 426
+          - COS 429
+          - COS 461
+          - ECO 202
+          - ELE 201
+          - ELE 302
+          - ELE 381
+          - ELE 486
+          - ELE 488
+          - LIN 306
+          - LIN 412
+          - MAE 206
+          - MAE 321
+          - MAE 322
+          - MAE 331
+          - MAE 332
+          - MAE 341
+          - MAE 342
+          - MAE 412
+          - MOL 408
+          - ORF 245
+          - ORF 307
+          - ORF 309
+          - ORF 311
+          - ORF 363
+          - ORF 405
+          - ORF 411
+          - ORF 467
+          - PHI 212
+          - PSY 345
   - name: Visual arts 
     short_name: VIS
     requirements:
       - type: core
         number: 2
+        score: 2
         courses:
           - VIS 392
           - VIS 416
@@ -4236,10 +4487,12 @@ certificates:
     requirements:
         - type: philosophy
           number: 1
+          score: 2
           courses:
             - CHV 202
         - type: ethics
           number: 1
+          score: 2
           courses:
             - WWS 370
             - POL 307
@@ -4251,11 +4504,13 @@ certificates:
     requirements: 
       - type: core
         number: 2
+        score: 2
         courses:
           - URB 200
           - ARC 205
       - type: social-sciences
         number: 1
+        score: 1
         courses:
           - ANT 228
           - ART 250
@@ -4266,6 +4521,7 @@ certificates:
           - URB 202
       - type: humanities
         number: 1
+        score: 1
         courses:
           - AAS 392
           - ANT 228
@@ -4298,6 +4554,7 @@ certificates:
           - URB 300
       - type: engineering-and-natural-sciences
         number: 2
+        score: 1
         courses:
           - ARC 492
           - CEE 262A
@@ -4321,6 +4578,7 @@ certificates:
     short_name: TRA
     requirements:
       - type: core
+        score: 2
         number: 2
         courses:
           - TRA 200
@@ -4330,10 +4588,12 @@ certificates:
     requirements:
       - type: core
         number: 1
+        score: 2
         courses:
           - EGR 277
       - type: technology
         number: 2
+        score: 1
         courses:
           - CEE 301
           - CEE 304
@@ -4357,6 +4617,7 @@ certificates:
           - FRS 159
       - type: societal
         number: 2
+        score: 1
         courses:
           - ANT 314
           - COS 448
@@ -4376,6 +4637,7 @@ certificates:
           - WWS 350
       - type: breadth
         number: 1
+        score: 0
         courses:
           - ANT 334
           - EGR 201
@@ -4391,10 +4653,12 @@ certificates:
     requirements:
       - type: core
         number: 1
+        score: 2
         courses:
           - EGR 277
       - type: technology
         number: 2
+        score: 1
         courses:
           - COS 126
           - COS 424
@@ -4427,6 +4691,7 @@ certificates:
           - ORF 467
       - type: societal
         number: 2
+        score: 1
         courses:
           - CHV 411
           - COS 448
@@ -4446,6 +4711,7 @@ certificates:
           - POL 341
       - type: breadth
         number: 1
+        score: 0
         courses:
           - AMS 399
           - ECO 332
@@ -4472,6 +4738,7 @@ certificates:
     requirements:
       - type: core
         number: 4
+        score: 2
         notes: also required to take introductory practicum and receive no grade below B- in these courses
         courses:
           - PSY 307
@@ -4483,11 +4750,13 @@ certificates:
     requirements:
       - type: core-a1
         number: 1
+        score: 2
         courses:
           - MAE 228
           - MAE 328
       - type: core-a2
         number: 1
+        score: 2
         notes: both of EEB 417A/B must be taken to satisfy requirement
         courses:
           - CEE 304
@@ -4497,6 +4766,7 @@ certificates:
           - ENE 202
       - type: elective-energy-science-and-technology
         number: 1
+        score: 1
         notes: both of ELE 441/442 must be taken to satisfy requirement
         courses:
           - AST 309
@@ -4520,6 +4790,7 @@ certificates:
           - MAE 531
       - type: elective-environmental-science-and-geoscience
         number: 1
+        score: 1
         notes: both of EEB 417A/B and ENV 201A/B must be taken to satisfy requirement
         courses:
           - CEE 207
@@ -4541,6 +4812,7 @@ certificates:
           - WWS 350
       - type: elective-general
         number: 2
+        score: 0
         courses: both of ELE 441/442, EEB 417A/B, and ENV 201A/B must be taken to satisfy requirement
           - AST 309
           - CBE 335
@@ -4583,7 +4855,8 @@ certificates:
     short_name: SML
     requirements:
       - type: statistics
-        number: 1
+        number: 2
+        score: 1
         courses:
           - ECO 202
           - EEB 355
@@ -4593,12 +4866,14 @@ certificates:
           - WWS 200
       - type: machine learning
         number: 1
+        score: 2
         courses:
           - COS 424
           - ELE 364
           - ORF 350
       - type: electives
         number: 3
+        score: 0
         courses:
           - ECO 202
           - EEB 355
@@ -4634,6 +4909,7 @@ certificates:
     requirements:
       - type: core
         number: 3
+        score: 2
         notes: cannot be PDF'ed. Two pre-approved courses in a summer program abroad other than Princeton's can count as one course towards the certificate
         courses:
           - POR 301
@@ -4646,10 +4922,12 @@ certificates:
       - type: core-upper-level
         number: 3
         notes: cannot be PDF'ed
+        score: 2
         courses: 
           - SPA >= 300
       - type: core-general
         number: 1
+        score: 2
         notes: cannot be PDF'ed
         courses: 
           - SPA >= 209
@@ -4658,11 +4936,13 @@ certificates:
     requirements:
       - type: prerequisite
         number: 1
+        score: 2
         notes: cannot be PDF'ed
         courses:
           - RUS 207
       - type: language
         number: 2
+        score: 1
         notes: cannot be PDF'ed
         courses:
           - RUS 208
@@ -4672,6 +4952,7 @@ certificates:
           - RUS 408
       - type: literature
         number: 1
+        score: 1
         notes: cannot be PDF'ed
         courses:
           - SLA 308
@@ -4682,11 +4963,13 @@ certificates:
     requirements:
       - type: prerequisite
         number: 1
+        score: 2
         notes: cannot be PDF'ed
         courses:
           - RUS 207
       - type: literature
         number: 2
+        score: 1
         notes: cannot be PDF'ed
         courses:
           - SLA 308
@@ -4694,6 +4977,7 @@ certificates:
           - SLA 413
       - type: language
         number: 1
+        score: 1
         notes: cannot be PDF'ed
         courses:
           - RUS 208
@@ -4706,10 +4990,16 @@ certificates:
     requirements:
       - type: language
         number: 4
+        score: 2
         notes: at least two years of Arabic, Hebrew, Persian, or Turkish should be taken
-        courses: ARA | HEB | PER | TUR
+        courses: 
+        - ARA*
+        - HEB*
+        - PER*
+        - TUR*
       - type: history
         number: 1
+        score: 2
         courses:
           - HIS 267
           - HIS 342
@@ -4724,6 +5014,7 @@ certificates:
           - REL 337
       - type: social-sciences
         number: 2
+        score: 2
         notes: courses should treat the Near East and be chosen from the the Departments of ANT, NES, POL, REL, SOC, and WWS.
         courses:
           - special
@@ -4732,9 +5023,11 @@ certificates:
     requirements:
       - type: core-upper-level
         number: 2
+        score: 2
         courses: GER >= 300
       - type: core-general
         number: 2
+        score: 2
         courses: GER >= 200
 
   - name: Premed Preparation
@@ -4742,45 +5035,54 @@ certificates:
     requirements:
       - type: general chemistry 1
         number: 1
+        score: 2
         courses:
           - CHM 201
           - CHM 207
       - type: general chemistry 2
         number: 1
+        score: 2
         courses:
           - CHM 202
           - CHM 215
       - type: organic chemistry
         number: 2
+        score: 2
         courses:
           - CHM 303
           - CHM 304
       - type: biology 1
         number: 1
+        score: 2
         courses: 
           - EEB 211
       - type: biology 2
         number: 1 
+        score: 2
         courses:
           - MOL 214
           - MOL 215
       - type: physics 1
         number: 1
+        score: 2
         courses: 
           - PHY 101
           - PHY 103
       - type: physics 2
         number: 1
+        score: 2
         courses:
           - PHY 102
           - PHY 104
           - PHY 108
       - type: math
         number: 2
+        score: 2
         courses:
           - COS 103
           - COS 104
       - type: biochemistry
         number: 1
+        score: 2
         courses:
           - MOL 345
