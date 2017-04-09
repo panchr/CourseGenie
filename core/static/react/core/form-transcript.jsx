@@ -25,7 +25,8 @@ function main() {
 	else {
 		var url = '';
 		}
-	ReactDOM.render(<CourseForm transcript_url={url} action={form_action} />,
+	ReactDOM.render(<CourseForm transcript_url={url} action={form_action}
+		data={existing_data} />,
 		document.getElementById('course-form'));
 	}
 
@@ -33,11 +34,13 @@ class CourseForm extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			courses: new Array(),
-			user: new Object(),
+			courses: props.data.existing_courses,
+			user: props.data.user,
+			graduation_year: props.data.graduation_year,
 			errorMsg: '',
 			requestErrorMsg: '',
 			};
+
 		this.elems = {};
 		this.renderCourse = this.renderCourse.bind(this);
 		this.removeCourse = this.removeCourse.bind(this);
@@ -177,11 +180,11 @@ class CourseForm extends React.Component {
 						<div className="6u"><h1>First Name</h1></div>
 						<div className="6u$"><h1>Last Name</h1></div>
 						<div className="6u">
-							<input type="text"
+							<input type="text" defaultValue={this.state.user.first_name}
 							ref={(e) => this.elems.first_name_input = e} />
 						</div>
 						<div className="6u">
-							<input type="text"
+							<input type="text" defaultValue={this.state.user.last_name}
 								ref={(e) => this.elems.last_name_input = e} />
 						</div>
 					</div>
@@ -190,7 +193,8 @@ class CourseForm extends React.Component {
 							<h1>Graduation Year</h1>
 						</div>
 						<div className="6u">
-							<input defaultValue={(new Date()).getFullYear() + 3}
+							<input defaultValue={
+								this.state.graduation_year || (new Date()).getFullYear() + 3}
 								type="number" className="number"
 								ref={(e) => this.elems.year_input = e} />
 						</div>

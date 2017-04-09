@@ -7,6 +7,8 @@
 import json
 import re
 
+from django.db import transaction
+
 from core.models import *
 
 # store user's records for manual input of courses
@@ -19,9 +21,8 @@ def store_manual(user, courses):
 	list_records = []
 	course_re = re.compile(r'^(?P<dept>[A-Z]{3}) (?P<num>\d{3})(?P<letter>[A-Z]?)$')
 	profile = user.profile
-	existing_courses = set(str(r.course) for r in profile.records.all().prefetch_related('course'))
 
-	for item in set(courses) - existing_courses:
+	for item in courses:
 		matches = course_re.match(item)
 		if not matches:
 			continue
@@ -38,7 +39,12 @@ def store_manual(user, courses):
 			except CrossListing.DoesNotExist:
 				# do something to tell us c was not added	
 				pass
-	Record.objects.bulk_create(list_records)
+
+	# This should be an atomic transaction so existing records are deleted
+	# if and only if the new records are added in.
+	with transaction.atomic():
+		Record.objects.filter(profile=profile).delete()
+		Record.objects.bulk_create(list_records)
 
 # store rest of info from form: name, year, partial preferences (interests)
 # from form_name: list of strings ['first name', 'last name', 'year']

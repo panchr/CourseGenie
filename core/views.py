@@ -28,6 +28,17 @@ class TranscriptView(LoginRequiredMixin, TemplateView):
 		context['transcript_service_url'] = service_url
 		context['transcript_url'] = '{}/transcript/?ticket='.format(settings.TRANSCRIPT_API_URL)
 		context['form_action'] = page_url
+
+		user = self.request.user
+		context['data'] = json.dumps({
+			'existing_courses': user.profile.course_list(),
+			'user': {
+				'first_name': user.first_name,
+				'last_name': user.last_name,
+				},
+			'graduation_year': user.profile.year
+			})
+
 		return context
 
 	def post(self, request):

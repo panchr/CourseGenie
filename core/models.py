@@ -147,19 +147,22 @@ class NestedReq(models.Model):
 	requirement = models.ForeignKey(Requirement, on_delete=models.CASCADE, related_name='nested_reqs')
 
 class Profile(models.Model):
-    user = models.OneToOneField(User, on_delete = models.CASCADE, unique=True) # Django User model
-    year = models.PositiveSmallIntegerField(validators=[MinValueValidator(2015)]) # graduation year
-    submitted = models.BooleanField(default=False)
-    
-    def __str__(self):
-        return self.user.username
+		user = models.OneToOneField(User, on_delete = models.CASCADE, unique=True) # Django User model
+		year = models.PositiveSmallIntegerField(validators=[MinValueValidator(2015)]) # graduation year
+		submitted = models.BooleanField(default=False)
+		
+		def __str__(self):
+				return self.user.username
+
+		def course_list(self):
+			return map(str, self.records.all())
 
 # automatically create profile when create user
 # according to https://simpleisbetterthancomplex.com/tutorial/2016/07/22/how-to-extend-django-user-model.html#onetoone
 @receiver(post_save, sender = User)
 def create_user_profile(sender, instance, created, **kwargs):
-    if created: 
-        Profile.objects.create(user=instance, year=0)
+		if created: 
+				Profile.objects.create(user=instance, year=0)
 
 class Record(models.Model):
 	profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='records')
@@ -167,7 +170,7 @@ class Record(models.Model):
 	semester = models.CharField(max_length = 25, default="")
 	
 	def __str__(self):
-		return '{} {}'.format(self.semester, self.course)
+		return '{}'.format(self.course)
 
 class Calendar(models.Model):
 	profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='calendars')
@@ -199,7 +202,7 @@ class Progress(models.Model):
 class Area(models.Model): # distribution area
 	#name = models.CharField(max_length = 50)
 	short_name = models.CharField(max_length = 3, unique=True)
-    
+		
 	def __str__(self):
 		return self.short_name
 
@@ -209,17 +212,17 @@ class Department(models.Model):
 
 	def __str__(self):
 		return self.short_name
-		    	
+					
 # preference is a property of a user's profile and consistent across calendars
 class Preference(models.Model):
 	profile = models.ForeignKey(Profile, on_delete=models.CASCADE,
-        related_name='preferences')
-    # bl: black listed. NOTE: not sure if these related_names work
+				related_name='preferences')
+		# bl: black listed. NOTE: not sure if these related_names work
 	bl_courses = models.ManyToManyField(Course)
 	bl_areas = models.ManyToManyField(Area, related_name='bl_area')
 	bl_depts = models.ManyToManyField(Department, related_name='bl_dept')
-    
-    # wl: white listed
+		
+		# wl: white listed
 	wl_areas = models.ManyToManyField(Area, related_name='wl_course')
 	wl_depts = models.ManyToManyField(Department, related_name='wl_dept')
 
