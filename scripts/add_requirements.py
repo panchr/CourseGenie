@@ -24,6 +24,16 @@ from core.models import *
 with open("data/all.yaml") as f:
 	raw_data = yaml.load(f)
 
+case1 = re.compile(r"^([A-Z]{3}) ?>= ?([0-9]{3})$") 
+case2 = re.compile(r"^([A-Z]{3})(\*)$")
+case3 = re.compile(r"^([A-Z]{3})\[([A-Z]+)\] ?>= ?([0-9]{3})$")
+case4 = re.compile(r"^(\*)$")
+case5 = re.compile(r"^\* ?>= ?([0-9]{3})$")
+case6 = re.compile(r"^special")
+case7 = re.compile(r"^theme:")
+case8 = re.compile(r"^([A-Z]{3}) ([0-9]{3})([A-Z]?) | .*")
+case9 = re.compile(r"^([A-Z]{3}) ([0-9]{3})([A-Z]?)")
+
 entry = raw_data["degrees"]
 for deg in entry:
 	name = deg["name"]
@@ -49,13 +59,12 @@ for deg in entry:
 				req = Requirement(name=name, t=t, number=number, notes=notes, parent=degree)
 				req.save()
 			'''
-			req = Requirement(name=name, t=t, number=number, notes=notes, parent=degree)
+			req = Requirement(name=name, t=t, number=number, notes=notes, parent=degree, intrinsic_score=intrinsic_score)
 			req.save()
-			dn = re.compile(r"^([A-Z]{3}) ?>= ?([0-9]{3})$") # COMPILE FIRST
 			# add courses via loop, req.courses.add(course)
 			for c in key["courses"]:
 				# DEPT>=NUMBER shortcut
-				m = dn.match(c)
+				m = case1.match(c)
 				if m:
 					dept = m.group(1)
 					n = int(m.group(2))
@@ -64,7 +73,7 @@ for deg in entry:
 						req.courses.add(s)
 					break
 				# DEPT* shortcut
-				m = re.match(r"^([A-Z]{3})(\*)$", c)
+				m = case2.match(c)
 				if m:
 					dept = m.group(1)
 					satisfied = Course.objects.filter(department=dept)
@@ -72,7 +81,7 @@ for deg in entry:
 						req.courses.add(s)
 					break							
 				# DEPT[AREA]>=NUMBER
-				m = re.match(r"^([A-Z]{3})\[([A-Z]+)\] ?>= ?([0-9]{3})$", c)
+				m = case3.match(c)
 				if m:
 					dept = m.group(1)
 					area = m.group(2)
@@ -82,14 +91,14 @@ for deg in entry:
 						req.courses.add(s)
 					break
 				# * shortcut # possibly with optional quote marks
-				m = re.match(r"^(\*)$", c)
+				m = case4.match(c)
 				if m:
 					satisfied = Course.objects.all()
 					for s in satisfied:
 						req.courses.add(s)	
 					break	
 				# *>=NUMBER
-				m = re.match(r"^\* ?>= ?([0-9]{3})$", c)
+				m = case5.match(c)
 				if m:
 					n = int(m.group(1))
 					satisfied = Course.objects.filter(number__gte=n)
@@ -97,16 +106,17 @@ for deg in entry:
 						req.courses.add(s)	
 					break					
 				# special
-				m = re.match(r"^special", c)
+				m = case6.match(c)
 				if m:
 					break					
 				# theme:something
-				m = re.match(r"^theme:", c)
+				m = case7.match(c)
 				if m:
 					break			
-				# directly put in the courses into nested requirments
-				m = re.match(r"^([A-Z]{3}) ([0-9]{3})([A-Z]?) |", c)
+				# DEPT NUM | etc: put in the courses into nested requirement
+				m = case8.match(c)
 				if m:
+					m = m.group(0)
 					nested_req = NestedReq(requirement=req, number=1)
 					separated = m.split("|")
 					for part in separated:
@@ -125,16 +135,15 @@ for deg in entry:
 							try:
 								crossed = CrossListing.objects.get(department=dept, number=num, letter=letter)
 								nested_req.courses.add(crossed.course)
-							except CrossListing.DoesNotExist
-								# do something to tell us c was not added
+							except CrossListing.DoesNotExist:
 								pass
-
+					break
 
 				# regular course entry	
-				m = re.match(r"^([A-Z]{3}) ([0-9]{3})([A-Z]?)", c)
+				m = case9.match(c)
 				if m:			
 					dept = m.group(1)
-					number = m.group(2)
+					numb = m.group(2)
 					letter = m.group(3)
 					try: # in case course isn't in database
 						course = Course.objects.get(department=dept, number=num, letter=letter) 
@@ -172,6 +181,7 @@ for maj in entry:
 					name = k.get("name", t.replace('-', ' ').title())
 					number = k["number"]
 					notes = k.get("notes", "")
+					intrinsic_score = key["score"]
 					'''
 					try:
 						#req = Requirement.objects.get(name=name, t=t, number=number, notes=notes, parent=track)
@@ -180,12 +190,12 @@ for maj in entry:
 						req = Requirement(name=name, t=t, number=number, notes=notes, parent=track)
 						req.save()
 					'''
-					req = Requirement(name=name, t=t, number=number, notes=notes, parent=track)
+					req = Requirement(name=name, t=t, number=number, notes=notes, parent=track, intrinsic_score=intrinsic_score)
 					req.save()
 					# add courses via loop
 					for c in k["courses"]:
 						# DEPT>=NUMBER shortcut, REMOVE SPACES BEFORE PARSING
-						m = re.match(r"^([A-Z]{3}) ?>= ?([0-9]{3})$", c)
+						m = case1.match(c)
 						if m:
 							dept = m.group(1)
 							n = int(m.group(2))
@@ -194,7 +204,7 @@ for maj in entry:
 								req.courses.add(s)
 							break
 						# DEPT* shortcut
-						m = re.match(r"^([A-Z]{3})(\*)$", c)
+						m = case2.match(c)
 						if m:
 							dept = m.group(1)
 							satisfied = Course.objects.filter(department=dept)
@@ -202,7 +212,7 @@ for maj in entry:
 								req.courses.add(s)	
 							break					
 						# DEPT[AREA]>=NUMBER, REMOVE SPACES BEFORE PARSING
-						m = re.match(r"^([A-Z]{3})\[([A-Z]+)\] ?>= ?([0-9]{3})$", c)
+						m = case3.match(c)
 						if m:
 							dept = m.group(1)
 							area = m.group(2)
@@ -212,14 +222,14 @@ for maj in entry:
 								req.courses.add(s)
 							break
 						# * shortcut
-						m = re.match(r"^(\*)$", c)
+						m = case4.match(c)
 						if m:
 							satisfied = Course.objects.all()
 							for s in satisfied:
 								req.courses.add(s)
 							break	
 						# *>=NUMBER
-						m = re.match(r"^\* ?>= ?([0-9]{3})$", c)
+						m = case5.match(c)
 						if m:
 							n = int(m.group(1))
 							satisfied = Course.objects.filter(number__gte=n)
@@ -227,36 +237,43 @@ for maj in entry:
 								req.courses.add(s)	
 							break					
 						# special
-						m = re.match(r"^special", c)
+						m = case6.match(c)
 						if m:
 							break					
 						# theme:something
-						m = re.match(r"^theme:", c)
+						m = case7.match(c)
 						if m:
 							break			
-						# DEPT | etc -> ignore everything except first department
-						m = re.match(r"^([A-Z]{3}) ? |", c)
+						# DEPT NUM | etc: put in the courses into nested requirement
+						m = case8.match(c)
 						if m:
-							dept = m.group(1)
-							satisfied = Course.objects.filter(department=dept)
-							for s in satisfied:
-								req.courses.add(s)
-							break
-						# DEPT NUMBER | etc -> ignore everything except first department
-						m = re.match(r"^([A-Z]{3}) ([0-9]{3})([A-Z]?) |", c)
-						if m:
-							dept = m.group(1)
-							number = m.group(2)
-							letter = m.group(3)
-							satisfied = Course.objects.filter(department=dept, number=number, letter=letter)
-							for s in satisfied:
-								req.courses.add(s)
-							break			
+							m = m.group(0)
+							nested_req = NestedReq(requirement=req, number=1)
+							separated = m.split("|")
+							for part in separated:
+								part = part.strip()
+								
+								dept = part.split()[0]
+								num = part.split()[1][:3]
+								letter = ""
+								if len(part.split()[1]) == 4:
+									letter = part.split()[1][3]
+
+								try: 
+									course = Course.objects.get(department=dept, number=num, letter=letter)
+									nested_req.courses.add(course)
+								except Course.DoesNotExist:
+									try:
+										crossed = CrossListing.objects.get(department=dept, number=num, letter=letter)
+										nested_req.courses.add(crossed.course)
+									except CrossListing.DoesNotExist:
+										pass
+							break		
 						# regular course entry	
-						m = re.match(r"^([A-Z]{3}) ([0-9]{3})([A-Z]?)", c)
+						m = case9.match(c)
 						if m:			
 							dept = m.group(1)
-							number = m.group(2)
+							num = m.group(2)
 							letter = m.group(3)
 							try: # in case course isn't in database
 								course = Course.objects.get(department=dept, number=num, letter=letter) 
@@ -275,6 +292,7 @@ for maj in entry:
 			name = key.get("name", t.replace('-', ' ').title())
 			number = key["number"]
 			notes = key.get("notes", "")
+			intrinsic_score = key["score"]
 			'''
 			try:
 				#req = Requirement.objects.get(name=name, t=t, number=number, notes=notes, parent=major)
@@ -283,12 +301,12 @@ for maj in entry:
 				req = Requirement(name=name, t=t, number=number, notes=notes, parent=major)
 				req.save()
 			'''
-			req = Requirement(name=name, t=t, number=number, notes=notes, parent=major)
+			req = Requirement(name=name, t=t, number=number, notes=notes, parent=major, intrinsic_score=intrinsic_score)
 			req.save()
 			# add courses via loop, req.courses.add(course)
 			for c in key["courses"]:
 				# DEPT>=NUMBER shortcut, REMOVE SPACES BEFORE PARSING
-				m = re.match(r"^([A-Z]{3}) ?>= ?([0-9]{3})$", c)
+				m = case1.match(c)
 				if m:
 					dept = m.group(1)
 					n = int(m.group(2))
@@ -297,7 +315,7 @@ for maj in entry:
 						req.courses.add(s)
 					break
 				# DEPT* shortcut
-				m = re.match(r"^([A-Z]{3})(\*)$", c)
+				m = case2.match(c)
 				if m:
 					dept = m.group(1)
 					satisfied = Course.objects.filter(department=dept)
@@ -305,7 +323,7 @@ for maj in entry:
 						req.courses.add(s)	
 					break					
 				# DEPT[AREA]>=NUMBER, REMOVE SPACES BEFORE PARSING
-				m = re.match(r"^([A-Z]{3})\[([A-Z]+)\] ?>= ?([0-9]{3})$", c)
+				m = case3.match(c)
 				if m:
 					dept = m.group(1)
 					area = m.group(2)
@@ -315,14 +333,14 @@ for maj in entry:
 						req.courses.add(s)
 					break
 				# * shortcut
-				m = re.match(r"^(\*)$", c)
+				m = case4.match(c)
 				if m:
 					satisfied = Course.objects.all()
 					for s in satisfied:
 						req.courses.add(s)	
 					break	
 				# *>=NUMBER
-				m = re.match(r"^\* ?>= ?([0-9]{3})$", c)
+				m = case5.match(c)
 				if m:
 					n = int(m.group(1))
 					satisfied = Course.objects.filter(number__gte=n)
@@ -330,36 +348,43 @@ for maj in entry:
 						req.courses.add(s)	
 					break				
 				# special
-				m = re.match(r"^special", c)
+				m = case6.match(c)
 				if m:
 					break					
 				# theme:something
-				m = re.match(r"^theme:", c)
+				m = case7.match(c)
 				if m:
 					break			
-				# DEPT | etc -> ignore everything except first department
-				m = re.match(r"^([A-Z]{3}) ? |", c)
+				# DEPT NUM | etc: put in the courses into nested requirement
+				m = case8.match(c)
 				if m:
-					dept = m.group(1)
-					satisfied = Course.objects.filter(department=dept)
-					for s in satisfied:
-						req.courses.add(s)
-					break
-				# DEPT NUMBER | etc -> ignore everything except first department
-				m = re.match(r"^([A-Z]{3}) ([0-9]{3})([A-Z]?) |", c)
-				if m:
-					dept = m.group(1)
-					number = m.group(2)
-					letter = m.group(3)
-					satisfied = Course.objects.filter(department=dept, number=number, letter=letter)
-					for s in satisfied:
-						req.courses.add(s)	
+					m = m.group(0)
+					nested_req = NestedReq(requirement=req, number=1)
+					separated = m.split("|")
+					for part in separated:
+						part = part.strip()
+						
+						dept = part.split()[0]
+						num = part.split()[1][:3]
+						letter = ""
+						if len(part.split()[1]) == 4:
+							letter = part.split()[1][3]
+
+						try: 
+							course = Course.objects.get(department=dept, number=num, letter=letter)
+							nested_req.courses.add(course)
+						except Course.DoesNotExist:
+							try:
+								crossed = CrossListing.objects.get(department=dept, number=num, letter=letter)
+								nested_req.courses.add(crossed.course)
+							except CrossListing.DoesNotExist:
+								pass
 					break		
 				# regular course entry	
-				m = re.match(r"^([A-Z]{3}) ([0-9]{3})([A-Z]?)", c)
+				m = case9.match(c)
 				if m:			
 					dept = m.group(1)
-					number = m.group(2)
+					num = m.group(2)
 					letter = m.group(3)
 					try: # in case course isn't in database
 						course = Course.objects.get(department=dept, number=num, letter=letter) 
@@ -389,6 +414,7 @@ for cert in entry:
 				name = key.get("name", t.replace('-', ' ').title())
 				number = key["number"]
 				notes = key.get("notes", "")
+				intrinsic_score = key["score"]
 				'''
 				try:
 					#req = Requirement.objects.get(name=name, t=t, number=number, notes=notes, parent=certificate)
@@ -397,13 +423,13 @@ for cert in entry:
 					req = Requirement(name=name, t=t, number=number, notes=notes, parent=certificate)
 					req.save()
 				'''
-				req = Requirement(name=name, t=t, number=number, notes=notes, parent=certificate)
+				req = Requirement(name=name, t=t, number=number, notes=notes, parent=certificate, intrinsic_score=intrinsic_score)
 				req.save()
 				# add courses via loop, req.courses.add(course)
 				#print name #for debugging purposes
 				for c in key["courses"]:
 					# DEPT>=NUMBER shortcut, REMOVE SPACES BEFORE PARSING
-					m = re.match(r"^([A-Z]{3}) ?>= ?([0-9]{3})$", c)
+					m = case1.match(c)
 					if m:
 						dept = m.group(1)
 						n = int(m.group(2))
@@ -412,7 +438,7 @@ for cert in entry:
 							req.courses.add(s)
 						break
 					# DEPT* shortcut
-					m = re.match(r"^([A-Z]{3})(\*)$", c)
+					m = case2.match(c)
 					if m:
 						dept = m.group(1)
 						satisfied = Course.objects.filter(department=dept)
@@ -420,7 +446,7 @@ for cert in entry:
 							req.courses.add(s)	
 						break						
 					# DEPT[AREA]>=NUMBER, REMOVE SPACES BEFORE PARSING
-					m = re.match(r"^([A-Z]{3})\[([A-Z]+)\] ?>= ?([0-9]{3})$", c)
+					m = case3.match(c)
 					if m:
 						dept = m.group(1)
 						area = m.group(2)
@@ -430,14 +456,14 @@ for cert in entry:
 							req.courses.add(s)
 						break
 					# * shortcut
-					m = re.match(r"^(\*)$", c)
+					m = case4.match(c)
 					if m:
 						satisfied = Course.objects.all()
 						for s in satisfied:
 							req.courses.add(s)	
 						break
 					# *>=NUMBER
-					m = re.match(r"^\* ?>= ?([0-9]{3})$", c)
+					m = case5.match(c)
 					if m:
 						n = int(m.group(1))
 						satisfied = Course.objects.filter(number__gte=n)
@@ -445,36 +471,43 @@ for cert in entry:
 							req.courses.add(s)	
 						break				
 					# special
-					m = re.match(r"^special", c)
+					m = case6.match(c)
 					if m:
 						break					
 					# theme:something
-					m = re.match(r"^theme:", c)
+					m = case7.match(c)
 					if m:
 						break			
-					# DEPT | etc -> ignore everything except first department
-					m = re.match(r"^([A-Z]{3}) ? |", c)
+					# DEPT NUM | etc: put in the courses into nested requirement
+					m = case8.match(c)
 					if m:
-						dept = m.group(1)
-						satisfied = Course.objects.filter(department=dept)
-						for s in satisfied:
-							req.courses.add(s)
-						break
-					# DEPT NUMBER | etc -> ignore everything except first department
-					m = re.match(r"^([A-Z]{3}) ([0-9]{3})([A-Z]?) |", c)
-					if m:
-						dept = m.group(1)
-						number = m.group(2)
-						letter = m.group(3)
-						satisfied = Course.objects.filter(department=dept, number=number, letter=letter)
-						for s in satisfied:
-							req.courses.add(s)	
-						break			
+						m = m.group(0)
+						nested_req = NestedReq(requirement=req, number=1)
+						separated = m.split("|")
+						for part in separated:
+							part = part.strip()
+							print "part is " + part
+							dept = part.split()[0]
+							num = part.split()[1][:3]
+							letter = ""
+							if len(part.split()[1]) == 4:
+								letter = part.split()[1][3]
+
+							try: 
+								course = Course.objects.get(department=dept, number=num, letter=letter)
+								nested_req.courses.add(course)
+							except Course.DoesNotExist:
+								try:
+									crossed = CrossListing.objects.get(department=dept, number=num, letter=letter)
+									nested_req.courses.add(crossed.course)
+								except CrossListing.DoesNotExist:
+									pass
+						break		
 					# regular course entry	
-					m = re.match(r"^([A-Z]{3}) ([0-9]{3})([A-Z]?)", c)
+					m = case9.match(c)
 					if m:			
 						dept = m.group(1)
-						number = m.group(2)
+						num = m.group(2)
 						letter = m.group(3)
 						try: # in case course isn't in database
 							course = Course.objects.get(department=dept, number=num, letter=letter) 

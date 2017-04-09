@@ -2724,7 +2724,9 @@ certificates:
         number: 4
         score: 2
         courses: 
-          - CHI | JPN | KOR
+          - CHI*
+          - JPN*
+          - KOR*
       - type: general-200
         number: 1
         score: 1
@@ -4993,10 +4995,10 @@ certificates:
         score: 2
         notes: at least two years of Arabic, Hebrew, Persian, or Turkish should be taken
         courses: 
-        - ARA*
-        - HEB*
-        - PER*
-        - TUR*
+          - ARA*
+          - HEB*
+          - PER*
+          - TUR*
       - type: history
         number: 1
         score: 2

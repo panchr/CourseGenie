@@ -115,6 +115,7 @@ class Requirement(models.Model):
 	t = models.CharField(max_length=50) # requirement type
 	number = models.PositiveSmallIntegerField(default=0) # number required
 	notes = models.CharField(max_length=255, default='')
+	intrinsic_score = models.PositiveSmallIntegerField(default=0)
 
 	# Courses can be listed in many different requirements
 	courses = models.ManyToManyField(Course)

@@ -134,23 +134,21 @@ def update_preferences(profile, raw_data):
 	pass
 
 # calculate progress corresponding to a calendar
-# a course already used to satisfy a requirement belonging to a particular degree/major/track/certificate
-# should not be able to satisfy any other requirements under the same parent
-# IN PROGRESS; needs planning before coding
-def calculate_progress(calendar, requirement):
+# key idea: a course should not be able to satisfy multiple requirements under the same category
+# NEED TO DEBUG
+def calculate_progress(calendar):
 	profile = calendar.profile
 
-	# degree requirements 
+	Progress.objects.filter(calendar=calendar).delete() # delete old ones, start from scratch
+
+	# degree requirements (simpler scenario than other progresses)
 	degree = calendar.degree
-	degree_requirements = Degree.requirements.all()
-	for requirement in degree_requirements:
+	for requirement in  degree.requirements.all():
 		progress = Progress(calendar=calendar, requirement=requirement)
 			progress.save()
 
 		number_taken = 0
-		number_required = requirement.number
-		course_choices = requirement.courses.all()
-		for course in course_choices:
+		for course in requirement.courses.all():
 			try:
 				record = Record.objects.get(profile=profile, course=course) # took this course
 				number_taken += 1
@@ -158,24 +156,92 @@ def calculate_progress(calendar, requirement):
 			except Record.DoesNotExist: # did not take the course
 				pass
 
-		if number_taken >= number_required:		
+		if number_taken >= requirement.number:		
 			progress.completed = True
 
 		progress.number_taken = number_taken
 
-	# major requirements
-	major = calendar.major
-	major_requirements = Major.requirements.all() # should not include those of its tracks
-	for requirement in major_requirements:
-		pass
+	# requirements of major itself
+	calculate_single_progress(calendar, calendar.major)
+
 	# track requirements, if any
+	track = calendar.track
+	if track != NULL:
+		calculate_single_progress(calendar, track)
 
 	# certificates requirements, if any number
+	for certificate in calendar.certificates:
+		calculate_single_progress(calendar, certificate)
 
+# calculate for one single major/track/certificate; to be called from calculate_progress
+# NEED TO DEBUG
+def calculate_single_progress(calendar, category):
+	FACTOR = 5
+	number_choices = [] # number of courses to choose from for this requirement
+	number_remaining = [] # number of courses left to fulfill for this requirement
+	c = 0 # count of number of choices
+	nested_reqs = None
+	list_progresses = []
+	cat_requirements = category.requirements.all()
+	for requirement in cat_requirements:
+		number_remaining.append(requirement.number)
+		c += requirement.courses.count()
+		nested_reqs = requirement.nested_reqs.all()
+		for nreq in nested_reqs:
+			c += nreq.courses.count()
+		number_choices.append(c) 
+		# create default progresses for all requirements, with number_taken = 0, completed = False
+		list_progresses.append(Progress(calendar=calendar, requirement=requirement))
+	Progress.objects.bulk_create(list_progresses)
 
-# calculate for one certificate; to be called from calculate_progress
-def calculate_progress_certificate():
-	pass
+	for record in Record.objects.filter(profile=calendar.profile).prefetch_related('course'):
+		course = record.course
+		matched_reqs = {}
+		i = 0
+		added = False
+		for requirement in cat_requirements:
+			if course in requirement.courses:
+				matched_reqs[i] = requirement
+				added = True
+
+			nested_reqs = requirement.nested_reqs.all()
+			for nreq in nested_reqs:
+				if course in nreq.courses and added == False:
+					matched_reqs[i] = requirement
+					added = True
+			i += 1
+	
+		if len(matched_reqs) == 0: # course did not satisfy any requirements; no Progresses need to be updated
+			return
+
+		elif len(matched_reqs) == 1: # course satisfied one requirement; need to update the progress
+			index = 0
+			req = None
+			for key in matched_reqs: # there should only be one
+				index = key
+				req = matched_reqs[key]
+
+			progress = Progress.objects.get(calendar=calendar, requirement=req)	
+
+			progress.number_taken += 1
+			progress.courses_taken.add(course)
+			number_remaining[index] -= 1
+
+		else: # course satisfied multiple requirements
+			diffs = []
+			for j in range (0, len(number_choices)):
+				diff.append(number_choices[j] - number_remaining[j] * FACTOR)
+
+			min_key = 1000000
+			for key in matched_reqs:
+				if diff[key] < min_key:
+					min_key = key
+
+			progress = Progress.objects.get(calendar=calendar, requirement=matched_reqs[min_key])
+
+			progress.number_taken += 1
+			progress.courses_taken.add(course)
+			number_remaining[min_key] -= 1
 
 # recommend courses from student’s past courses, degree requirements, 
 # major requirements, and certificate requirements
