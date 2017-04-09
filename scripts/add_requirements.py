@@ -40,6 +40,7 @@ for deg in entry:
 			name = key.get("name", t.replace('-', ' ').title())
 			number = key["number"]
 			notes = key.get("notes", "")
+			intrinsic_score = key["score"]
 			'''
 			try:
 				#req = Requirement.objects.get(name=name, t=t, number=number, notes=notes, parent=degree)
@@ -103,24 +104,32 @@ for deg in entry:
 				m = re.match(r"^theme:", c)
 				if m:
 					break			
-				# DEPT | etc -> ignore everything except first department
-				m = re.match(r"^([A-Z]{3}) ? |", c)
-				if m:
-					dept = m.group(1)
-					satisfied = Course.objects.filter(department=dept)
-					for s in satisfied:
-						req.courses.add(s)
-					break
-				# DEPT NUMBER | etc -> ignore everything except first department
+				# directly put in the courses into nested requirments
 				m = re.match(r"^([A-Z]{3}) ([0-9]{3})([A-Z]?) |", c)
 				if m:
-					dept = m.group(1)
-					number = m.group(2)
-					letter = m.group(3)
-					satisfied = Course.objects.filter(department=dept, number=number, letter=letter)
-					for s in satisfied:
-						req.courses.add(s)
-					break
+					nested_req = NestedReq(requirement=req, number=1)
+					separated = m.split("|")
+					for part in separated:
+						part = part.strip()
+						
+						dept = part.split()[0]
+						num = part.split()[1][:3]
+						letter = ""
+						if len(part.split()[1]) == 4:
+							letter = part.split()[1][3]
+
+						try: 
+							course = Course.objects.get(department=dept, number=num, letter=letter)
+							nested_req.courses.add(course)
+						except Course.DoesNotExist:
+							try:
+								crossed = CrossListing.objects.get(department=dept, number=num, letter=letter)
+								nested_req.courses.add(crossed.course)
+							except CrossListing.DoesNotExist
+								# do something to tell us c was not added
+								pass
+
+
 				# regular course entry	
 				m = re.match(r"^([A-Z]{3}) ([0-9]{3})([A-Z]?)", c)
 				if m:			
