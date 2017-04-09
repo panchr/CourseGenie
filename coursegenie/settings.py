@@ -48,7 +48,7 @@ INSTALLED_APPS = [
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAdminUser',
+        'rest_framework.permissions.IsAuthenticatedOrReadOnly',
     ],
     'PAGE_SIZE': 10
 }
@@ -97,11 +97,7 @@ WSGI_APPLICATION = 'coursegenie.wsgi.application'
 
 import dj_database_url
 DATABASES = {
-    #'default': dj_database_url.config(conn_max_age=600)
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'mydatabase',
-    }
+    'default': dj_database_url.config(conn_max_age=600)
 }
 
 # Password validation
