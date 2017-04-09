@@ -11,4 +11,5 @@ app_name = 'core'
 urlpatterns = [
 	url(r'^$', views.IndexView.as_view(), name='index'),
 	url(r'^dashboard/$', views.DashboardView.as_view(), name='dashboard'),
+	url(r'^transcript/$', views.TranscriptView.as_view(), name='transcript'),
 	]

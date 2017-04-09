@@ -92,8 +92,8 @@ class Course(models.Model):
 		), default=TERM_INCONSISTENT)
 
 	def __str__(self):
-		return '{} {} {}'.format(self.department, self.number, self.letter)
-		#return '{} {}'.format(self.department, self.number)
+		return '{} {}{}'.format(self.department, self.number, self.letter)
+
 	class Meta:
 		unique_together = ('number', 'department', 'letter')
 
@@ -149,6 +149,7 @@ class NestedReq(models.Model):
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete = models.CASCADE, unique=True) # Django User model
     year = models.PositiveSmallIntegerField(validators=[MinValueValidator(2015)]) # graduation year
+    submitted = models.BooleanField(default=False)
     
     def __str__(self):
         return self.user.username
@@ -166,7 +167,7 @@ class Record(models.Model):
 	semester = models.CharField(max_length = 25, default="")
 	
 	def __str__(self):
-		return '{} {} {}'.format(self.semester, self.course, self.grade)
+		return '{} {}'.format(self.semester, self.course)
 
 class Calendar(models.Model):
 	profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='calendars')
