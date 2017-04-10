@@ -34,11 +34,14 @@ function GridView(props) {
 			grid.push(row);
 			}
 
+		var columnSize = (12 / props.cols);
+		columnSize = columnSize > 1 ? columnSize: 1;
+
 		return <div className='grid-view'>
 			{grid.map((row) => {
-				return <div className='grid-row' key={'grid-row-' + Math.random()}>
+				return <div className='grid-row row' key={'grid-row-' + Math.random()}>
 				{row.map((c) => {
-					return <span className="grid-item" key={'grid-item-' + Math.random()}>
+					return <span className={`grid-item ${columnSize}u`} key={'grid-item-' + Math.random()}>
 					{c == null ? props.blankElement() : t(c)}
 					</span>;
 					})}

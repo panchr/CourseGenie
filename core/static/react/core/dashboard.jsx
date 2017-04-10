@@ -47,7 +47,7 @@ class Dashboard extends React.Component {
 							return <div>
 								<h2>{e.name}</h2>
 								<GridView t={(c) => {
-									return <CourseDisplay department={c.department} number={c.number} />;
+									return <CourseDisplay {...c} extended={true} />;
 									}} rows={2} cols={3} data={e.courses} />
 							</div>;
 							}} data={this.state.semesters}/>

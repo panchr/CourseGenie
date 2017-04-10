@@ -17,6 +17,8 @@ module.exports = {
 					{name: 'Computer Networks', course_id: '1003',
 					number: 461, letter: '', department: 'COS', 'area': 'QR'},
 					{name: 'The Environmental Nexus', course_id: '1004',
+					number: 200, letter: 'A', department: 'ENV', 'area': 'STL'},
+					{name: 'The Environmental Nexus', course_id: '1004',
 					number: 200, letter: 'A', department: 'ENV', 'area': 'STL'}
 					]},
 				{name: 'Fall 2017', courses: [
