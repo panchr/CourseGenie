@@ -52,7 +52,7 @@ class TranscriptView(LoginRequiredMixin, TemplateView):
 		user.save()
 		user.profile.save()
 
-		return render(request, 'core/data.html', {'data': data})
+		return redirect('core:dashboard')
 
 class DashboardView(LoginRequiredMixin, TemplateView):
 	template_name = 'core/dashboard.html'
