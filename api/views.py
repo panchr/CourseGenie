@@ -2,7 +2,7 @@ from django.shortcuts import render
 
 # Create your views here.
 from core.models import Degree, Major, Certificate, Track, Course, CrossListing, Requirement, Profile, Record, Calendar, Progress, Area, Department, Preference, Semester
-from api.serializers import SDegreeSerializer, MajorSerializer, CertificateSerializer, TrackSerializer, CourseSerializer, CrossListingSerializer, RequirementSerializer, ProfileSerializer, RecordSerializer, CalendarSerializer, ProgressSerializer, AreaSerializer, DepartmentSerializer, PreferenceSerializer, SemesterSerializer
+from api.serializers import DegreeSerializer, MajorSerializer, CertificateSerializer, TrackSerializer, CourseSerializer, CrossListingSerializer, RequirementSerializer, ProfileSerializer, RecordSerializer, CalendarSerializer, ProgressSerializer, AreaSerializer, DepartmentSerializer, PreferenceSerializer, SemesterSerializer
 from rest_framework import generics
 
 

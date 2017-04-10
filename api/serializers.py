@@ -1,7 +1,6 @@
 from core.models import Degree, Major, Certificate, Track, Course, CrossListing, Requirement, Profile, Record, Calendar, Progress, Area, Department, Preference, Semester
 from rest_framework import serializers
 
-
 class DegreeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Degree
