@@ -74,7 +74,7 @@ class Track(models.Model):
 
 class Course(models.Model):
 	name = models.CharField(max_length=255)
-	course_id = models.CharField(max_length=10, default="")
+	course_id = models.CharField(max_length=10, default="", unique=True)
 	number = models.PositiveSmallIntegerField()
 	letter = models.CharField(max_length=1, default="")
 	department = models.CharField(max_length=3)
@@ -214,7 +214,7 @@ class Department(models.Model):
 class Preference(models.Model):
 	profile = models.ForeignKey(Profile, on_delete=models.CASCADE,
         related_name='preferences')
-    # bl: black listed. NOTE: not sure if these related_names work
+    # bl: black listed
 	bl_courses = models.ManyToManyField(Course)
 	bl_areas = models.ManyToManyField(Area, related_name='bl_area')
 	bl_depts = models.ManyToManyField(Department, related_name='bl_dept')

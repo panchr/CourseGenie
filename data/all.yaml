@@ -439,10 +439,12 @@ majors:
       "Circuits and Systems":
         - type: req-concentration
           number: 1
+          score: 1
           courses: 
             - ELE 304
         - type: concentration
           number: 2
+          score: 1
           courses: 
             - ELE 341
             - ELE 375
@@ -453,6 +455,7 @@ majors:
       "Data and Information":
         - type: ele-concentration
           number: 2
+          score: 1
           courses:
             - ELE 381
             - ELE 477
@@ -462,6 +465,7 @@ majors:
             - ELE 535
         - type: misc-concentration
           number: 1
+          score: 1
           courses:
             - ELE 381
             - ELE 477
@@ -476,10 +480,12 @@ majors:
       "Computer Systems":
         - type: req-concentration
           number: 1
+          score: 1
           courses:
             - ELE 375
         - type: ele-concentration
           number: 1
+          score: 1
           courses:
             - ELE 461
             - ELE 462
@@ -488,6 +494,7 @@ majors:
             - ELE 475
         - type: misc-concentration
           number: 1
+          score: 1
           courses:
             - ELE 461
             - ELE 462
@@ -500,6 +507,7 @@ majors:
       "Robotics and Cyber-physical Systems":
         - type: ele-concentration
           number: 2
+          score: 1
           courses:
             - ELE 304
             - ELE 375
@@ -507,6 +515,7 @@ majors:
             - ELE 488
         - type: misc-concentration
           number: 1
+          score: 1
           courses:
             - ELE 304
             - ELE 375
@@ -519,10 +528,12 @@ majors:
       "Quantum Information and Applied Physics":
         - type: req-concentration
           number: 1
+          score: 1
           courses:
             - ELE 342
         - type: concentration
           number: 2
+          score: 1
           courses:
             - ELE 396
             - ELE 441
@@ -532,16 +543,19 @@ majors:
       "Security and Privacy":
         - type: req-concentration
           number: 1
+          score: 1
           courses:
             - ELE 432
         - type: ele-concentration
           number: 1
+          score: 1
           courses: 
             - ELE 375
             - ELE 464
             - ELE 470
         - type: misc-concentration
           number: 1
+          score: 1
           courses:
             - ELE 375
             - ELE 464
@@ -552,10 +566,12 @@ majors:
       "Electronic Devices and Materials":
         - type: req-concentration
           number: 1
+          score: 1
           courses:
             - ELE 341
         - type: ele-concentration
           number: 1
+          score: 1
           courses: 
             - ELE 304
             - ELE 342
@@ -563,6 +579,7 @@ majors:
             - ELE 441
         - type: misc-concentration
           number: 1
+          score: 1
           courses:
             - ELE 304
             - ELE 342
@@ -575,6 +592,7 @@ majors:
       "Biomedical Engineering":
         - type: ele-concentration
           number: 2
+          score: 1
           courses:
             - ELE 304
             - ELE 452
@@ -583,6 +601,7 @@ majors:
             - ELE 488
         - type: misc-concentration
           number: 1
+          score: 1
           courses:
             - ELE 304
             - ELE 452
@@ -596,10 +615,12 @@ majors:
       "Optics and Photonics":
         - type: req-concentration
           number: 1
+          score: 1
           courses:
             - ELE 351
         - type: concentration
           number: 2
+          score: 1
           courses:
             - ELE 342
             - ELE 452
@@ -610,6 +631,7 @@ majors:
       "Energy and the Environment":
         - type: concentration
           number: 3
+          score: 1
           courses:
             - ELE 341
             - ELE 431
@@ -989,18 +1011,19 @@ majors:
         - type: elective
           name: Program Electives
           number: 4
-          score: 1
+          score: 0
           courses:
             - '*'
         - type: elective-300
           name: Program Electives
           number: 3
-          score: 1
+          score: 0
           courses:
             - '*>=300'
         - type: 300+
           name: 8 300+ Level Courses
           number: 8
+          score: 1
           courses:
             - '*>=300'
           unique: false
@@ -2409,16 +2432,19 @@ certificates:
     requirements: 
       - type: core
         number: 1
+        score: 2
         courses:
           - AMS 101
       - type: ams-courses
         number: 3
+        score: 1
         courses:
           - AMS >= 300
       - type: electives
         number: 3
-        courses:
+        score: 0
         notes: three electives, from three different departments outside the student's major
+        courses:
           - special 
       
   - name: Applications of Computing
@@ -2426,20 +2452,24 @@ certificates:
     requirements:
       - type: prerequisite
         number: 1
+        score: 2
         courses:
           - COS 126
       - type: core
         number: 2
+        score: 2
         courses:
           - COS 217
           - COS 226
           - COS 323
       - type: departmental
         number: 1
+        score: 1
         courses:
           - COS >= 300 # (except not 397, 398, 497, 498, or 323 if it was used as one of the core classes)
       - type: additional
         number: 1
+        score: 0
         notes: including but not limited to these courses
         courses:
           - APC 524
@@ -2698,24 +2728,24 @@ certificates:
         score: 2
         courses:
           - DAN 204
-           - DAN 207
-           - DAN 209
-           - DAN 210
-           - DAN 213
-           - DAN 214
-           - DAN 211
-           - DAN 322
-           - DAN 315
+          - DAN 207
+          - DAN 209
+          - DAN 210
+          - DAN 213
+          - DAN 214
+          - DAN 211
+          - DAN 322
+          - DAN 315
       - type: seminar
         number: 1
         score: 2
         courses:
-           - DAN 316
-           - DAN 215
-           - DAN 321
-           - DAN 312
-           - DAN 497
-           - DAN 310
+          - DAN 316
+          - DAN 215
+          - DAN 321
+          - DAN 312
+          - DAN 497
+          - DAN 310
 
   - name: East Asian Studies
     short_name: EAS
@@ -3410,6 +3440,7 @@ certificates:
           - CHM 201 | CHM 207
       - type: thesis
         name: Senior Thesis
+        score: 0
         number: 1
         courses:
           - special
@@ -3951,7 +3982,7 @@ certificates:
         courses: 
           - special
 
-  - name: linguistics
+  - name: Linguistics
     short_name: LIN
     requirements: 
       - type: prerequisite
@@ -3974,7 +4005,7 @@ certificates:
           - PSY 309
           - TRA 301
 
-  - name: materials science and engineering
+  - name: Materials Science and Engineering
     short_name: MSE
     requirements:
       - type: core materials
@@ -4088,7 +4119,7 @@ certificates:
           - PHY 405
           - PHY 408
 
-  - name: musical theater
+  - name: Musical Theater
     short_name: MTD 
     requirements:
       - type: theater
@@ -4186,7 +4217,7 @@ certificates:
           - THR 366
           - THR 400
 
-  - name: musical performance
+  - name: Musical Performance
     short_name: MP
     requirements:
       - type: intro theory 
@@ -4253,7 +4284,7 @@ certificates:
           - MUS 430
           - MUS 431
 
-  - name: neuroscience
+  - name: Neuroscience
     short_name: NEU
     requirements:
       - type: core-part1
@@ -4314,7 +4345,7 @@ certificates:
           - NEU 480
           - NEU 516
           - NEU 502B
-  - name: planets and life
+  - name: Planets and Life
     short_name: planets and life
     requirements:
       - type: core
@@ -4387,7 +4418,7 @@ certificates:
           # computer science
           - COS 323
                 
-  - name: robotics and intelligent systems
+  - name: Robotics and Intelligent Systems
     short_name: robotics
     requirements:
       - type: math
@@ -4484,7 +4515,7 @@ certificates:
           - VIS 392
           - VIS 416
 
-  - name: Values and public life
+  - name: Values and Public Life
     short_name: values
     requirements:
         - type: philosophy
@@ -4501,7 +4532,7 @@ certificates:
             - POL 306
             - POL 313
 
-  - name: Urban studies
+  - name: Urban Studies
     short_name: URB
     requirements: 
       - type: core
@@ -4576,7 +4607,7 @@ certificates:
           - GEO 102A
           - GEO 102B
           - MAE 228
-  - name: Translation and intercultural communication
+  - name: Translation and Intercultural Communication
     short_name: TRA
     requirements:
       - type: core
@@ -4585,7 +4616,7 @@ certificates:
         courses:
           - TRA 200
           - TRA 400
-  - name: Technology and society energy track
+  - name: Technology and Society Energy track
     short_name: T&S energy
     requirements:
       - type: core
@@ -4650,7 +4681,7 @@ certificates:
           - HIS 398
           - SOC 344
           - WWS 309
-  - name: Technology and society information technology track
+  - name: Technology and Society Information technology track
     short_name: T&S IT
     requirements:
       - type: core
@@ -4735,7 +4766,7 @@ certificates:
           - ITA 320
           - STC 349
           - WWS 354
-  - name: Teacher preparation
+  - name: Teacher Preparation
     short_name: teacher prep
     requirements:
       - type: core
@@ -4747,7 +4778,7 @@ certificates:
           - TPP 301
           - TPP 401
           - TPP 402
-  - name: Sustainable energy
+  - name: Sustainable Energy
     short_name: sustainable energy
     requirements:
       - type: core-a1
@@ -4853,7 +4884,7 @@ certificates:
           - WWS 306
           - WWS 350
 
-  - name: Statistics and machine learning
+  - name: Statistics and Machine Learning
     short_name: SML
     requirements:
       - type: statistics
@@ -4933,7 +4964,7 @@ certificates:
         notes: cannot be PDF'ed
         courses: 
           - SPA >= 209
-  - name: Russian language 
+  - name: Russian Language 
     short_name: RUS lang
     requirements:
       - type: prerequisite
@@ -4960,7 +4991,7 @@ certificates:
           - SLA 308
           - SLA 312
           - SLA 413
-  - name: Russian literature
+  - name: Russian Literature
     short_name: RUS lit
     requirements:
       - type: prerequisite
@@ -4987,7 +5018,7 @@ certificates:
           - RUS 406
           - RUS 407
           - RUS 408   
-  - name: Near Eastern studies
+  - name: Near Eastern Studies
     short_name: NES
     requirements:
       - type: language

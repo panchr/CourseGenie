@@ -27,7 +27,7 @@ except (IndexError, KeyError):
 	sys.exit(1)
 
 def main():
-	with open("data/usg-courses.json") as f:
+	with open("data/usg-courses-fall17.json") as f:
 		raw_data = json.load(f)
 
 	for record in raw_data:
@@ -45,10 +45,14 @@ def main():
 			letter = ""
 		department = record["subj_code"]
 		try:
-			course = Course.objects.get(name=name, course_id=id_number, number=number, department=department, letter=letter)
+			course = Course.objects.get(course_id=id_number)
 			if course.term != Course.TERM_INCONSISTENT and course.term != CURRENT_TERM:
 				course.term = Course.TERM_BOTH
-				course.save()
+			course.name = name
+			course.department = department
+			course.number = number
+			course.letter = letter
+			course.save()
 		except Course.DoesNotExist:
 			course = Course(name=name, number=number, course_id=id_number, department=department, letter=letter, term=CURRENT_TERM)
 			course.save()
@@ -71,7 +75,7 @@ def main():
 
 	f.close()
 
-	with open("data/courses.json") as f:
+	with open("data/courses_fall17.json") as f:
 		raw_data = json.load(f)
 
 		for record in raw_data:

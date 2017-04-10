@@ -200,11 +200,11 @@ def calculate_single_progress(calendar, category):
 		i = 0
 		added = False
 		for requirement in cat_requirements:
-			if course in requirement.courses:
+			if course in requirement.courses.all():
 				matched_reqs[i] = requirement
 				added = True
 
-			nested_reqs = requirement.nested_reqs.all()
+			nested_reqs = NestedReq.objects.filter(requirement=requiremnt)
 			for nreq in nested_reqs:
 				if course in nreq.courses and added == False:
 					matched_reqs[i] = requirement
@@ -243,16 +243,72 @@ def calculate_single_progress(calendar, category):
 			progress.courses_taken.add(course)
 			number_remaining[min_key] -= 1
 
-# recommend courses from student’s past courses, degree requirements, 
-# major requirements, and certificate requirements
-# IN PROGRESS; needs planning before coding
-def recommend():
-	# actual algorithm goes here
+# the brains of the project!!! 
+# IN PROGRESS
+def recommend(calendar):
+	D = 0 # degree
+	M = 0 # major
+	T = 0 # track
+	C = 0 # certificate
+	WLD = 0 # white listed department
+	WLA = 0 # white listed area
+	BLD = 0 # black listed department
+	BLA = 0 # black listed area
+	F = 0 # flexibility; other BSE majors
+	A = 0 # untaken distribution area
+
+	profile = calendar.profile
+	preference = Preference.objects.get(profile=profile)
+	major = calendar.major
+	other_majors = []
+	for m in Major.objects.all():
+		if m.name != major.name:
+			other_majors.append(m)
+
+	filter_out = []
+	taken_areas = []
+	# filter out courses they've taken already
+	for record in Record.objects.get(profile=profile):
+		filter_out.append(record.course)
+		taken_areas.append(record.course.area)
+
+	taken_areas.append("")
+	# filter out black listed courses, no repeats
+	for course in preference.bl_courses.all():
+		if course not in filter_out:
+			filter_out.append(course)
+
+	# filter out courses already in calendar, no repeatss
+	for semester in Semester.objects.filter(calendar=calendar):
+		for course in semester.courses.all():
+			if course not in filter_out:
+				filter_out.append(course)
+
+	wl_depts_short = [] # departments in wl_depts
+	for dept in preference.wl_depts.all():
+		wl_depts_short.append(dept.short_name)
+
+	wl_areas = []
+	for area in preference.wl_areas.all():
+		wl_areas.append(area.short_name)
+
+	bl_depts_short = []
+	for dept in preference.bl_depts.all():
+		bl_depts_short.append(dept.short_name)
+
+	bl_areas = []
+	for area in preference.bl_areas.all():
+		bl_areas.append(area.short_name)
+
+	bse_majors = []
+	for major in Major.objects.all():
+		majors.append(major.short_name)
+
 	list_suggestions = []
-	# create list of all the courses 
+	# create list of all the courses. Each entry is a dictionary
 	# [
 	#	{
-	#		'course_id': '123', 
+	#		'course_id': '123456', 
 	#		'name': 'Macroeconomics', 
 	#		'short_name': 'ECO 101A',
 	#		'department': 'ECO',
@@ -262,6 +318,96 @@ def recommend():
 	#		'score': 3
 	#	}
 	# ]
-	# how to deal with tracks within major? (How does user input this?)
-	# should be removed from list if already in calendar
-	return list_suggestions
+	for course in Course.objects.all():
+		if course not in filter_out and course not in list_suggestions:
+			department = course.department
+			area = course.area
+
+			entry = {'course_id': course.course_id, 'name': course.name, 'department': department,
+			'number': course.number, 'letter': course.letter, 'short_name': department + " " + course.number + course.letter,
+			'score': 0, 'reason': ""} 
+
+			# add points if in wl_depts (primary department only)
+			if department in wl_depts_short:
+				entry['score'] += WLD
+
+			# add points if in wl_areas
+			if area in wl_areas:
+				entry['score'] += WLA
+
+			# subtract points if in bl_depts
+			if department in bl_depts_short:
+				entry['score'] -= BLD
+
+			# subtract points if in bl_areas
+			if area in bl_areas:
+				entry['score'] += BLA
+
+			# add points if satisfy untaken area
+			if area not in taken_areas:
+				entry['score'] += A
+
+			# add points if satisfy degree requirements
+			for req in calendar.degree.requirements.all():
+				if course in req.courses.all():
+					entry['score'] += D
+					entry['reason'] += req.name + "requirement of your " + calendar.degree.short_name + " degree,\n"
+
+
+			# add points if satisfy requirements of major itself
+			for req in major.requirements.all():
+				if course in req.courses.all():
+					entry['score'] += M
+					entry['reason'] += req.name + "requirement of your " + calendar.major.short_name + " major,\n" 
+
+				nested_reqs = NestedReq.objects.filter(requirement=req)
+				for nreq in nested_req:
+					if course in nreq.courses.all():
+						entry['score'] += M
+						entry['reason'] += req.name + "requirement of your " + calendar.major.short_name + " major,\n" 					
+
+			# add points if satisfy track
+			for req in calendar.track.requirements.all():
+				if course in req.courses.all():
+					entry['score'] += M
+					entry['reason'] += req.name + "requirement of your " + calendar.track.short_name + " track,\n" 
+
+				nested_reqs = NestedReq.objects.filter(requirement=req)
+				for nreq in nested_req:
+					if course in nreq.courses.all():
+						entry['score'] += M
+						entry['reason'] += req.name + "requirement of your " + calendar.track.short_name + " track,\n" 		
+
+			# for each certificate, add points if satisfy certificate
+			for certificate in calendar.certificates.all():
+				for req in certificate.requirements.all():
+					if course in req.courses.all():
+						entry['score'] += M
+						entry['reason'] += req.name + "requirement of your " + certificate.short_name + " certificate,\n" 
+
+					nested_reqs = NestedReq.objects.filter(requirement=req)
+					for nreq in nested_req:
+						if course in nreq.courses.all():
+							entry['score'] += M
+							entry['reason'] += req.name + "requirement of your " + certificate.short_name + " certificate,\n" 				
+
+			# add points if satisfy flexibility (requirements of other majors themselves, excluding their tracks)
+			for m in other_majors:
+				for req in m.requirements.all():
+					if course in req.courses.all():
+						entry['score'] += M
+						entry['reason'] += req.name + "requirement of the " + calendar.major.short_name + " major for flexibility,\n" 
+
+					nested_reqs = NestedReq.objects.filter(requirement=req)
+					for nreq in nested_req:
+						if course in nreq.courses.all():
+							entry['score'] += M
+							entry['reason'] += req.name + "requirement of the " + calendar.major.short_name + " major for flexbility,\n" 					
+
+			if len(reason) > 1:
+				entry['reason'] = "This course satisfies the " + entry['reason']
+				entry['reason'] = entry['reason'][:-2] # take off last ,\n
+			list_suggestions.append(entry)
+
+	sorted_list = sorted(list_suggestions, key=lambda k: k['score'])
+	return sorted_list
