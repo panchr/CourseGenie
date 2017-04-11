@@ -12,7 +12,7 @@ function GridView(props) {
 	* Required Props
 	* 	Array data
 	* 	Function t
-	*   Number rows - number of rows to display
+	*   Number rows - number of rows to display (-1 means unlimited)
 	*   Number cols - number of columns to display
 	*
 	* Optional Props
@@ -20,10 +20,13 @@ function GridView(props) {
 	*/
 	var t = props.t;
 
+	var rows = props.rows;
+	if (rows == -1) rows = Math.ceil(props.data.length / props.cols);
+
 	if (props.data.length) {
 		var index = 0;
 		var grid = new Array();
-		for (var r=0; r<props.rows; r++) {
+		for (var r=0; r<rows; r++) {
 			var row = new Array();
 			for (var c=0; c<props.cols; c++) {
 				var elem = null;
@@ -57,13 +60,14 @@ function GridView(props) {
 GridView.propTypes = {
 	data: React.PropTypes.array.isRequired,
 	t: React.PropTypes.func.isRequired,
-	rows: React.PropTypes.number.isRequired,
+	rows: React.PropTypes.number,
 	cols: React.PropTypes.number.isRequired,
 	blankElement: React.PropTypes.func,	
 	};
 
 GridView.defaultProps = {
 	blankElement: () => {<span></span>},
+	rows: -1,
 	};
 
 module.exports = GridView;

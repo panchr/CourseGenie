@@ -11,7 +11,7 @@ var React = require('react'),
 	queryString = require('query-string');
 
 var CourseDisplay = require('core/components/CourseDisplay.jsx'),
-	ListView = require('core/components/ListView.jsx'),
+	GridView = require('core/components/GridView.jsx'),
 	ErrorAlert = require('core/components/ErrorAlert.jsx'),
 	Icon = require('core/components/Icon.jsx');
 
@@ -170,8 +170,8 @@ class CourseForm extends React.Component {
 							<div className="12u">
 								<h1>Courses Entered</h1>
 								<div className='center'> 
-									<ListView t={this.renderCourse} data={this.state.courses}
-										blankText='None yet!' />
+									<GridView t={this.renderCourse} data={this.state.courses}
+										blankText='None yet!' cols={2} />
 								</div>
 							</div>
 						</div>

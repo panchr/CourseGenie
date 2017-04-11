@@ -32,3 +32,18 @@
 	cursor: pointer;
 	cursor: hand;
 	}
+
+.page-header {
+	position: relative;
+	padding: 9em 0 1em 0;
+	background: #fff;
+	background-size: cover;
+	text-align: center;
+	color: #7C9CD0;
+	}
+
+.page-header header h2 {
+	font-size: 3.5em;
+	font-weight: 100;
+	color: #7C9CD0;
+	}

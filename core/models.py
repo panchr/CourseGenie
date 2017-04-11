@@ -230,9 +230,12 @@ class Preference(models.Model):
 		return "preference"
 
 class Semester(models.Model):
-	name = models.CharField(max_length = 25, unique=True)
+	name = models.CharField(max_length=25)
 	calendar = models.ForeignKey(Calendar, on_delete=models.CASCADE, related_name='semester')
 	courses = models.ManyToManyField(Course)
+
+	class Meta:
+		unique_together = ('name', 'calendar')
 
 	def __str__(self):
 		return self.name

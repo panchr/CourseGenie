@@ -32,6 +32,22 @@ module.exports = {
 			},
 		},
 
+	recommendations: {
+		get: function(callback) {
+			var data = [
+			{'course_id': '123456',  'name': 'Macroeconomics', 'score': 3,
+				'short_name': 'ECO 101', 'department': 'ECO', 'number': 101,
+				'letter': '',
+				'reason': 'To become knowledgeable about the world, asshat.'},
+			{'course_id': '123456',  'name': 'Macroeconomics', 'score': 3,
+				'short_name': 'ECO 101', 'department': 'ECO', 'number': 101,
+				'letter': '',
+				'reason': 'To become knowledgeable about the world, asshat.'},
+			];
+			return callback(data);
+			},
+		},
+
 	requirements: {
 		degree: function(callback) {
 			var data = [
