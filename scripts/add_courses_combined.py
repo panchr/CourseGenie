@@ -26,8 +26,14 @@ except (IndexError, KeyError):
 	print("Usage: python scripts/add_courses.py {fall,spring}")
 	sys.exit(1)
 
+USG_DATA_FILE = os.path.join("data", "usg-courses-fall17.json")
+BWK_DATA_FILE = os.path.join("data", "courses_fall17.json")
+if CURRENT_TERM != 'fall':
+	USG_DATA_FILE = os.path.join("data", "usg-courses-spring17.json")
+	BWK_DATA_FILE = os.path.join("data", "courses_spring17.json")
+
 def main():
-	with open("data/usg-courses-fall17.json") as f:
+	with open(USG_DATA_FILE) as f:
 		raw_data = json.load(f)
 
 	for record in raw_data:
@@ -75,7 +81,7 @@ def main():
 
 	f.close()
 
-	with open("data/courses_fall17.json") as f:
+	with open(BWK_DATA_FILE) as f:
 		raw_data = json.load(f)
 
 		for record in raw_data:

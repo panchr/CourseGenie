@@ -139,7 +139,7 @@ class Requirement(models.Model):
 		return '{}: {} ({})'.format(self.parent, self.t, self.number)
 
 	class Meta:
-		unique_together = ('object_id', 't')
+		unique_together = ('content_type', 'object_id', 't')
 
 # belongs under a requirement
 class NestedReq(models.Model):

@@ -346,7 +346,7 @@ majors:
           - COS 432
           - COS 441
           - COS 461
-          - PHY 208 & PHY 305
+          - PHY 208
       - type: science
         number: 1
         score: 1
@@ -1172,20 +1172,21 @@ majors:
         number: 1
         score: 1
         notes: cannot be independent work or PDF'ed course
-        courses: CBE >= 300
+        courses:
+          - CBE >= 300
       - type: advanced-stem-organic-chemistry
         number: 1
         score: 1
         courses:
-          CHM 303
-          CHM 304
-          CHM 304B
+          - CHM 303
+          - CHM 304
+          - CHM 304B
       - type: advanced-stem-molecular-biology
         score: 1
         number: 1
         courses:
-          MOL 214
-          MOL 215
+          - MOL 214
+          - MOL 215
     tracks:
       "Bioengineering and biotechnology":
         - type: concentration
@@ -4846,7 +4847,8 @@ certificates:
       - type: elective-general
         number: 2
         score: 0
-        courses: both of ELE 441/442, EEB 417A/B, and ENV 201A/B must be taken to satisfy requirement
+        notes: both of ELE 441/442, EEB 417A/B, and ENV 201A/B must be taken to satisfy requirement
+        courses:
           - AST 309
           - CBE 335
           - CBE 341
@@ -5057,11 +5059,13 @@ certificates:
       - type: core-upper-level
         number: 2
         score: 2
-        courses: GER >= 300
+        courses:
+          - GER >= 300
       - type: core-general
         number: 2
         score: 2
-        courses: GER >= 200
+        courses:
+          - GER >= 200
 
   - name: Premed Preparation
     short_name: Premed
