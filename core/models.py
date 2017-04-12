@@ -74,7 +74,7 @@ class Track(models.Model):
 
 class Course(models.Model):
 	name = models.CharField(max_length=255)
-	course_id = models.CharField(max_length=10, default="")
+	course_id = models.CharField(max_length=10, default="", unique=True)
 	number = models.PositiveSmallIntegerField()
 	letter = models.CharField(max_length=1, default="")
 	department = models.CharField(max_length=3)
@@ -115,6 +115,7 @@ class Requirement(models.Model):
 	t = models.CharField(max_length=50) # requirement type
 	number = models.PositiveSmallIntegerField(default=0) # number required
 	notes = models.CharField(max_length=255, default='')
+	intrinsic_score = models.PositiveSmallIntegerField(default=0)
 
 	# Courses can be listed in many different requirements
 	courses = models.ManyToManyField(Course)
@@ -138,7 +139,7 @@ class Requirement(models.Model):
 		return '{}: {} ({})'.format(self.parent, self.t, self.number)
 
 	class Meta:
-		unique_together = ('object_id', 't')
+		unique_together = ('content_type', 'object_id', 't')
 
 # belongs under a requirement
 class NestedReq(models.Model):
