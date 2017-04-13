@@ -1,8 +1,8 @@
 from django.shortcuts import render
 
 # Create your views here.
-from core.models import Degree, Major, Certificate, Track, Course, CrossListing, Requirement, Profile, Record, Calendar, Progress, Area, Department, Preference, Semester
-from api.serializers import DegreeSerializer, MajorSerializer, CertificateSerializer, TrackSerializer, CourseSerializer, CrossListingSerializer, RequirementSerializer, ProfileSerializer, RecordSerializer, CalendarSerializer, ProgressSerializer, AreaSerializer, DepartmentSerializer, PreferenceSerializer, SemesterSerializer
+from core.models import Degree, Major, Certificate, Track, Course, CrossListing, Requirement, NestedReq, Profile, Record, Calendar, Progress, Area, Department, Preference, Semester
+from api.serializers import DegreeSerializer, MajorSerializer, CertificateSerializer, TrackSerializer, CourseSerializer, CrossListingSerializer, RequirementSerializer, NestedReqSerializer, ProfileSerializer, RecordSerializer, CalendarSerializer, ProgressSerializer, AreaSerializer, DepartmentSerializer, PreferenceSerializer, SemesterSerializer
 from rest_framework import generics
 
 
@@ -61,6 +61,14 @@ class RequirementList(generics.ListCreateAPIView):
 class RequirementDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Requirement.objects.all()
     serializer_class = RequirementSerializer
+
+class NestedReqList(generics.ListCreateAPIView):
+    queryset = NestedReq.objects.all()
+    serializer_class = NestedReqSerializer
+
+class NestedReqDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = NestedReq.objects.all()
+    serializer_class = NestedReqSerializer
 
 class ProfileList(generics.ListCreateAPIView):
     queryset = Profile.objects.all()
