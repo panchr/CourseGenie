@@ -5,8 +5,9 @@
 * Description: Renders an array of data as a list.
 */
 
-var React = require('react'),
-	Immutable = require('immutable');
+var React = require('react');
+
+import { List } from 'immutable';
 
 function GridView(props) {
 	/*
@@ -19,19 +20,20 @@ function GridView(props) {
 	* Optional Props
 	* 	Function blankElement - element to output when blank
 	*/
-	var t = props.t;
+	var t = props.t,
+		data = new List(props.data);
 
 	var rows = props.rows;
-	if (rows == -1) rows = Math.ceil(props.data.length / props.cols);
+	if (rows == -1) rows = Math.ceil(data.size / props.cols);
 
-	if (props.data.length || props.data.size) {
+	if (data.size) {
 		var index = 0;
 		var grid = new Array();
 		for (var r=0; r<rows; r++) {
 			var row = new Array();
 			for (var c=0; c<props.cols; c++) {
 				var elem = null;
-				if (index < props.data.length) elem = props.data[index++];
+				if (index < data.size) elem = data.get(index++);
 				row.push(elem);
 				}
 
@@ -42,11 +44,11 @@ function GridView(props) {
 		columnSize = columnSize > 1 ? columnSize: 1;
 
 		return <div className='grid-view'>
-			{grid.map((row) => {
+			{grid.map((row, i) => {
 				return <div className='grid-row row' key={'grid-row-' + Math.random()}>
-				{row.map((c, i, cs) => {
+				{row.map((c, j) => {
 					return <span className={`grid-item ${columnSize}u`} key={'grid-item-' + Math.random()}>
-					{c == null ? props.blankElement() : t(c, i, cs)}
+					{c == null ? props.blankElement() : t(c, i*props.cols+j, props.data)}
 					</span>;
 					})}
 				</div>;
@@ -61,7 +63,7 @@ function GridView(props) {
 GridView.propTypes = {
 	data: React.PropTypes.oneOfType([
 		React.PropTypes.array,
-		React.PropTypes.instanceOf(Immutable.List),
+		React.PropTypes.instanceOf(List),
 		]).isRequired,
 	t: React.PropTypes.func.isRequired,
 	rows: React.PropTypes.number,

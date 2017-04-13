@@ -5,8 +5,9 @@
 * Description: Renders an array of data as a list.
 */
 
-var React = require('react'),
-	Immutable = require('immutable');
+var React = require('react');
+
+import { List } from 'immutable';
 
 function ListView(props) {
 	/*
@@ -36,7 +37,7 @@ function ListView(props) {
 ListView.propTypes = {
 	data: React.PropTypes.oneOfType([
 		React.PropTypes.array,
-		React.PropTypes.instanceOf(Immutable.List),
+		React.PropTypes.instanceOf(List),
 		]).isRequired,
 	t: React.PropTypes.func.isRequired,
 	blankText: React.PropTypes.string,	

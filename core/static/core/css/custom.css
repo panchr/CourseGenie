@@ -6,6 +6,10 @@
 	display: block;
 	}
 
+.large-icon {
+	font-size: 2em;
+	}
+
 .center {
 	text-align: center;
 	}

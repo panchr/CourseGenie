@@ -6,8 +6,9 @@
 */
 
 var React = require('react'),
-	ReactDOM = require('react-dom'),
-	Immutable = require('immutable');
+	ReactDOM = require('react-dom');
+
+import { List } from 'immutable';
 
 var CourseDisplay = require('core/components/CourseDisplay.jsx'),
   RecommendationDisplay = require('core/components/RecommendationDisplay.jsx'),
@@ -25,8 +26,8 @@ class Dashboard extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			semesters: new Array(),
-			recommendations: new Immutable.List(),
+			semesters: new List(),
+			recommendations: new List(),
 			errorMsg: '',
 			};
 
@@ -36,10 +37,10 @@ class Dashboard extends React.Component {
 
 	componentWillMount() {
 		data.installErrorHandler((msg) => this.setState({errorMsg: msg}));
-		this.requests.push(
-			data.schedule.getSemesters((data) => this.setState({semesters: data})));
+		this.requests.push(data.schedule.getSemesters(
+			(data) => this.setState({semesters: new List(data)})));
 		this.requests.push(data.recommendations.get(
-			(data) => this.setState({recommendations: Immutable.List(data)})));
+			(data) => this.setState({recommendations: new List(data)})));
 		}
 
 	dismissSuggestion(id, index) {
@@ -63,7 +64,10 @@ class Dashboard extends React.Component {
 								<h2>{e.name}</h2>
 								<GridView t={(c) => {
 									return <CourseDisplay {...c} extended={true} />;
-									}} rows={2} cols={3} data={e.courses} />
+									}} rows={2} cols={3} data={e.courses}
+									blankElement={() =>
+										<Icon i='ios-plus' className='large-icon'
+										style={{color: 'green'}} />} />
 							</div>;
 							}} data={this.state.semesters}/>
 					</div>
@@ -74,7 +78,7 @@ class Dashboard extends React.Component {
 								<div className='9u'><RecommendationDisplay {...e} /></div>
 								<div className='3u'>
 									<Icon i='ios-close-outline'
-										className='btn' style={{color: 'red', fontSize: '2em'}}
+										className='btn large-icon' style={{color: 'red'}}
 										onClick={() => this.dismissSuggestion(e.course_id, i)}
 									/>
 								</div>

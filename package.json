@@ -8,6 +8,7 @@
     "moment": "^2.14.1",
     "query-string": "^4.3.2",
     "react": "^0.14.8",
+    "react-dnd": "^2.3.0",
     "react-dom": "^0.14.8"
   },
   "devDependencies": {

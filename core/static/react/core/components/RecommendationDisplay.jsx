@@ -7,6 +7,8 @@
 
 var React = require('react');
 
+import { DragSource } from 'react-dnd';
+
 function RecommendationDisplay(props) {
 	return <span className='suggestion-display'>
 		<div className='11u'>

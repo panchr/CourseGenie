@@ -10,6 +10,8 @@ var React = require('react'),
 	jQuery = require('jquery'),
 	queryString = require('query-string');
 
+import { List } from 'immutable';
+
 var CourseDisplay = require('core/components/CourseDisplay.jsx'),
 	GridView = require('core/components/GridView.jsx'),
 	ErrorAlert = require('core/components/ErrorAlert.jsx'),
@@ -34,7 +36,7 @@ class CourseForm extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			courses: props.data.existing_courses,
+			courses: new List(props.data.existing_courses),
 			user: props.data.user,
 			graduation_year: props.data.graduation_year,
 			errorMsg: '',
@@ -56,7 +58,8 @@ class CourseForm extends React.Component {
 					for (var term in data.transcript.courses) {
 						courses = courses.concat(data.transcript.courses[term]);
 						}
-					this.setState({courses: courses, user: data.user});
+					this.setState({courses: new List(courses),
+						user: data.user});
 					this.elems.first_name_input.value = data.user.first_name;
 					this.elems.last_name_input.value = data.user.last_name;
 					})
@@ -72,18 +75,18 @@ class CourseForm extends React.Component {
 		if (this.transcriptRequest) this.transcriptRequest.abort();
 		}
 
-	renderCourse(c) {
+	renderCourse(c, index) {
 		var split = c.split(" ");
 		return (<div>
 			<CourseDisplay department={split[0]} number={split[1]} />
 			&nbsp;
-			<Icon i='ios-close-outline' onClick={() => {this.removeCourse(c)}}
+			<Icon i='ios-close-outline' onClick={() => {this.removeCourse(index)}}
 				style={{color: 'red'}} className='btn' />
 			</div>);
 		}
 
-	removeCourse(c) {
-		this.setState({courses: this.state.courses.filter((x) => x != c)});
+	removeCourse(index) {
+		this.setState({courses: this.state.courses.remove(index)});
 		}
 
 	addCourse(c) {
@@ -107,9 +110,8 @@ class CourseForm extends React.Component {
 			}
 		else {
 			this.setState({
-				// need to use concat instead of push to return a new
-				// array, which signals an update.
-				courses: this.state.courses.concat(c)
+				// only works well because courses is an List
+				courses: this.state.courses.push(c)
 				});
 			}
 		}
