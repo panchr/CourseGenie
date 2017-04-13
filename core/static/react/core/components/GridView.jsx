@@ -5,7 +5,8 @@
 * Description: Renders an array of data as a list.
 */
 
-var React = require('react');
+var React = require('react'),
+	Immutable = require('immutable');
 
 function GridView(props) {
 	/*
@@ -23,7 +24,7 @@ function GridView(props) {
 	var rows = props.rows;
 	if (rows == -1) rows = Math.ceil(props.data.length / props.cols);
 
-	if (props.data.length) {
+	if (props.data.length || props.data.size) {
 		var index = 0;
 		var grid = new Array();
 		for (var r=0; r<rows; r++) {
@@ -43,9 +44,9 @@ function GridView(props) {
 		return <div className='grid-view'>
 			{grid.map((row) => {
 				return <div className='grid-row row' key={'grid-row-' + Math.random()}>
-				{row.map((c) => {
+				{row.map((c, i, cs) => {
 					return <span className={`grid-item ${columnSize}u`} key={'grid-item-' + Math.random()}>
-					{c == null ? props.blankElement() : t(c)}
+					{c == null ? props.blankElement() : t(c, i, cs)}
 					</span>;
 					})}
 				</div>;
@@ -58,7 +59,10 @@ function GridView(props) {
 	}
 
 GridView.propTypes = {
-	data: React.PropTypes.array.isRequired,
+	data: React.PropTypes.oneOfType([
+		React.PropTypes.array,
+		React.PropTypes.instanceOf(Immutable.List),
+		]).isRequired,
 	t: React.PropTypes.func.isRequired,
 	rows: React.PropTypes.number,
 	cols: React.PropTypes.number.isRequired,

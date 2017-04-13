@@ -5,7 +5,8 @@
 * Description: Renders an array of data as a list.
 */
 
-var React = require('react');
+var React = require('react'),
+	Immutable = require('immutable');
 
 function ListView(props) {
 	/*
@@ -18,11 +19,11 @@ function ListView(props) {
 	*/
 	var t = props.t;
 
-	if (props.data.length) {
+	if (props.data.length || props.data.size) {
 		return <div className='list-view'>
-			{props.data.map((x) => {
+			{props.data.map((x, i, xs) => {
 				return <div className='list-item' key={'list-item-' + Math.random()}>
-					{t(x)}
+					{t(x, i, xs)}
 					</div>
 				})}
 		</div>;
@@ -33,7 +34,10 @@ function ListView(props) {
 	}
 
 ListView.propTypes = {
-	data: React.PropTypes.array.isRequired,
+	data: React.PropTypes.oneOfType([
+		React.PropTypes.array,
+		React.PropTypes.instanceOf(Immutable.List),
+		]).isRequired,
 	t: React.PropTypes.func.isRequired,
 	blankText: React.PropTypes.string,	
 	};

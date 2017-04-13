@@ -7,7 +7,13 @@
 
 var jQuery = require('jquery');
 
+var shared = {};
+
 module.exports = {
+	installErrorHandler: function(handler) {
+		shared.errorHandler = handler;
+		},
+
 	schedule: {
 		getSemesters: function(callback) {
 			var data = [
@@ -25,7 +31,7 @@ module.exports = {
 					{name: 'Reasoning about Computation', course_id: '1005',
 					number: 340, letter: '', department: 'COS', 'area': 'QR'},
 					{name: 'Operating Systems', course_id: '1006',
-					number: 318, letter: '', department: 'COS', 'area': 'QR'},
+					number: 318, letter: '', department: 'COS', 'area': ''},
 				]}
 				];
 			return callback(data);
@@ -35,17 +41,23 @@ module.exports = {
 	recommendations: {
 		get: function(callback) {
 			var data = [
-			{'course_id': '123456',  'name': 'Macroeconomics', 'score': 3,
-				'short_name': 'ECO 101', 'department': 'ECO', 'number': 101,
+			{'course_id': '123456',  'name': 'Introduction to Macroeconomics',
+				'score': 3, 'short_name': 'ECO 101', 'department': 'ECO',
+				'number': 101, 'letter': '',
+				'reason': 'Distribution requirement: ER.'},
+			{'course_id': '123457',  'name': 'Computer Networks', 'score': 4,
+				'short_name': 'COS 461', 'department': 'COS', 'number': 461,
 				'letter': '',
-				'reason': 'To become knowledgeable about the world, asshat.'},
-			{'course_id': '123456',  'name': 'Macroeconomics', 'score': 3,
-				'short_name': 'ECO 101', 'department': 'ECO', 'number': 101,
-				'letter': '',
-				'reason': 'To become knowledgeable about the world, asshat.'},
+				'reason': 'Systems Requirement'},
 			];
 			return callback(data);
 			},
+
+		dismiss: function(id, callback=(e) => null) {
+			// dismiss recommendation with ID
+			console.log('Dismissing', id);
+			return callback(null);
+			}
 		},
 
 	requirements: {

@@ -6,11 +6,15 @@
 */
 
 var React = require('react'),
-	ReactDOM = require('react-dom');
+	ReactDOM = require('react-dom'),
+	Immutable = require('immutable');
 
 var CourseDisplay = require('core/components/CourseDisplay.jsx'),
+  RecommendationDisplay = require('core/components/RecommendationDisplay.jsx'),
 	ListView = require('core/components/ListView.jsx'),
 	GridView = require('core/components/GridView.jsx'),
+	ErrorAlert = require('core/components/ErrorAlert.jsx'),
+	Icon = require('core/components/Icon.jsx'),
 	data = require('core/data.jsx');
 
 function main() {
@@ -22,24 +26,35 @@ class Dashboard extends React.Component {
 		super(props);
 		this.state = {
 			semesters: new Array(),
+			recommendations: new Immutable.List(),
+			errorMsg: '',
 			};
 
 		this.elems = {};
+		this.requests = new Array();
 		}
 
 	componentWillMount() {
-		this.semestersRequest = data.schedule.getSemesters((data) => {
-			this.setState({semesters: data});
-			});
+		data.installErrorHandler((msg) => this.setState({errorMsg: msg}));
+		this.requests.push(
+			data.schedule.getSemesters((data) => this.setState({semesters: data})));
+		this.requests.push(data.recommendations.get(
+			(data) => this.setState({recommendations: Immutable.List(data)})));
+		}
+
+	dismissSuggestion(id, index) {
+		this.requests.push(data.recommendations.dismiss(id));
+		this.setState({recommendations: this.state.recommendations.delete(index)});
 		}
 
 	componentWillUnmount() {
-		this.semestersRequest.abort();
+		this.requests.map((r) => r.abort());
 		}
 
 	render() {
 		return (<div className="container">
 			<div className="container">
+				<ErrorAlert msg={this.state.errorMsg} />
 				<div className="row">
 					<div className="7u">
 						<h1>Schedule</h1>
@@ -52,8 +67,19 @@ class Dashboard extends React.Component {
 							</div>;
 							}} data={this.state.semesters}/>
 					</div>
-					<div className="3u">
-						<h1>5 columns</h1>
+					<div className="5u">
+						<h1>Recommendations</h1>
+						<ListView t={(e, i) => {
+							return <div className="row">
+								<div className='9u'><RecommendationDisplay {...e} /></div>
+								<div className='3u'>
+									<Icon i='ios-close-outline'
+										className='btn' style={{color: 'red', fontSize: '2em'}}
+										onClick={() => this.dismissSuggestion(e.course_id, i)}
+									/>
+								</div>
+							</div>;
+							}} data={this.state.recommendations} />
 					</div>
 				</div>
 			</div>

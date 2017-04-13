@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "description": "Customized course recommendations based on concentration.",
   "dependencies": {
+    "immutable": "^3.8.1",
     "jquery": "^3.2.1",
     "moment": "^2.14.1",
     "query-string": "^4.3.2",
