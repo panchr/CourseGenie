@@ -8,10 +8,13 @@
 var React = require('react'),
 	ReactDOM = require('react-dom');
 
+import HTML5Backend from 'react-dnd-html5-backend';
+import { DragDropContext } from 'react-dnd';
 import { List } from 'immutable';
 
 var CourseDisplay = require('core/components/CourseDisplay.jsx'),
   RecommendationDisplay = require('core/components/RecommendationDisplay.jsx'),
+  SemesterDisplay = require('core/components/SemesterDisplay.jsx'),
 	ListView = require('core/components/ListView.jsx'),
 	GridView = require('core/components/GridView.jsx'),
 	ErrorAlert = require('core/components/ErrorAlert.jsx'),
@@ -19,7 +22,8 @@ var CourseDisplay = require('core/components/CourseDisplay.jsx'),
 	data = require('core/data.jsx');
 
 function main() {
-	ReactDOM.render(<Dashboard />, document.getElementById('dashboard'));
+	var DashboardComp = DragDropContext(HTML5Backend)(Dashboard);
+	ReactDOM.render(<DashboardComp />, document.getElementById('dashboard'));
 	}
 
 class Dashboard extends React.Component {
@@ -60,15 +64,7 @@ class Dashboard extends React.Component {
 					<div className="7u">
 						<h1>Schedule</h1>
 						<ListView t={(e) => {
-							return <div>
-								<h2>{e.name}</h2>
-								<GridView t={(c) => {
-									return <CourseDisplay {...c} extended={true} />;
-									}} rows={2} cols={3} data={e.courses}
-									blankElement={() =>
-										<Icon i='ios-plus' className='large-icon'
-										style={{color: 'green'}} />} />
-							</div>;
+							return <SemesterDisplay {...e} />
 							}} data={this.state.semesters}/>
 					</div>
 					<div className="5u">

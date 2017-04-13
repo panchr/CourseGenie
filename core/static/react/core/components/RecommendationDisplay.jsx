@@ -10,13 +10,13 @@ var React = require('react');
 import { DragSource } from 'react-dnd';
 
 function RecommendationDisplay(props) {
-	return <span className='suggestion-display'>
+	return props.connectDragSource(<span className='suggestion-display'>
 		<div className='11u'>
 			<div>{props.short_name}</div>
 			<div>{props.name}</div>
 			<div>{props.reason}</div>
 		</div>
-	</span>;
+	</span>);
 	}
 
 RecommendationDisplay.propTypes = {
@@ -25,4 +25,9 @@ RecommendationDisplay.propTypes = {
 	reason: React.PropTypes.string.isRequired,
 	};
 
-module.exports = RecommendationDisplay;
+module.exports = DragSource('course', {
+	beginDrag: (props, monitor, component) => props,
+	},
+	(connect, monitor) => {
+		return {connectDragSource: connect.dragSource()};
+		})(RecommendationDisplay);
