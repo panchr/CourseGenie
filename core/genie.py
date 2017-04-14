@@ -159,30 +159,35 @@ def calculate_single_progress(calendar, category, list_courses):
 		nested_reqs = requirement.nested_reqs.all()
 		for nreq in nested_reqs:
 			c += nreq.courses.count()
+		if requirement == Requirement.objects.get(t="distribution-areas", number=4, intrinsic_score=1):
+			c = 800 # small hack... need this to be less than 880 of distribution-additional
+		print requirement.name + " has " + str(c) # prints how many courses qualify under a requirement
 		number_choices.append(c) 
 		other_than.append([])
+		c = 0
 
 		# create default progresses for all requirements, with number_taken = 0, completed = False
 		list_progresses.append(Progress(calendar=calendar, requirement=requirement))
 	Progress.objects.bulk_create(list_progresses)
 
 	for course in list_courses:
-		print course.department + str(course.number)
+		print course.department + str(course.number) # prints the course
 		matched = {}
 		i = 0
-		added = False
+		#added = False
 		for requirement in cat_requirements:
 			if course in requirement.courses.all():
 				matched[i] = requirement
-				added = True
+				#added = True
 
 			nested_reqs = NestedReq.objects.filter(requirement=requirement).exclude(id__in=other_than[i])
 			for nreq in nested_reqs:
-				if course in nreq.courses.all() and added == False:
-					matched[i] = [nreq, requirement]
-					added = True
+				if course in nreq.courses.all(): #and added == False:
+					small_list = [nreq, requirement]
+					matched[i] = small_list
+					#added = True
 			i += 1
-		print matched
+		#print matched # prints all the requirements that a course matched to
 	
 		if len(matched) == 0: # course did not satisfy any requirements; no Progresses need to be updated
 			pass
@@ -198,7 +203,6 @@ def calculate_single_progress(calendar, category, list_courses):
 					nreq = matched[key][0]
 					req = matched[key][1]
 					other_than.append(nreq.id)
-				print req
 				progress = Progress.objects.get(calendar=calendar, requirement=req)	
 				progress.number_taken += 1
 				progress.courses_taken.add(course)
@@ -208,13 +212,16 @@ def calculate_single_progress(calendar, category, list_courses):
 				number_remaining[index] -= 1
 
 		else: # course satisfied multiple requirements
-			diffs = []
+			diff = []
 			for j in range (0, len(number_choices)):
+				#diff.append(number_choices[j])
 				diff.append(number_choices[j] - number_remaining[j] * FACTOR)
 
-			min_key = 1000000
+			min_val = 1000000
+			min_key = 0
 			for key in matched:
-				if diff[key] < min_key:
+				if diff[key] < min_val:
+					min_val = diff[key]
 					min_key = key
 
 			if isinstance(matched[min_key], Requirement):
@@ -223,7 +230,7 @@ def calculate_single_progress(calendar, category, list_courses):
 				nreq = matched[min_key][0]
 				req = matched[min_key][1]
 				other_than.append(nreq.id)			
-			progress = Progress.objects.get(calendar=calendar, requirement=matched[min_key])
+			progress = Progress.objects.get(calendar=calendar, requirement=req)
 			progress.number_taken += 1
 			progress.courses_taken.add(course)
 			if progress.number_taken >= req.number and progress.completed == False:
