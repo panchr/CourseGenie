@@ -247,14 +247,20 @@ def recommend(calendar):
 	F = 5 # flexibility; other BSE majors
 	A = 4 # untaken distribution area
 
-	profile = calendar.profile.prefetch_related('preference', 'record',
-		'major')
+	profile = calendar.profile.prefetch_related('preference', 'major')
 	preference = profile.preference
 	major = calendar.major
+	degree_requirements = list(calendar.degree.requirements.all())
+	degree_req_courses = {r: set(r.courses.all()) for r in degree_requirements}
+
+	for r in degree_req_courses:
+		for nested in NestedReq.objects.filter(requirement=req):
+			degree_req_courses[r] |= set(nested.courses.all())
+
 	other_majors = set(Major.objects.filter(id__ne=major.id))
 
 	# filter out courses they've taken already
-	filter_out = set(profile.records.all().values_list('course'))
+	filter_out = set(profile.records.all().prefetch_related('course').values_list('course'))
 	taken_areas = set(map(lambda x: x.area, filter_out))
  
 	taken_areas.add("") # Rushy: what is this for?
@@ -265,14 +271,14 @@ def recommend(calendar):
 	for semester in calendar.semester.prefetch_related('courses'):
 		filter_out |= set(semester.courses.all())
 
-	wl_depts_short = preference.wl_depts.all().values_list('short_name')
-	wl_areas = preference.wl_areas.all().values_list('short_name')
-	bl_depts_short = preference.bl_depts.all().values_list('short_name')
-	bl_areas = preference.bl_areas.all().values_list('short_name')
+	wl_depts_short = set(preference.wl_depts.all().values_list('short_name'))
+	wl_areas = set(preference.wl_areas.all().values_list('short_name'))
+	bl_depts_short = set(preference.bl_depts.all().values_list('short_name'))
+	bl_areas = set(preference.bl_areas.all().values_list('short_name'))
 
 	bse_majors = Major.objects.all().values_list('short_name')
 
-	list_suggestions = []
+	list_suggestions = set()
 	# create list of all the courses. Each entry is a dictionary
 	# [
 	#	{
@@ -309,68 +315,68 @@ def recommend(calendar):
 
 			# subtract points if in bl_areas
 			if area in bl_areas:
-				entry['score'] += BLA
+				entry['score'] -= BLA
 
 			# add points if satisfy untaken area
 			if area not in taken_areas:
 				entry['score'] += A
 
 			# add points if satisfy degree requirements
-			for req in calendar.degree.requirements.all():
-				if course in req.courses.all():
+			for req in degree_requirements:
+				if course in degree_req_courses[req]:
 					entry['score'] += D
-					entry['reason'] += req.name + "requirement of your " + calendar.degree.short_name + " degree,\n"
+					entry['reason'] += req.name + " requirement of your " + calendar.degree.short_name + " degree,\n"
 
 
 			# add points if satisfy requirements of major itself
 			for req in major.requirements.all():
 				if course in req.courses.all():
 					entry['score'] += M
-					entry['reason'] += req.name + "requirement of your " + calendar.major.short_name + " major,\n" 
+					entry['reason'] += req.name + " requirement of your " + calendar.major.short_name + " major,\n" 
 
 				nested_reqs = NestedReq.objects.filter(requirement=req)
 				for nreq in nested_req:
 					if course in nreq.courses.all():
 						entry['score'] += M
-						entry['reason'] += req.name + "requirement of your " + calendar.major.short_name + " major,\n" 					
+						entry['reason'] += req.name + " requirement of your " + calendar.major.short_name + " major,\n" 					
 
 			# add points if satisfy track
 			for req in calendar.track.requirements.all():
 				if course in req.courses.all():
 					entry['score'] += M
-					entry['reason'] += req.name + "requirement of your " + calendar.track.short_name + " track,\n" 
+					entry['reason'] += req.name + " requirement of your " + calendar.track.short_name + " track,\n" 
 
 				nested_reqs = NestedReq.objects.filter(requirement=req)
 				for nreq in nested_req:
 					if course in nreq.courses.all():
 						entry['score'] += M
-						entry['reason'] += req.name + "requirement of your " + calendar.track.short_name + " track,\n" 		
+						entry['reason'] += req.name + " requirement of your " + calendar.track.short_name + " track,\n" 		
 
 			# for each certificate, add points if satisfy certificate
 			for certificate in calendar.certificates.all():
 				for req in certificate.requirements.all():
 					if course in req.courses.all():
 						entry['score'] += M
-						entry['reason'] += req.name + "requirement of your " + certificate.short_name + " certificate,\n" 
+						entry['reason'] += req.name + " requirement of your " + certificate.short_name + " certificate,\n" 
 
 					nested_reqs = NestedReq.objects.filter(requirement=req)
 					for nreq in nested_req:
 						if course in nreq.courses.all():
 							entry['score'] += M
-							entry['reason'] += req.name + "requirement of your " + certificate.short_name + " certificate,\n" 				
+							entry['reason'] += req.name + " requirement of your " + certificate.short_name + " certificate,\n" 				
 
 			# add points if satisfy flexibility (requirements of other majors themselves, excluding their tracks)
 			for m in other_majors:
 				for req in m.requirements.all():
 					if course in req.courses.all():
 						entry['score'] += M
-						entry['reason'] += req.name + "requirement of the " + calendar.major.short_name + " major for flexibility,\n" 
+						entry['reason'] += req.name + " requirement of the " + m.short_name + " major for flexibility,\n" 
 
 					nested_reqs = NestedReq.objects.filter(requirement=req)
 					for nreq in nested_req:
 						if course in nreq.courses.all():
 							entry['score'] += M
-							entry['reason'] += req.name + "requirement of the " + calendar.major.short_name + " major for flexbility,\n" 					
+							entry['reason'] += req.name + " requirement of the " + m.short_name + " major for flexbility,\n" 					
 
 			if len(reason) > 1:
 				entry['reason'] = "This course satisfies the " + entry['reason']
@@ -378,4 +384,4 @@ def recommend(calendar):
 			list_suggestions.append(entry)
 
 	sorted_list = sorted(list_suggestions, key=lambda k: k['score'])
-	return sorted_list
+	return sorted_list[:20]
