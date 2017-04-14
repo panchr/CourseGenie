@@ -1,61 +1,65 @@
 # core/views.py
 # CourseGenie
+
 import urllib2
 import json
 
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from core.models import *
 from django.conf import settings
 from django.core.urlresolvers import reverse
+
+from core.models import *
+from core import genie
 
 # Create your views here.
 class IndexView(TemplateView):
 	template_name = 'core/index.html'
 
-class DashboardView(LoginRequiredMixin, TemplateView):
-
-	def get_template_names(self):
-		user = self.request.user
-		profile = Profile.objects.get(user=user)
-		records = Record.objects.filter(profile=profile)
-		if records.count() == 0:
-			template_name = 'core/form-transcript.html'
-		else:
-			template_name = 'core/dashboard.html'
-
-		return [template_name]
-		
-	def get_context_data(self, **kwargs):
-		context = super(DashboardView, self).get_context_data(**kwargs)
-		service_url = '{base}?redirect={redirect}'.format(
-			base=settings.TRANSCRIPT_API_URL,
-			redirect=self.request.build_absolute_uri(
-				reverse('core:dashboard')))
-		context['transcript_service_url'] = service_url
-		context['transcript_url'] = '{}/transcript/?ticket='.format(settings.TRANSCRIPT_API_URL)
-		return context
-
 class TranscriptView(LoginRequiredMixin, TemplateView):
-	template_name = 'core/transcript.html'
+	template_name = 'core/form-transcript.html'
 
 	def get_context_data(self, **kwargs):
 		context = super(TranscriptView, self).get_context_data(**kwargs)
+		page_url = self.request.build_absolute_uri(reverse('core:transcript'))
+		service_url = '{base}?redirect={redirect}'.format(
+			base=settings.TRANSCRIPT_API_URL, redirect=page_url)
+		context['transcript_service_url'] = service_url
+		context['transcript_url'] = '{}/transcript/?ticket='.format(settings.TRANSCRIPT_API_URL)
+		context['form_action'] = page_url
 
-		ticket = self.request.GET['ticket']
-		if not ticket:
-			# need to raise an error here/display error message
-			return False
+		user = self.request.user
+		context['data'] = json.dumps({
+			'existing_courses': user.profile.course_list(),
+			'user': {
+				'first_name': user.first_name,
+				'last_name': user.last_name,
+				},
+			'graduation_year': user.profile.year
+			})
 
-		url='{base}/transcript/?ticket={ticket}'.format(
-			base=settings.TRANSCRIPT_API_URL, ticket=ticket)
-		# User-Agent is required; otherwise, TranscriptAPI denies access.
-		request = urllib2.Request(url, headers={'User-Agent': 'CourseGenie/0.1'})
-		response = urllib2.urlopen(request)
-		transcript_data = json.load(response)
-
-		# store user's transcript data
-
-		context['transcript'] = transcript_data
 		return context
+
+	def post(self, request):
+		data = json.loads(request.POST['data'])
+		user = request.user
+		genie.store_manual(user, data['courses'])
+		user.first_name = data['user']['first_name']
+		user.last_name = data['user']['last_name']
+		user.profile.year = data['graduation_year']
+		user.profile.submitted = True
+		user.save()
+		user.profile.save()
+
+		return redirect('core:dashboard')
+
+class DashboardView(LoginRequiredMixin, TemplateView):
+	template_name = 'core/dashboard.html'
+
+	def get(self, request):
+		user = request.user
+		if user.profile.submitted:
+			return super(DashboardView, self).get(request)
+
+		return redirect('core:transcript')

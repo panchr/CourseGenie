@@ -16,6 +16,12 @@ degrees:
         - MAT 201
         - MAT 203
         - MAT 218
+    - type: linear algebra
+      number: 1
+      score: 2
+      courses: 
+        - MAT 202
+        - MAT 204
     - type: physics 1
       number: 1
       score: 2
@@ -50,7 +56,7 @@ degrees:
         - aHA|
         - aLA|
         - aSA|
-        - FRE >= 107 | GER >= 107 | ARA >= 107 | CHI >= 107 | CLG >= 107 | CZE >= 107 | CZE >= 107 | HEB >= 107 | HIN >= 107 | ITA >= 107 | JPN >= 107 | LAT >= 107 | KOR >= 107 | PER >= 107 | PLS >= 107 | POR >= 107 | RUS >= 107 | SAN >= 107 | SLA >= 107 | SPA >= 107 | SWA >= 107 | TUR >= 107 | URD >= 107 | TWI >= 107
+        - FRE >= 107 | GER >= 107 | ARA >= 107 | CHI >= 107 | CLG >= 107 | CZE >= 107 | HEB >= 107 | HIN >= 107 | ITA >= 107 | JPN >= 107 | LAT >= 107 | KOR >= 107 | PER >= 107 | PLS >= 107 | POR >= 107 | RUS >= 107 | SAN >= 107 | SLA >= 107 | SPA >= 107 | SWA >= 107 | TUR >= 107 | URD >= 107 | TWI >= 107
     - type: distribution-additional
       number: 3
       score: 1

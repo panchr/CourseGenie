@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # core/genie.py
 # CourseGenie
 # Author: Kathy Fan
@@ -5,37 +6,11 @@
 # functions related to profiles
 
 import json
-from core.models import *
-# store users records for transcript input
-# assuming data format is as displayed in output; see sample transcript data
-# assumes profile already exist; just adds in records from transcript
-# MAY NEED: check if the user already has a record for that course?
-def store_transcript(json_data):
-	raw_data = json.loads(json_data)
-	u = raw_data["user"]
-	id = u["netid"]
-	profile = Profile.objects.get(user__username=id)
-	t = raw_data["transcript"]
-	list_records = []
-	for semester in t["courses"]:
-		courses = t["courses"][semester]
-		for c in courses:
-			dept = c[:3]
-			num = c[4:7]
-			letter = ""
-			if len(c) > 7:
-				letter = c[7:8]
-			try: # in case course isn't in database
-				course = Course.objects.get(department=dept, number=num, letter=letter) 
-				list_records.append(Record(course=course, semester=semester, profile=profile))
-			except Course.DoesNotExist: # either actually not in database, or is a cross listing
-				try:
-					crossed = CrossListing.objects.get(department=dept, number=num, letter=letter)
-					list_records.append(Record(course=crossed.course, semester=semester, profile=profile))
-				except CrossListing.DoesNotExist:
-					pass	
+import re
 
-	Record.objects.bulk_create(list_records)
+from django.db import transaction
+
+from core.models import *
 
 # store user records for manual input of courses
 # REQUESTED sample input from manual form:
@@ -43,24 +18,34 @@ def store_transcript(json_data):
 # BASICALLY FINISHED
 # NEED TO CHANGE HOW TO ACCESS PROFILE
 # MAY NEED TO CHECK: IF COURSE IS ALREADY IN TRANSCRIPT AND USER WAS STUPID
-def store_manual(raw_data):
+def store_manual(user, courses):
 	list_records = []
+	course_re = re.compile(r'^(?P<dept>[A-Z]{3}) (?P<num>\d{3})(?P<letter>[A-Z]?)$')
+	profile = user.profile
+
 	for item in courses:
-		dept = item[:3]
-		num = item[4:7]
-		letter = ""
-		if len(item) > 7:
-			letter = item[7:8]
+		matches = course_re.match(item)
+		if not matches:
+			continue
+		dept = matches.group('dept')
+		num = matches.group('num')
+		letter = matches.group('letter')
 		try: # in case course isn't in database
 			course = Course.objects.get(department=dept, number=num, letter=letter) 
-			list_records.append(Record(course=course, semester=semester, profile=profile))
+			list_records.append(Record(course=course, profile=profile))
 		except Course.DoesNotExist: # either actually not in database, or is a cross listing
 			try:
 				crossed = CrossListing.objects.get(department=dept, number=num, letter=letter)
-				list_records.append(Record(course=crossed.course, semester=semester, profile=profile))
+				list_records.append(Record(course=crossed.course, profile=profile))
 			except CrossListing.DoesNotExist:
 				# do something to tell us c was not added	
 				pass
+
+	# This should be an atomic transaction so existing records are deleted
+	# if and only if the new records are added in.
+	with transaction.atomic():
+		Record.objects.filter(profile=profile).delete()
+		Record.objects.bulk_create(list_records)
 
 # store rest of info from form: name, year, partial preferences (interests)
 # from form_name: list of strings ['first name', 'last name', 'year']
@@ -133,27 +118,33 @@ def update_preferences(profile, raw_data):
 # calculate all progresses corresponding to a calendar
 def calculate_progress(calendar):
 	profile = calendar.profile
+	list_courses = []
 
 	Progress.objects.filter(calendar=calendar).delete() # delete old ones, start from scratch
 
+	for record in Record.objects.filter(profile=calendar.profile).prefetch_related('course'):
+		list_courses.append(record.course)
+	
 	# degree requirements
-	calculate_single_progress(calendar, calendar.degree)
+	print "now doing degree"
+	calculate_single_progress(calendar, calendar.degree, list_courses)
 
 	# requirements of major itself
-	calculate_single_progress(calendar, calendar.major)
+	print "now doing major"
+	calculate_single_progress(calendar, calendar.major, list_courses)
 
 	# track requirements, if any
 	track = calendar.track
-	if track != NULL:
-		calculate_single_progress(calendar, track)
+	if track != None:
+		calculate_single_progress(calendar, track, list_courses)
 
 	# certificates requirements, if any number
-	for certificate in calendar.certificates:
-		calculate_single_progress(calendar, certificate)
+	for certificate in calendar.certificates.all():
+		calculate_single_progress(calendar, certificate, list_courses)
 
 # calculate for one single degree/major/track/certificate; to be called from calculate_progress
 # NEED TO DEBUG
-def calculate_single_progress(calendar, category):
+def calculate_single_progress(calendar, category, list_courses):
 	FACTOR = 5
 	number_choices = [] # number of courses to choose from for this requirement
 	number_remaining = [] # number of courses left to fulfill for this requirement
@@ -168,32 +159,38 @@ def calculate_single_progress(calendar, category):
 		nested_reqs = requirement.nested_reqs.all()
 		for nreq in nested_reqs:
 			c += nreq.courses.count()
+		if requirement == Requirement.objects.get(t="distribution-areas", number=4, intrinsic_score=1):
+			c = 800 # small hack... need this to be less than 880 of distribution-additional
+		print requirement.name + " has " + str(c) # prints how many courses qualify under a requirement
 		number_choices.append(c) 
 		other_than.append([])
+		c = 0
 
 		# create default progresses for all requirements, with number_taken = 0, completed = False
 		list_progresses.append(Progress(calendar=calendar, requirement=requirement))
 	Progress.objects.bulk_create(list_progresses)
 
-	for record in Record.objects.filter(profile=calendar.profile).prefetch_related('course'):
-		course = record.course
+	for course in list_courses:
+		print course.department + str(course.number) # prints the course
 		matched = {}
 		i = 0
-		added = False
+		#added = False
 		for requirement in cat_requirements:
 			if course in requirement.courses.all():
 				matched[i] = requirement
-				added = True
+				#added = True
 
 			nested_reqs = NestedReq.objects.filter(requirement=requirement).exclude(id__in=other_than[i])
 			for nreq in nested_reqs:
-				if course in nreq.courses.all() and added == False:
-					matched[i] = [nreq, requirement]
-					added = True
+				if course in nreq.courses.all(): #and added == False:
+					small_list = [nreq, requirement]
+					matched[i] = small_list
+					#added = True
 			i += 1
+		#print matched # prints all the requirements that a course matched to
 	
 		if len(matched) == 0: # course did not satisfy any requirements; no Progresses need to be updated
-			return
+			pass
 
 		elif len(matched) == 1: # course satisfied one requirement; need to update the progress
 			index = 0
@@ -209,16 +206,22 @@ def calculate_single_progress(calendar, category):
 				progress = Progress.objects.get(calendar=calendar, requirement=req)	
 				progress.number_taken += 1
 				progress.courses_taken.add(course)
+				if progress.number_taken >= req.number and progress.completed == False:
+					progress.completed = True
+				progress.save()
 				number_remaining[index] -= 1
 
 		else: # course satisfied multiple requirements
-			diffs = []
+			diff = []
 			for j in range (0, len(number_choices)):
+				#diff.append(number_choices[j])
 				diff.append(number_choices[j] - number_remaining[j] * FACTOR)
 
-			min_key = 1000000
+			min_val = 1000000
+			min_key = 0
 			for key in matched:
-				if diff[key] < min_key:
+				if diff[key] < min_val:
+					min_val = diff[key]
 					min_key = key
 
 			if isinstance(matched[min_key], Requirement):
@@ -227,9 +230,12 @@ def calculate_single_progress(calendar, category):
 				nreq = matched[min_key][0]
 				req = matched[min_key][1]
 				other_than.append(nreq.id)			
-			progress = Progress.objects.get(calendar=calendar, requirement=matched[min_key])
+			progress = Progress.objects.get(calendar=calendar, requirement=req)
 			progress.number_taken += 1
 			progress.courses_taken.add(course)
+			if progress.number_taken >= req.number and progress.completed == False:
+				progress.completed = True
+			progress.save()
 			number_remaining[min_key] -= 1
 
 # the brains of the project!!!
@@ -246,9 +252,11 @@ def recommend(calendar):
 	BLA = 6 # black listed area
 	F = 5 # flexibility; other BSE majors
 	A = 4 # untaken distribution area
+	TOP_COUNT = 20
 
 	profile = calendar.profile.prefetch_related('preference', 'major')
 	preference = profile.preference
+
 	major = calendar.major
 	degree_requirements = list(calendar.degree.requirements.all())
 	degree_req_courses = {r: set(r.courses.all()) for r in degree_requirements}
@@ -298,7 +306,7 @@ def recommend(calendar):
 			area = course.area
 
 			entry = {'course_id': course.course_id, 'name': course.name, 'department': department,
-			'number': course.number, 'letter': course.letter, 'short_name': department + " " + course.number + course.letter,
+			'number': course.number, 'letter': course.letter, 'short_name': department + " " + str(course.number) + course.letter,
 			'score': 0, 'reason': ""} 
 
 			# add points if in wl_depts (primary department only)
@@ -335,7 +343,7 @@ def recommend(calendar):
 					entry['reason'] += req.name + " requirement of your " + calendar.major.short_name + " major,\n" 
 
 				nested_reqs = NestedReq.objects.filter(requirement=req)
-				for nreq in nested_req:
+				for nreq in nested_reqs:
 					if course in nreq.courses.all():
 						entry['score'] += M
 						entry['reason'] += req.name + " requirement of your " + calendar.major.short_name + " major,\n" 					
@@ -373,15 +381,15 @@ def recommend(calendar):
 						entry['reason'] += req.name + " requirement of the " + m.short_name + " major for flexibility,\n" 
 
 					nested_reqs = NestedReq.objects.filter(requirement=req)
-					for nreq in nested_req:
+					for nreq in nested_reqs:
 						if course in nreq.courses.all():
 							entry['score'] += M
 							entry['reason'] += req.name + " requirement of the " + m.short_name + " major for flexbility,\n" 					
 
-			if len(reason) > 1:
+			if len(entry['reason']) > 1:
 				entry['reason'] = "This course satisfies the " + entry['reason']
 				entry['reason'] = entry['reason'][:-2] # take off last ,\n
-			list_suggestions.append(entry)
+			list_suggestions.add(entry)
 
 	sorted_list = sorted(list_suggestions, key=lambda k: k['score'])
-	return sorted_list[:20]
+	return sorted_list[:TOP_COUNT]
