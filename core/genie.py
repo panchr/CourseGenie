@@ -232,7 +232,8 @@ def calculate_single_progress(calendar, category):
 			progress.courses_taken.add(course)
 			number_remaining[min_key] -= 1
 
-# the brains of the project!!! 
+# the brains of the project!!!
+# wow so much brains :o
 # IN PROGRESS
 def recommend(calendar):
 	D = 13 # degree
@@ -246,52 +247,30 @@ def recommend(calendar):
 	F = 5 # flexibility; other BSE majors
 	A = 4 # untaken distribution area
 
-	profile = calendar.profile
-	preference = Preference.objects.get(profile=profile)
+	profile = calendar.profile.prefetch_related('preference', 'record',
+		'major')
+	preference = profile.preference
 	major = calendar.major
-	other_majors = []
-	for m in Major.objects.all():
-		if m.name != major.name:
-			other_majors.append(m)
+	other_majors = set(Major.objects.filter(id__ne=major.id))
 
-	filter_out = []
-	taken_areas = []
 	# filter out courses they've taken already
-	for record in Record.objects.get(profile=profile):
-		filter_out.append(record.course)
-		taken_areas.append(record.course.area)
-
-	taken_areas.append("")
+	filter_out = set(profile.records.all().values_list('course'))
+	taken_areas = set(map(lambda x: x.area, filter_out))
+ 
+	taken_areas.add("") # Rushy: what is this for?
 	# filter out black listed courses, no repeats
-	for course in preference.bl_courses.all():
-		if course not in filter_out:
-			filter_out.append(course)
+	filter_out |= set(preference.bl_courses.all())
 
 	# filter out courses already in calendar, no repeatss
-	for semester in Semester.objects.filter(calendar=calendar):
-		for course in semester.courses.all():
-			if course not in filter_out:
-				filter_out.append(course)
+	for semester in calendar.semester.prefetch_related('courses'):
+		filter_out |= set(semester.courses.all())
 
-	wl_depts_short = [] # departments in wl_depts
-	for dept in preference.wl_depts.all():
-		wl_depts_short.append(dept.short_name)
+	wl_depts_short = preference.wl_depts.all().values_list('short_name')
+	wl_areas = preference.wl_areas.all().values_list('short_name')
+	bl_depts_short = preference.bl_depts.all().values_list('short_name')
+	bl_areas = preference.bl_areas.all().values_list('short_name')
 
-	wl_areas = []
-	for area in preference.wl_areas.all():
-		wl_areas.append(area.short_name)
-
-	bl_depts_short = []
-	for dept in preference.bl_depts.all():
-		bl_depts_short.append(dept.short_name)
-
-	bl_areas = []
-	for area in preference.bl_areas.all():
-		bl_areas.append(area.short_name)
-
-	bse_majors = []
-	for major in Major.objects.all():
-		majors.append(major.short_name)
+	bse_majors = Major.objects.all().values_list('short_name')
 
 	list_suggestions = []
 	# create list of all the courses. Each entry is a dictionary
