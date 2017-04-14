@@ -16,6 +16,12 @@ degrees:
         - MAT 201
         - MAT 203
         - MAT 218
+    - type: linear algebra
+      number: 1
+      score: 2
+      courses: 
+        - MAT 202
+        - MAT 204
     - type: physics 1
       number: 1
       score: 2

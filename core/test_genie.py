@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # random test cases
 import sys
 import os
@@ -15,8 +16,8 @@ from core.models import *
 from core.genie import calculate_progress, recommend
 
 # tests calculate_progress and calculate_single_progress
-#user2 = User.objects.create_user(username="user2")
-#user2.save()
+# user1 = User.objects.create_user(username="user1")
+# user1.save()
 user1 = User.objects.get(username="user1")
 prof1 = user1.profile
 
@@ -40,22 +41,15 @@ cal1 = Calendar(profile=prof1, degree=degree1 , major=major1)
 cal1.save()
 calculate_progress(cal1)
 for progress in Progress.objects.all():
-	print progress
+	print progress.requirement.name, progress
 
 # tests recommend()
-results = recommend(calendar)
-i = 1
-for item in results:
+'''
+results = recommend(cal1)
+for i, item in enumerate(results, 1):
 	print i
-	i += 1
-	for key in item:
-		print key, item[key]
-
-
-
-
-
-
-
-
-
+	for key, value in item.items():
+		if isinstance(value, (str, unicode)):
+			value = value.encode('utf-8')
+		print key, value
+'''
