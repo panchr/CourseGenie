@@ -28,7 +28,7 @@ except (IndexError, KeyError):
 
 USG_DATA_FILE = os.path.join("data", "usg-courses-fall17.json")
 BWK_DATA_FILE = os.path.join("data", "courses_fall17.json")
-if CURRENT_TERM != 'fall':
+if CURRENT_TERM != Course.TERM_FALL:
 	USG_DATA_FILE = os.path.join("data", "usg-courses-spring17.json")
 	BWK_DATA_FILE = os.path.join("data", "courses_spring17.json")
 

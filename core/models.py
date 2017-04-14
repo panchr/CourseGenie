@@ -1,4 +1,4 @@
-# core/models.py
+ # core/models.py
 # CourseGenie
 # Author: Rushy Panchal
 # Date: March 24th, 2017
@@ -147,6 +147,9 @@ class NestedReq(models.Model):
 	courses = models.ManyToManyField(Course)
 	requirement = models.ForeignKey(Requirement, on_delete=models.CASCADE, related_name='nested_reqs')
 
+	def __str__(self):
+		return self.number
+
 class Profile(models.Model):
 		user = models.OneToOneField(User, on_delete = models.CASCADE, unique=True) # Django User model
 		year = models.PositiveSmallIntegerField(validators=[MinValueValidator(2015)]) # graduation year
@@ -171,7 +174,7 @@ class Record(models.Model):
 	semester = models.CharField(max_length = 25, default="")
 	
 	def __str__(self):
-		return '{}'.format(self.course)
+		return self.course.name
 
 class Calendar(models.Model):
 	profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='calendars')
@@ -186,7 +189,7 @@ class Calendar(models.Model):
 		ordering = ['-last_accessed']
 	
 	def __str__(self):
-		return '{} {}'.format(self.major, self.certificates) # not sure if this works
+		return '{} {}'.format(self.major, self.track)
  
 # a calendar has progresses corresponding to all requirements
 class Progress(models.Model):
@@ -194,11 +197,13 @@ class Progress(models.Model):
 	courses_taken = models.ManyToManyField(Course)
 	number_taken = models.PositiveSmallIntegerField(default=0)
 	completed = models.BooleanField(default=False)
-	requirement = models.ForeignKey(Requirement, related_name='progress') # check if this is what I intend; shouldn't change parent of requirement
-	# should be able to access degree/major/certificate via requirement; parent isn't changed to a progress
+	requirement = models.ForeignKey(Requirement, related_name='progress')
 
 	class Meta:
 		unique_together = ('calendar', 'requirement')
+
+	def __str__(self):
+		return '{} {}'.format(self.number_taken, self.completed)
 
 class Area(models.Model): # distribution area
 	#name = models.CharField(max_length = 50)
