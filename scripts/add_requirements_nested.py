@@ -31,8 +31,12 @@ case4 = re.compile(r"^(\*)$")
 case5 = re.compile(r"^\* ?>= ?([0-9]{3})$")
 case6 = re.compile(r"^special")
 case7 = re.compile(r"^theme:")
-case8 = re.compile(r"^([A-Z]{3}) ([0-9]{3})([A-Z]?) | .*")
+case8 = re.compile(r"^([A-Z]{3}) ([0-9]{3})([A-Z]?) \| .*")
 case9 = re.compile(r"^([A-Z]{3}) ([0-9]{3})([A-Z]?)")
+case10 = re.compile(r"^a([A-Z]{2})\|")
+case11 = re.compile(r"^a([A-Z]{2})")
+case12 = re.compile(r"^([A-Z]{3}) >= ([0-9]{3}) \| .*")
+
 
 entry = raw_data["degrees"]
 for deg in entry:
@@ -113,13 +117,33 @@ for deg in entry:
 				m = case7.match(c)
 				if m:
 					continue	
-					
+				
+				# aAREA|: expand into all AREA courses, ORed
+				m = case10.match(c)
+				if m:
+					nested_req = NestedReq(requirement=req, number=1)
+					nested_req.save()
+					# print "created nested for " + req.name
+					area = m.group(1)
+					c_areas = Course.objects.filter(area=area)
+					for course in c_areas:
+						nested_req.courses.add(course)
+					continue
+
+				# aAREA
+				m = case11.match(c)
+				if m:
+					area = m.group(1)
+					for course in Course.objects.filter(area=area):
+						req.courses.add(course)
+					continue
+				
 				# DEPT NUM | etc: put in the courses into nested requirement
 				m = case8.match(c)
 				if m:
 					nested_req = NestedReq(requirement=req, number=1)
 					nested_req.save()
-					print "created nested for " + req.name
+					# print "created nested for " + req.name
 					separated = map(str.strip, c.split("|"))
 					for part in separated:
 						broken = part.split()
@@ -139,6 +163,23 @@ for deg in entry:
 									nested_req.courses.add(crossed.course)
 								except CrossListing.DoesNotExist:
 									pass
+					continue
+				
+				# DEPT >= NUM | etc
+				m = case12.match(c)
+				if m:
+					nested_req = NestedReq(requirement=req, number=1)
+					nested_req.save()
+					# print "created nested for " + req.name
+					separated = map(str.strip, c.split("|"))
+					for part in separated:
+						broken = part.split()
+						if len(broken) >= 3: # 0 should be dept, 1 should be >=, 2 should be number
+							dept = broken[0]
+							num = int(broken[2])
+							satisfied = Course.objects.filter(department=dept, number__gte=num)
+							for s in satisfied:
+								nested_req.courses.add(s)
 					continue
 				
 				# regular course entry	
@@ -252,10 +293,9 @@ for maj in entry:
 						if m:
 							nested_req = NestedReq(requirement=req, number=1)
 							nested_req.save()
-							print "created nested cert req for " + req.name
+							# print "created nested cert req for " + req.name
 							separated = map(str.strip, c.split("|"))
 							for part in separated:
-								part = part.strip()
 								broken = part.split()
 								if len(broken) >= 2:
 									dept = broken[0]
@@ -367,10 +407,9 @@ for maj in entry:
 				if m:
 					nested_req = NestedReq(requirement=req, number=1)
 					nested_req.save()
-					print "created nested cert req for " + req.name
+					# print "created nested cert req for " + req.name
 					separated = map(str.strip, c.split("|"))
 					for part in separated:
-						part = part.strip()
 						broken = part.split()
 						if len(broken) >= 2:
 							dept = broken[0]
@@ -500,10 +539,9 @@ for cert in entry:
 					if m:
 						nested_req = NestedReq(requirement=req, number=1)
 						nested_req.save()
-						print "created nested cert req for " + req.name
+						# print "created nested cert req for " + req.name
 						separated = map(str.strip, c.split("|"))
 						for part in separated:
-							part = part.strip()
 							broken = part.split()
 							if len(broken) >= 2:
 								dept = broken[0]
