@@ -221,6 +221,7 @@ class Department(models.Model):
 					
 # preference is a property of a user's profile and consistent across calendars
 class Preference(models.Model):
+	# change to 1-to-1 relationship
 	profile = models.ForeignKey(Profile, on_delete=models.CASCADE,
 				related_name='preferences')
 		# bl: black listed. NOTE: not sure if these related_names work
