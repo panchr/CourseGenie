@@ -10,7 +10,7 @@ var React = require('react'),
 
 import HTML5Backend from 'react-dnd-html5-backend';
 import { DragDropContext } from 'react-dnd';
-import { List } from 'immutable';
+import { List, Map, fromJS } from 'immutable';
 
 var CourseDisplay = require('core/components/CourseDisplay.jsx'),
   RecommendationDisplay = require('core/components/RecommendationDisplay.jsx'),
@@ -42,14 +42,28 @@ class Dashboard extends React.Component {
 	componentWillMount() {
 		data.installErrorHandler((msg) => this.setState({errorMsg: msg}));
 		this.requests.push(data.schedule.getSemesters(
-			(data) => this.setState({semesters: new List(data)})));
+			(data) => this.setState({semesters: fromJS(data)})));
 		this.requests.push(data.recommendations.get(
 			(data) => this.setState({recommendations: new List(data)})));
 		}
 
 	dismissSuggestion(id, index) {
 		this.requests.push(data.recommendations.dismiss(id));
+		this.removeSuggestion(index);
+		}
+
+	removeSuggestion(index) {
 		this.setState({recommendations: this.state.recommendations.delete(index)});
+		}
+
+	addCourse(index, course) {
+		var sems = this.state.semesters,
+			current = sems.get(index);
+
+		this.setState({
+			semesters: sems.set(index,
+				current.set('courses', current.get('courses').push(course))),
+			});
 		}
 
 	componentWillUnmount() {
@@ -63,15 +77,19 @@ class Dashboard extends React.Component {
 				<div className="row">
 					<div className="7u">
 						<h1>Schedule</h1>
-						<ListView t={(e) => {
-							return <SemesterDisplay {...e} />
-							}} data={this.state.semesters}/>
+						<ListView t={(e, i) =>
+							<SemesterDisplay {...e.toJS()}
+								onCourseAdd={(c) => this.addCourse(i, c)} />
+							} data={this.state.semesters} />
 					</div>
 					<div className="5u">
 						<h1>Recommendations</h1>
 						<ListView t={(e, i) => {
 							return <div className="row">
-								<div className='9u'><RecommendationDisplay {...e} /></div>
+								<div className='9u'>
+									<RecommendationDisplay {...e}
+										onDragEnd={() => this.removeSuggestion(i)} />
+								</div>
 								<div className='3u'>
 									<Icon i='ios-close-outline'
 										className='btn large-icon' style={{color: 'red'}}
