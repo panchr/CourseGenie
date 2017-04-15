@@ -159,7 +159,7 @@ def calculate_single_progress(calendar, category, list_courses):
 		nested_reqs = requirement.nested_reqs.all()
 		for nreq in nested_reqs:
 			c += nreq.courses.count()
-		if requirement == Requirement.objects.get(t="distribution-areas", number=4, intrinsic_score=1):
+		if requirement == Requirement.objects.get(t="distribution-areas", number=4, intrinsic_score=0):
 			c = 800 # small hack... need this to be less than 880 of distribution-additional
 		print requirement.name + " has " + str(c) # prints how many courses qualify under a requirement
 		number_choices.append(c) 
@@ -174,20 +174,17 @@ def calculate_single_progress(calendar, category, list_courses):
 		print course.department + str(course.number) # prints the course
 		matched = {}
 		i = 0
-		#added = False
+
 		for requirement in cat_requirements:
 			if course in requirement.courses.all():
 				matched[i] = requirement
-				#added = True
 
 			nested_reqs = NestedReq.objects.filter(requirement=requirement).exclude(id__in=other_than[i])
 			for nreq in nested_reqs:
-				if course in nreq.courses.all(): #and added == False:
+				if course in nreq.courses.all():
 					small_list = [nreq, requirement]
 					matched[i] = small_list
-					#added = True
 			i += 1
-		#print matched # prints all the requirements that a course matched to
 	
 		if len(matched) == 0: # course did not satisfy any requirements; no Progresses need to be updated
 			pass
@@ -197,19 +194,22 @@ def calculate_single_progress(calendar, category, list_courses):
 			req = None
 			for key in matched: # there should only be one
 				index = key
+				found = False
 				if isinstance(matched[key], Requirement):
 					req = matched[key]
 				if isinstance(matched[key], list):
 					nreq = matched[key][0]
 					req = matched[key][1]
 					other_than.append(nreq.id)
-				progress = Progress.objects.get(calendar=calendar, requirement=req)	
-				progress.number_taken += 1
-				progress.courses_taken.add(course)
-				if progress.number_taken >= req.number and progress.completed == False:
-					progress.completed = True
-				progress.save()
-				number_remaining[index] -= 1
+				if req != None: # doesn't make sense that req would still be None though
+					print req
+					progress = Progress.objects.get(calendar=calendar, requirement=req)	
+					progress.number_taken += 1
+					progress.courses_taken.add(course)
+					if progress.number_taken >= req.number and progress.completed == False:
+						progress.completed = True
+					progress.save()
+					number_remaining[index] -= 1
 
 		else: # course satisfied multiple requirements
 			diff = []
@@ -249,17 +249,19 @@ def _add_nested_courses(reqs):
 	return courses_list
 
 def _update_entry(entry, requirements, req_courses, course, delta, fmt):
-	SCALE = 10
+	SCALE = 40
+	if delta == 3: # flexibility needs to be weighed less
+		SCALE = 20
 	for req in requirements:
 		if course in req_courses[req]:
 			entry['score'] += delta + req.intrinsic_score * SCALE
 			entry['reason'] += fmt.format(req.name)
 					
 def recommend(calendar):
-	RANK_D = 20 # degree
-	RANK_M = 35 # major
-	RANK_T = 15 # track
-	RANK_C = 15 # certificate
+	RANK_D = 36 # degree
+	RANK_M = 33 # major
+	RANK_T = 20 # track
+	RANK_C = 22 # certificate
 	RANK_WLD = 10 # white listed department
 	RANK_WLA = 10 # white listed area
 	RANK_BLD = 10 # black listed department
@@ -269,25 +271,33 @@ def recommend(calendar):
 	TOP_COUNT = 20
 
 	profile = calendar.profile
-
 	major = calendar.major
 	degree = calendar.degree
-	degree_requirements = list(degree.requirements.all())
+
+	progresses = Progress.objects.filter(calendar=calendar)
+	if progresses.count() == 0:
+		calculate_progress(calendar)
+	progresses = progresses.filter(completed=True)
+	satisfied_reqs = []
+	for progress in progresses:
+		satisfied_reqs.append(progress.requirement)
+
+	degree_requirements = list(degree.requirements.exclude(id__in=[o.id for o in satisfied_reqs]))
 	degree_req_courses = _add_nested_courses(degree_requirements)
 
-	major_requirements = list(major.requirements.all())
+	major_requirements = list(major.requirements.exclude(id__in=[o.id for o in satisfied_reqs]))
 	major_req_courses = _add_nested_courses(major_requirements)
 
 	track_requirements = []
 	track_req_courses = {}
 	if calendar.track:
-		track_requirements = list(calendar.track.requirements.all())
+		track_requirements = list(calendar.track.requirements.exclude(id__in=[o.id for o in satisfied_reqs]))
 		track_req_courses = _add_nested_courses(track_requirements)
 
 	certificates = {}
 	for cert in calendar.certificates.all():
 		certificates[cert] = [[], {}]
-		cert_requirements = list(cert.requirements.all())
+		cert_requirements = list(cert.requirements.exclude(id__in=[o.id for o in satisfied_reqs]))
 		cert_req_courses = _add_nested_courses(cert_requirements)
 
 		certificates[cert][0] = cert_requirements
@@ -373,21 +383,21 @@ def recommend(calendar):
 			if area not in taken_areas:
 				entry['score'] += RANK_A
 
-			# add points if satisfy degree requirements
+			# add points if satisfy unsatisfied degree requirements
 			_update_entry(entry, degree_requirements, degree_req_courses, course,
 				RANK_D,
 				'{} requirement of your %s degree,\n' % degree.short_name)
 
-			# add points if satisfy major requirements
+			# add points if satisfy unsatisfied major requirements
 			_update_entry(entry, major_requirements, major_req_courses, course,
 				RANK_M, '{} requirement of your %s major,\n' % major.short_name)
 
-			# add points if satisfy track
+			# add points if satisfy unsatisfied track requirements
 			if calendar.track is not None:
 				_update_entry(entry, track_requirements, track_req_courses, course,
 					RANK_T, '{} requirement of your %s track,\n' % calendar.track.short_name)
 
-			# for each certificate, add points if satisfy certificate
+			# for each certificate, add points if satisfy unsatisfied certificate requirements
 			for cert in certificates:
 				_update_entry(entry, certificates[cert][0], certificates[cert][1][req],
 				 	course, RANK_C,
