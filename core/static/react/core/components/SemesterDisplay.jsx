@@ -8,13 +8,14 @@
 var React = require('react');
 
 import { DropTarget } from 'react-dnd';
+import { List } from 'immutable';
 
 var CourseDisplay = require('core/components/CourseDisplay.jsx'),
 GridView = require('core/components/GridView.jsx'),
 Icon = require('core/components/Icon.jsx');
 
 function SemesterDisplay(props) {
-	return <div>
+	return props.connectDropTarget(<div>
 		<h2>{props.name}</h2>
 		<GridView t={(c) => {
 			return <CourseDisplay {...c} extended={true} />;
@@ -22,17 +23,30 @@ function SemesterDisplay(props) {
 			blankElement={() =>
 				<Icon i='ios-plus' className='large-icon'
 				style={{color: 'green'}} />} />
-	</div>;
+	</div>);
 	}
 
 SemesterDisplay.propTypes = {
+	connectDropTarget: React.PropTypes.func.isRequired,
+	onCourseAdd: React.PropTypes.func.isRequired,
 	name: React.PropTypes.string.isRequired,
 	courses: React.PropTypes.array.isRequired,
 	};
 
 module.exports = DropTarget('course', {
-	drop: (props) => {
-		console.log(props);
+	drop: (props, monitor, component) => {
+		if (! monitor.didDrop()) {
+			var data = monitor.getItem();
+			props.onCourseAdd(data);
+			data.onDragEnd();
+			// Hack to make monitor recognize deletion, see:
+			// https://github.com/react-dnd/react-dnd/issues/545
+			monitor.internalMonitor.store.dispatch({type: "dnd-core/END_DRAG"});
+			}
 		}
 	},
-	(connect, monitor) => new Object())(SemesterDisplay);
+	(connect, monitor) => {
+		return {
+			connectDropTarget: connect.dropTarget(),
+			};
+		})(SemesterDisplay);

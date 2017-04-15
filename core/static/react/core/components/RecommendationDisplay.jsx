@@ -20,6 +20,8 @@ function RecommendationDisplay(props) {
 	}
 
 RecommendationDisplay.propTypes = {
+	connectDragSource: React.PropTypes.func.isRequired,
+	onDragEnd: React.PropTypes.func.isRequired,
 	short_name: React.PropTypes.string.isRequired,
 	name: React.PropTypes.string.isRequired,
 	reason: React.PropTypes.string.isRequired,
@@ -31,6 +33,5 @@ module.exports = DragSource('course', {
 	(connect, monitor) => {
 		return {
 			connectDragSource: connect.dragSource(),
-			isDragging: monitor.isDragging(),
 		};
 		})(RecommendationDisplay);
