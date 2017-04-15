@@ -17,6 +17,7 @@ from core.models import *
 from core.genie import calculate_progress, recommend
 
 # tests calculate_progress and calculate_single_progress
+
 user1, _ = User.objects.get_or_create(username='user1')
 prof1 = user1.profile
 
@@ -38,13 +39,13 @@ degree1 = Degree.objects.get(short_name="B.S.E.")
 major1 = Major.objects.get(short_name="MAE")
 cal1 = Calendar(profile=prof1, degree=degree1 , major=major1)
 cal1.save()
-calculate_progress(cal1)
-for progress in Progress.objects.all():
-	print progress
-
-results = recommend(cal1)
+# calculate_progress(cal1)
+#for progress in Progress.objects.all():
+# 	print progress
 
 # tests recommend()
+results = recommend(cal1)
+
 for i, item in enumerate(results, 1):
 	print i
 	for key, value in item.items():

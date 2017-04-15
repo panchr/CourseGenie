@@ -241,7 +241,6 @@ def calculate_single_progress(calendar, category, list_courses):
 # the brains of the project!!!
 # wow so much brains :o (all due to Rushy)
 # IN PROGRESS
-
 def _add_nested_courses(reqs):
 	courses_list = {r: set(r.courses.all()) for r in reqs}
 	for r in courses_list:
@@ -250,31 +249,33 @@ def _add_nested_courses(reqs):
 	return courses_list
 
 def _update_entry(entry, requirements, req_courses, course, delta, fmt):
+	SCALE = 10
 	for req in requirements:
 		if course in req_courses[req]:
-			entry['score'] += delta
+			entry['score'] += delta + req.intrinsic_score * SCALE
 			entry['reason'] += fmt.format(req.name)
 					
 def recommend(calendar):
-	RANK_D = 13 # degree
-	RANK_M = 12 # major
-	RANK_T = 11 # track
-	RANK_C = 10 # certificate
-	RANK_WLD = 9 # white listed department
-	RANK_WLA = 8 # white listed area
-	RANK_BLD = 7 # black listed department
-	RANK_BLA = 6 # black listed area
-	RANK_F = 5 # flexibility; other BSE majors
-	RANK_A = 4 # untaken distribution area
+	RANK_D = 20 # degree
+	RANK_M = 35 # major
+	RANK_T = 15 # track
+	RANK_C = 15 # certificate
+	RANK_WLD = 10 # white listed department
+	RANK_WLA = 10 # white listed area
+	RANK_BLD = 10 # black listed department
+	RANK_BLA = 10 # black listed area
+	RANK_F = 3 # flexibility; other BSE majors
+	RANK_A = 5 # untaken distribution area
 	TOP_COUNT = 20
 
 	profile = calendar.profile
 
 	major = calendar.major
-	degree_requirements = list(calendar.degree.requirements.all())
+	degree = calendar.degree
+	degree_requirements = list(degree.requirements.all())
 	degree_req_courses = _add_nested_courses(degree_requirements)
 
-	major_requirements = list(calendar.major.requirements.all())
+	major_requirements = list(major.requirements.all())
 	major_req_courses = _add_nested_courses(major_requirements)
 
 	track_requirements = []
@@ -375,7 +376,7 @@ def recommend(calendar):
 			# add points if satisfy degree requirements
 			_update_entry(entry, degree_requirements, degree_req_courses, course,
 				RANK_D,
-				'{} requirement of your %s degree,\n' % calendar.degree.short_name)
+				'{} requirement of your %s degree,\n' % degree.short_name)
 
 			# add points if satisfy major requirements
 			_update_entry(entry, major_requirements, major_req_courses, course,
