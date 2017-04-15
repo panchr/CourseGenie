@@ -237,7 +237,8 @@ class Preference(models.Model):
 
 class Semester(models.Model):
 	name = models.CharField(max_length=25)
-	calendar = models.ForeignKey(Calendar, on_delete=models.CASCADE, related_name='semester')
+	calendar = models.ForeignKey(Calendar, on_delete=models.CASCADE,
+		related_name='semesters')
 	courses = models.ManyToManyField(Course)
 
 	class Meta:

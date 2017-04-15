@@ -1,18 +1,34 @@
-from django.shortcuts import render
+from core.models import *
+from api.serializers import *
+from rest_framework import generics, viewsets
 
-# Create your views here.
-from core.models import Degree, Major, Certificate, Track, Course, CrossListing, Requirement, NestedReq, Profile, Record, Calendar, Progress, Area, Department, Preference, Semester
-from api.serializers import DegreeSerializer, MajorSerializer, CertificateSerializer, TrackSerializer, CourseSerializer, CrossListingSerializer, RequirementSerializer, NestedReqSerializer, ProfileSerializer, RecordSerializer, CalendarSerializer, ProgressSerializer, AreaSerializer, DepartmentSerializer, PreferenceSerializer, SemesterSerializer
-from rest_framework import generics
-
-
-class DegreeList(generics.ListCreateAPIView):
+class DegreeViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Degree.objects.all()
     serializer_class = DegreeSerializer
 
-class DegreeDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Degree.objects.all()
-    serializer_class = DegreeSerializer
+class MajorViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Major.objects.all()
+    serializer_class = MajorSerializer
+
+class TrackViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Track.objects.all()
+    serializer_class = TrackSerializer
+
+class CertificateViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Certificate.objects.all()
+    serializer_class = CertificateSerializer
+
+class CalendarViewSet(viewsets.ModelViewSet):
+    queryset = Calendar.objects.all()
+    serializer_class = CalendarSerializer
+
+# class DegreeList(generics.ListCreateAPIView):
+#     queryset = Degree.objects.all()
+#     serializer_class = DegreeSerializer
+
+# class DegreeDetail(generics.RetrieveUpdateDestroyAPIView):
+#     queryset = Degree.objects.all()
+#     serializer_class = DegreeSerializer
 
 class MajorList(generics.ListCreateAPIView):
     queryset = Major.objects.all()

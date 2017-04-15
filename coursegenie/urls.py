@@ -20,7 +20,7 @@ import django_cas_ng.views
 
 urlpatterns = [
     url(r'', include('core.urls')),
-    url(r'', include('api.urls')),
+    url(r'^api/', include('api.urls')),
     url(r'^admin/', admin.site.urls),
     url(r'accounts/login/$', django_cas_ng.views.login, name='login'),
     url(r'accounts/logout/$', django_cas_ng.views.logout, name='logout'),
