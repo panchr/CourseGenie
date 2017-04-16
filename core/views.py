@@ -57,6 +57,14 @@ class TranscriptView(LoginRequiredMixin, TemplateView):
 class DashboardView(LoginRequiredMixin, TemplateView):
 	template_name = 'core/dashboard.html'
 
+	def get_context_data(self, **kwargs):
+		context = super(DashboardView, self).get_context_data(**kwargs)
+		user = self.request.user
+		user_calendars = list(Calendar.objects.filter(profile=user.profile.id).values_list('id', flat=True))
+		context['user_calendars'] = json.dumps(user_calendars)
+
+		return context
+
 	def get(self, request):
 		user = request.user
 		if user.profile.submitted:

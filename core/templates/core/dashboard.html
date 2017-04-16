@@ -13,6 +13,14 @@
 			</div>
 		</div>
 		<div id="dashboard"></div>
+		<script>
+			var user_calendars = JSON.parse('{{ user_calendars|safe }}');
+
+			function calendar_url(id) {
+				var base = "{% url 'api:calendar-detail' pk=889 %}";
+				return base.replace('889', id);
+				}	
+		</script>
 		<script src="{% static 'core/js/bundle/dashboard.js' %}"></script>
 	</body>
 {% endblock %}

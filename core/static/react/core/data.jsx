@@ -14,28 +14,16 @@ module.exports = {
 		shared.errorHandler = handler;
 		},
 
-	schedule: {
-		getSemesters: function(callback) {
-			var data = [
-				{name: 'Spring 2018', courses: [
-					{name: 'Advanced Programming Techniques', course_id: '1002',
-					number: 333, letter: '', department: 'COS', 'area': 'QR'},
-					{name: 'Computer Networks', course_id: '1003',
-					number: 461, letter: '', department: 'COS', 'area': 'QR'},
-					{name: 'The Environmental Nexus', course_id: '1004',
-					number: 200, letter: 'A', department: 'ENV', 'area': 'STL'},
-					{name: 'The Environmental Nexus', course_id: '1004',
-					number: 200, letter: 'A', department: 'ENV', 'area': 'STL'}
-					]},
-				{name: 'Fall 2017', courses: [
-					{name: 'Reasoning about Computation', course_id: '1005',
-					number: 340, letter: '', department: 'COS', 'area': 'QR'},
-					{name: 'Operating Systems', course_id: '1006',
-					number: 318, letter: '', department: 'COS', 'area': ''},
-				]}
-				];
-			return callback(data);
+	calendar: {
+		getSemesters: function(id, callback) {
+			return jQuery.get(calendar_url(id))
+				.done((data) => callback(data.semesters))
+				.fail(shared.errorHandler);
 			},
+
+		addToSemester: function(semester_id, course, callback) {
+			
+			}
 		},
 
 	recommendations: {

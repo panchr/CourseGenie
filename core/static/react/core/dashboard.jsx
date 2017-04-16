@@ -23,7 +23,8 @@ var CourseDisplay = require('core/components/CourseDisplay.jsx'),
 
 function main() {
 	var DashboardComp = DragDropContext(HTML5Backend)(Dashboard);
-	ReactDOM.render(<DashboardComp />, document.getElementById('dashboard'));
+	ReactDOM.render(<DashboardComp calendar_ids={user_calendars} />,
+		document.getElementById('dashboard'));
 	}
 
 class Dashboard extends React.Component {
@@ -41,7 +42,7 @@ class Dashboard extends React.Component {
 
 	componentWillMount() {
 		data.installErrorHandler((msg) => this.setState({errorMsg: msg}));
-		this.requests.push(data.schedule.getSemesters(
+		this.requests.push(data.calendar.getSemesters(this.props.calendar_ids[0],
 			(data) => this.setState({semesters: fromJS(data)})));
 		this.requests.push(data.recommendations.get(
 			(data) => this.setState({recommendations: new List(data)})));
@@ -53,6 +54,8 @@ class Dashboard extends React.Component {
 		}
 
 	removeSuggestion(index) {
+		// NOTE: may need to refetch list of recommendations when this list is
+		// nearly empty.
 		this.setState({recommendations: this.state.recommendations.delete(index)});
 		}
 

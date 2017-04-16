@@ -1,6 +1,7 @@
 from core.models import *
 from api.serializers import *
 from rest_framework import generics, viewsets
+from rest_framework.decorators import detail_route
 
 class DegreeViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Degree.objects.all()
