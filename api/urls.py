@@ -17,6 +17,8 @@ router.register(r'courses', views.CourseViewSet, base_name='course')
 router.register(r'crosslistings', views.CrossListingViewSet, base_name='crosslisting')
 router.register(r'requirements', views.RequirementViewSet, base_name='requirement')
 router.register(r'nestedreqs', views.NestedReqViewSet, base_name='nestedreq')
+router.register(r'recommendations', views.RecommendationViewSet,
+	base_name='recommendation')
 
 app_name = 'api'
 urlpatterns = [

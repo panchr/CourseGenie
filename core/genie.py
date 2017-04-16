@@ -159,7 +159,7 @@ def calculate_single_progress(calendar, category, list_courses):
 		nested_reqs = requirement.nested_reqs.all()
 		for nreq in nested_reqs:
 			c += nreq.courses.count()
-		if requirement == Requirement.objects.get(t="distribution-areas", number=4, intrinsic_score=0):
+		if requirement == Requirement.objects.get(t="distribution-areas", number=4):
 			c = 800 # small hack... need this to be less than 880 of distribution-additional
 		print requirement.name + " has " + str(c) # prints how many courses qualify under a requirement
 		number_choices.append(c) 
@@ -321,7 +321,7 @@ def recommend(calendar):
 	taken_areas.add("")
 
 	# filter out courses already in calendar, no repeatss
-	for semester in calendar.semester.prefetch_related('courses'):
+	for semester in calendar.semesters.all().prefetch_related('courses'):
 		filter_out |= set(semester.courses.all())
 
 	wl_depts_short = set()

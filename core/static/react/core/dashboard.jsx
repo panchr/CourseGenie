@@ -45,7 +45,7 @@ class Dashboard extends React.Component {
 		data.installErrorHandler((msg) => this.setState({errorMsg: msg}));
 		this.requests.push(data.calendar.getSemesters(this.props.calendar_ids[0],
 			(data) => this.setState({semesters: fromJS(data)})));
-		this.requests.push(data.recommendations.get(
+		this.requests.push(data.recommendations.get(this.props.calendar_ids[0],
 			(data) => this.setState({recommendations: new List(data)})));
 		}
 

@@ -65,18 +65,10 @@ module.exports = {
 		},
 
 	recommendations: {
-		get: function(callback) {
-			var data = [
-			{'course_id': '001381',  'name': 'Introduction to Macroeconomics',
-				'score': 3, 'short_name': 'ECO 101', 'department': 'ECO',
-				'number': 101, 'letter': '',
-				'reason': 'Distribution requirement: ER.'},
-			{'course_id': '002078',  'name': 'Computer Networks', 'score': 4,
-				'short_name': 'COS 461', 'department': 'COS', 'number': 461,
-				'letter': '',
-				'reason': 'Systems Requirement'},
-			];
-			return callback(data);
+		get: function(calendar_id, callback) {
+			return jQuery.get(dashboard_data.recommendations.url(calendar_id))
+				.done(callback)
+				.fail(shared.errorHandler);
 			},
 
 		dismiss: function(id, callback=(e) => null) {

@@ -103,5 +103,5 @@ class RecommendationViewSet(viewsets.ViewSet):
         calendar_id = request.query_params['calendar']
         calendar = Calendar.objects.get(pk=calendar_id)
         output_list = genie.recommend(calendar)
-        serializer = RecommendationSerializer(instance=output_list)
+        serializer = RecommendationSerializer(instance=output_list, many=True)
         return Response(serializer.data)
