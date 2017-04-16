@@ -17,8 +17,15 @@ Icon = require('core/components/Icon.jsx');
 function SemesterDisplay(props) {
 	return props.connectDropTarget(<div>
 		<h2>{props.name}</h2>
-		<GridView t={(c) => {
-			return <CourseDisplay {...c} extended={true} />;
+		<GridView t={(c, i) => {
+			return <div className='row'>
+				<div className='11u'><CourseDisplay {...c} extended={true} /></div>
+				<div className='1u no-left-padding'>
+					<Icon i='ios-close-outline'
+						className='btn' style={{color: 'red'}}
+						onClick={() => {props.onCourseRemove(c, i)}} />
+				</div>
+			</div>;
 			}} rows={2} cols={3} data={props.courses}
 			blankElement={() =>
 				<Icon i='ios-plus' className='large-icon'
@@ -29,6 +36,7 @@ function SemesterDisplay(props) {
 SemesterDisplay.propTypes = {
 	connectDropTarget: React.PropTypes.func.isRequired,
 	onCourseAdd: React.PropTypes.func.isRequired,
+	onCourseRemove: React.PropTypes.func.isRequired,
 	name: React.PropTypes.string.isRequired,
 	courses: React.PropTypes.array.isRequired,
 	};

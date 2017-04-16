@@ -14,11 +14,21 @@
 		</div>
 		<div id="dashboard"></div>
 		<script>
-			var user_calendars = JSON.parse('{{ user_calendars|safe }}');
-
+			var dashboard_data = {
+				user_calendars: JSON.parse('{{ user_calendars|safe }}'),
+				calendar: {
+					url: function(id) {
+						var base = "{% url 'api:calendar-detail' pk=889 %}";
+						return base.replace('889', id);
+						},
+					semesterCourseUrl: function(semester_id, course_id) {
+						var base = "{% url 'api:semester-course' pk=889 %}";
+						return base.replace('889', semester_id) + '?course_id=' + course_id;
+						}
+					}
+				};
 			function calendar_url(id) {
-				var base = "{% url 'api:calendar-detail' pk=889 %}";
-				return base.replace('889', id);
+				
 				}	
 		</script>
 		<script src="{% static 'core/js/bundle/dashboard.js' %}"></script>

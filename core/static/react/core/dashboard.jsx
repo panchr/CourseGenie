@@ -23,7 +23,8 @@ var CourseDisplay = require('core/components/CourseDisplay.jsx'),
 
 function main() {
 	var DashboardComp = DragDropContext(HTML5Backend)(Dashboard);
-	ReactDOM.render(<DashboardComp calendar_ids={user_calendars} />,
+	ReactDOM.render(
+		<DashboardComp calendar_ids={dashboard_data.user_calendars} />,
 		document.getElementById('dashboard'));
 	}
 
@@ -67,6 +68,20 @@ class Dashboard extends React.Component {
 			semesters: sems.set(index,
 				current.set('courses', current.get('courses').push(course))),
 			});
+		this.requests.push(data.calendar.addToSemester(current.get('id'), course,
+			() => {}));
+		}
+
+	removeCourse(index, course_index, course) {
+		var sems = this.state.semesters,
+			current = sems.get(index);
+
+		this.setState({
+			semesters: sems.set(index,
+				current.set('courses', current.get('courses').delete(course_index))),
+			});
+		this.requests.push(data.calendar.removeFromSemester(current.get('id'),
+			course, () => {}));
 		}
 
 	componentWillUnmount() {
@@ -82,7 +97,8 @@ class Dashboard extends React.Component {
 						<h1>Schedule</h1>
 						<ListView t={(e, i) =>
 							<SemesterDisplay {...e.toJS()}
-								onCourseAdd={(c) => this.addCourse(i, c)} />
+								onCourseAdd={(c) => this.addCourse(i, c)}
+								onCourseRemove={(c, j) => this.removeCourse(i, j, c)} />
 							} data={this.state.semesters} />
 					</div>
 					<div className="5u">

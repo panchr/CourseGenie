@@ -9,31 +9,69 @@ var jQuery = require('jquery');
 
 var shared = {};
 
+function setup_ajax_csrf() {
+	/*
+	* Set up AJAX requests to use CSRF, if necessary.
+	* Gets the CSRF token from the 'csrftoken' cookie.
+	*
+	* Adapted from: https://docs.djangoproject.com/en/1.9/ref/csrf/#ajax.
+	*/
+	// var csrf_token = Cookies.get('csrftoken');
+	jQuery.ajaxSetup({
+		beforeSend: function(xhr, settings) {
+			/* The CSRF token should only be set if the method is not a safe
+			method. */
+			if (! (this.crossDomain ||
+				/^(GET|HEAD|OPTIONS|TRACE)$/.test(settings.type))) {
+				xhr.setRequestHeader('X-CSRFToken', window._csrf_token);
+				}
+			}
+		});
+	}
+
 module.exports = {
 	installErrorHandler: function(handler) {
-		shared.errorHandler = handler;
+		shared.errorHandler = (response, msg, error) => {
+			var msg = response.responseText;
+			if (response.responseJSON && response.responseJSON.error) {
+				msg = response.responseJSON.error;
+				}
+			handler(msg);
+			};
 		},
 
 	calendar: {
 		getSemesters: function(id, callback) {
-			return jQuery.get(calendar_url(id))
+			return jQuery.get(dashboard_data.calendar.url(id))
 				.done((data) => callback(data.semesters))
 				.fail(shared.errorHandler);
 			},
 
 		addToSemester: function(semester_id, course, callback) {
-			
+			setup_ajax_csrf();
+			return jQuery.post(dashboard_data.calendar.semesterCourseUrl(semester_id,
+				course.course_id))
+				.done((data) => callback(data))
+				.fail(shared.errorHandler);
+			},
+
+		removeFromSemester: function(semester_id, course, callback) {
+			setup_ajax_csrf();
+			return jQuery.ajax(dashboard_data.calendar.semesterCourseUrl(semester_id,
+				course.course_id), {method: 'DELETE'})
+				.done((data) => callback(data))
+				.fail(shared.errorHandler);
 			}
 		},
 
 	recommendations: {
 		get: function(callback) {
 			var data = [
-			{'course_id': '123456',  'name': 'Introduction to Macroeconomics',
+			{'course_id': '001381',  'name': 'Introduction to Macroeconomics',
 				'score': 3, 'short_name': 'ECO 101', 'department': 'ECO',
 				'number': 101, 'letter': '',
 				'reason': 'Distribution requirement: ER.'},
-			{'course_id': '123457',  'name': 'Computer Networks', 'score': 4,
+			{'course_id': '002078',  'name': 'Computer Networks', 'score': 4,
 				'short_name': 'COS 461', 'department': 'COS', 'number': 461,
 				'letter': '',
 				'reason': 'Systems Requirement'},

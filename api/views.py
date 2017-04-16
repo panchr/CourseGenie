@@ -1,8 +1,12 @@
-from core.models import *
-from api.serializers import *
 from rest_framework import viewsets
 from rest_framework.decorators import detail_route
-from core import genie 
+from rest_framework.exceptions import NotFound
+from rest_framework.response import Response
+
+from api.serializers import *
+from core.models import *
+from core.errors import *
+from core import genie
 
 # things that should not be changed
 class DegreeViewSet(viewsets.ReadOnlyModelViewSet):
@@ -65,6 +69,29 @@ class PreferenceViewSet(viewsets.ModelViewSet):
 class SemesterViewSet(viewsets.ModelViewSet):
     queryset = Semester.objects.all()
     serializer_class = SemesterSerializer
+
+    @detail_route(methods=['post', 'delete'], url_path='course')
+    def modify_course(self, request, pk=None):
+        semester = self.get_object()
+        course_id = request.query_params['course_id']
+        try:
+            course = Course.objects.get(course_id=course_id)
+        except Course.DoesNotExist:
+            raise NotFound('course %s not found' % course_id)
+
+        if request.method == 'POST':
+            # check if already there, and if so, raise 409
+            if semester.courses.filter(id=course.id).exists():
+                raise ContentError('course %s already in semester' % course_id)
+
+            semester.courses.add(course)
+        elif request.method == 'DELETE':
+            if not semester.courses.filter(id=course.id).exists():
+                raise ContentError('course %s not in semester' % course_id)
+
+            semester.courses.remove(course)
+
+        return Response({'success': True})
 
 class ProgressViewSet(viewsets.ModelViewSet):
     queryset = Progress.objects.all()

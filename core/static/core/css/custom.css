@@ -10,6 +10,10 @@
 	font-size: 2em;
 	}
 
+.no-left-padding {
+	padding-left: 0;
+	}
+
 .center {
 	text-align: center;
 	}
