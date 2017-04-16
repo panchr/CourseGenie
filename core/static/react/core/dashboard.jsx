@@ -103,20 +103,22 @@ class Dashboard extends React.Component {
 					</div>
 					<div className="5u">
 						<h1>Recommendations</h1>
-						<ListView t={(e, i) => {
-							return <div className="row">
-								<div className='9u'>
-									<RecommendationDisplay {...e}
-										onDragEnd={() => this.removeSuggestion(i)} />
-								</div>
-								<div className='3u'>
-									<Icon i='ios-close-outline'
-										className='btn large-icon' style={{color: 'red'}}
-										onClick={() => this.dismissSuggestion(e.course_id, i)}
-									/>
-								</div>
-							</div>;
-							}} data={this.state.recommendations} />
+						<div style={{maxHeight: '80vh', overflowY: 'scroll'}}>
+							<ListView t={(e, i) => {
+								return <div className="row">
+									<div className='9u'>
+										<RecommendationDisplay {...e}
+											onDragEnd={() => this.removeSuggestion(i)} />
+									</div>
+									<div className='3u'>
+										<Icon i='ios-close-outline'
+											className='btn large-icon' style={{color: 'red'}}
+											onClick={() => this.dismissSuggestion(e.course_id, i)}
+										/>
+									</div>
+								</div>;
+								}} data={this.state.recommendations} />
+						</div>
 					</div>
 				</div>
 			</div>
