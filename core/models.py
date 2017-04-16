@@ -165,8 +165,8 @@ class Profile(models.Model):
 # according to https://simpleisbetterthancomplex.com/tutorial/2016/07/22/how-to-extend-django-user-model.html#onetoone
 @receiver(post_save, sender = User)
 def create_user_profile(sender, instance, created, **kwargs):
-		if created: 
-				Profile.objects.create(user=instance, year=0)
+		if created:
+			Profile.objects.create(user=instance, year=0)
 
 class Record(models.Model):
 	profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='records')
@@ -203,7 +203,7 @@ class Progress(models.Model):
 		unique_together = ('calendar', 'requirement')
 
 	def __str__(self):
-		return '{} {}'.format(self.number_taken, self.completed)
+		return '{} {} {}'.format(self.requirement.name, self.number_taken, self.completed)
 
 class Area(models.Model): # distribution area
 	#name = models.CharField(max_length = 50)
@@ -221,6 +221,7 @@ class Department(models.Model):
 					
 # preference is a property of a user's profile and consistent across calendars
 class Preference(models.Model):
+	# change to 1-to-1 relationship
 	profile = models.ForeignKey(Profile, on_delete=models.CASCADE,
 				related_name='preferences')
 		# bl: black listed. NOTE: not sure if these related_names work

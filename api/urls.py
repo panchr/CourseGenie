@@ -10,6 +10,12 @@ router.register(r'majors', views.MajorViewSet, base_name='major')
 router.register(r'tracks', views.TrackViewSet, base_name='track')
 router.register(r'certificates', views.CertificateViewSet, base_name='certifcate')
 router.register(r'calendars', views.CalendarViewSet, base_name='calendar')
+router.register(r'areas', views.AreaViewSet, base_name='area')
+router.register(r'departments', views.DepartmentViewSet, base_name='department')
+router.register(r'courses', views.CourseViewSet, base_name='course')
+router.register(r'crosslistings', views.CrossListingViewSet, base_name='crosslisting')
+router.register(r'requirements', views.RequirementViewSet, base_name='requirement')
+router.register(r'nestedreqs', views.NestedReqViewSet, base_name='nestedreq')
 
 app_name = 'api'
 urlpatterns = [

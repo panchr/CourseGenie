@@ -141,3 +141,13 @@ class CalendarSerializer(serializers.ModelSerializer):
     class Meta:
         model = Calendar
         fields = '__all__'
+
+class RecommendationSerializer(serializers.Serializer):
+    course_id = serializers.CharField(max_length=10)
+    name = serializers.CharField(max_length=150)
+    short_name = serializers.CharField(max_length=20)
+    department = serializers.CharField(max_length=3)
+    number = serializers.IntegerField()
+    letter = serializers.CharField(max_length=1)
+    reason = serializers.CharField(max_length=256)
+    score = serializers.IntegerField()
