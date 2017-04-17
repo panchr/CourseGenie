@@ -16,20 +16,25 @@ Icon = require('core/components/Icon.jsx');
 
 function SemesterDisplay(props) {
 	return props.connectDropTarget(<div>
-		<h2>{props.name}</h2>
+		<div className='topbtm-pad'>
+		<h2>{props.name}</h2></div>
 		<GridView t={(c, i) => {
-			return <div className='row'>
+			return <div className='course-list'>
+					<div className='row'>
 				<div className='11u'><CourseDisplay {...c} extended={true} /></div>
 				<div className='1u no-left-padding'>
-					<Icon i='ios-close-outline'
-						className='btn' style={{color: 'red'}}
+					<Icon i='ios-close-empty'
+						className='btn' style={{color: 'LightSlateGray'}}
 						onClick={() => {props.onCourseRemove(c, i)}} />
 				</div>
+			</div>
 			</div>;
 			}} rows={2} cols={3} data={props.courses}
 			blankElement={() =>
-				<Icon i='ios-plus' className='large-icon'
-				style={{color: 'green'}} />} />
+				<div className='course-blank'><Icon i='ios-plus-empty' className='large-icon'
+				style={{color: 'green'}} /></div>} />
+			<div className='topbtm-pad'></div>
+			<div className='topbtm-pad'></div>
 	</div>);
 	}
 

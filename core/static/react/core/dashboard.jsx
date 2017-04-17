@@ -110,7 +110,7 @@ class Dashboard extends React.Component {
 											onDragEnd={() => this.removeSuggestion(i)} />
 									</div>
 									<div className='2u'>
-										<Icon i='ios-close-outline'
+										<Icon i='ios-close-empty'
 											className='btn large-icon' style={{color: 'LightSlateGray'}}
 											onClick={() => this.dismissSuggestion(e.course_id, i)}
 										/>

@@ -2,6 +2,11 @@
 	padding-bottom: 1em;
 	}
 
+.topbtm-pad {
+	padding-top: 1em;
+	padding-bottom: 0.5em;
+}
+
 .list-view .list-item {
 	display: block;
 	}
@@ -47,7 +52,7 @@
 
 .page-header {
 	position: relative;
-	padding: 9em 0 1em 0;
+	padding: 7em 0 1em 0;
 	background: #fff;
 	background-size: cover;
 	text-align: center;

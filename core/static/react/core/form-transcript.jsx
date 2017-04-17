@@ -189,7 +189,7 @@ class CourseForm extends React.Component {
 									<GridView t={this.renderCourse} data={this.state.courses}
 										blankText='None yet!' cols={2} />
 									:
-									<span>No classes entered!</span>}
+									<span>No courses entered!</span>}
 								</div>
 							</div>
 						</div>
@@ -219,9 +219,7 @@ class CourseForm extends React.Component {
 					</div>
 					<div className="row 50%" style={hiddenIfSubmitted}>
 						<div className="12u$">
-							<h1>Major</h1>
-							<p>This is just for your first plan - you can always change it
-							later!</p>
+							<h1>Major (can be changed later)</h1>
 						</div>
 						<div className="12u">
 							<select name="selected-major"
@@ -235,6 +233,7 @@ class CourseForm extends React.Component {
 						<div className="row 50%">
 							<div className="12u center">
 								<input type="submit" className="button btn" value="Get Started"/>
+								<div className='topbtm-pad'></div>
 							</div>
 						</div>
 					</form>

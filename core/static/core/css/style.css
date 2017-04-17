@@ -630,6 +630,43 @@
 			text-align: left;
 		}
 
+		.course-list
+		{
+			position: relative;
+			display: inline-block;
+			background: none;
+			border: 2px solid #D8D8D8;
+			height: 8em;
+			width: 12.2em;
+			border-radius: 5px;
+			line-height: 1.5em;
+			padding: 0.7em 0.2em 0.7em 1.2em;
+			margin: 0.5em 0.9em -2em 0;
+			color: #afafaf;
+			text-decoration: none;
+			font-weight: 300;
+			text-align: left;
+		}
+
+		.course-blank
+		{
+			position: relative;
+			display: inline-block;
+			background: none;
+			border: 2px solid #57d157;
+			border-style: dashed;
+			height: 8em;
+			width: 12.2em;
+			border-radius: 5px;
+			line-height: 1.5em;
+			padding-top: 2.8em;
+			margin: 0.5em 0.9em -2em 0;
+			color: #57d157;
+			text-decoration: none;
+			font-weight: 300;
+			text-align: center;
+		}
+
 		.button
 		{
 			position: relative;
