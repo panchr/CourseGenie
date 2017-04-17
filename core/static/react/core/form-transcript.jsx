@@ -167,24 +167,24 @@ class CourseForm extends React.Component {
 								<h1>Number</h1>
 							</div>
 							<div className="3u">
-								<input placeholder="COS" type="text" className="text"
+								<input placeholder="e.g. COS" type="text" className="text"
 								ref={(e) => this.elems.department_input = e} />
 							</div>
 							<div className="3u">
-								<input placeholder="333" type="text" className="text"
+								<input placeholder="e.g. 333" type="text" className="text"
 							 	ref={(e) => this.elems.number_input = e} />
 								{/* refs are required (as callbacks) to get input */}
 							</div>
 							<div className="3u">
-								<a className="button button-add fit btn"
+								<a className="button-add fit btn"
 									onClick={this.addCourse}>Add</a>
 							</div>
 						</div>
 					</section>
 						<div className="row 50%">
 							<div className="12u">
-								<h1>Courses Entered</h1>
-								<div className='center'> 
+								<h2>Courses Entered</h2>
+								<div className='center'>
 									<GridView t={this.renderCourse} data={this.state.courses}
 										blankText='None yet!' cols={2} />
 								</div>
