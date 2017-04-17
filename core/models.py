@@ -174,7 +174,7 @@ class Record(models.Model):
 	semester = models.CharField(max_length = 25, default="")
 	
 	def __str__(self):
-		return self.course.name
+		return str(self.course)
 
 class Calendar(models.Model):
 	profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='calendars')
@@ -218,7 +218,7 @@ class Department(models.Model):
 
 	def __str__(self):
 		return self.short_name
-					
+
 # preference is a property of a user's profile and consistent across calendars
 class Preference(models.Model):
 	# change to 1-to-1 relationship

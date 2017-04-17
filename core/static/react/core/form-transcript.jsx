@@ -22,13 +22,22 @@ function main() {
 	var ticket = queryParameters.ticket;
 
 	if (ticket) {
-		var url = transcript_url + ticket;
+		var url = transcript_data.url + ticket;
 		}
 	else {
 		var url = '';
 		}
-	ReactDOM.render(<CourseForm transcript_url={url} action={form_action}
-		data={existing_data} />,
+
+	var majors = [];
+	for (var index in transcript_data.majors) {
+		var major_data = transcript_data.majors[index];
+		majors.push({label: major_data.short_name + ' - ' + major_data.name,
+			value: major_data.id});
+		}
+
+	ReactDOM.render(<CourseForm transcript_url={url}
+		action={transcript_data.form_action} majors={majors}
+		data={transcript_data.existing_data} />,
 		document.getElementById('course-form'));
 	}
 
@@ -123,7 +132,8 @@ class CourseForm extends React.Component {
 				first_name: this.elems.first_name_input.value,
 				last_name: this.elems.last_name_input.value,
 				},
-			graduation_year: this.elems.year_input.value
+			graduation_year: this.elems.year_input.value,
+			major: this.elems.major_input.value,
 			};
 
 		if (data.user.first_name == '' || data.user.last_name == '') {
@@ -135,6 +145,9 @@ class CourseForm extends React.Component {
 		}
 
 	render() {
+		var hiddenIfSubmitted = {};
+		if (this.props.data.submitted) hiddenIfSubmitted.display = 'none';
+
 		return (<div>
 				<ErrorAlert msg={this.state.errorMsg} />
 				<ErrorAlert msg={this.state.requestErrorMsg} />
@@ -199,6 +212,20 @@ class CourseForm extends React.Component {
 								this.state.graduation_year || (new Date()).getFullYear() + 3}
 								type="number" className="number"
 								ref={(e) => this.elems.year_input = e} />
+						</div>
+					</div>
+					<div className="row 50%" style={hiddenIfSubmitted}>
+						<div className="12u$">
+							<h1>Major</h1>
+							<p>This is just for your first plan - you can always change it
+							later!</p>
+						</div>
+						<div className="12u">
+							<select name="selected-major"
+								ref={(e) => this.elems.major_input = e}>
+								{this.props.majors.map((e) =>
+									<option value={e.value} key={Math.random()}>{e.label}</option>)}
+							</select>
 						</div>
 					</div>
 					</section>

@@ -26,9 +26,12 @@
 		<div id="course-form">
 
 		<script>
-			var transcript_url = "{{ transcript_url }}",
-				form_action = "{{ form_action }}";
-			var existing_data = JSON.parse('{{ data|safe }}');
+			var transcript_data = {
+				url: "{{ transcript_url }}",
+				form_action: "{{ form_action }}",
+				existing_data: JSON.parse('{{ data|safe }}'),
+				majors: JSON.parse('{{ majors|safe }}'),
+				};
 		</script>
 		<script src="{% static 'core/js/bundle/form-transcript.js' %}"></script>
 	</body>

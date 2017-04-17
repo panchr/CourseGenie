@@ -9,6 +9,7 @@ from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.conf import settings
 from django.core.urlresolvers import reverse
+from django.utils import timezone
 
 from core.models import *
 from core import genie
@@ -28,6 +29,8 @@ class TranscriptView(LoginRequiredMixin, TemplateView):
 		context['transcript_service_url'] = service_url
 		context['transcript_url'] = '{}/transcript/?ticket='.format(settings.TRANSCRIPT_API_URL)
 		context['form_action'] = page_url
+		context['majors'] = json.dumps(list(Major.objects.all().values(
+			'short_name', 'name', 'id')))
 
 		user = self.request.user
 		context['data'] = json.dumps({
@@ -36,7 +39,8 @@ class TranscriptView(LoginRequiredMixin, TemplateView):
 				'first_name': user.first_name,
 				'last_name': user.last_name,
 				},
-			'graduation_year': user.profile.year
+			'graduation_year': user.profile.year,
+			'submitted': user.profile.submitted,
 			})
 
 		return context
@@ -47,7 +51,23 @@ class TranscriptView(LoginRequiredMixin, TemplateView):
 		genie.store_manual(user, data['courses'])
 		user.first_name = data['user']['first_name']
 		user.last_name = data['user']['last_name']
-		user.profile.year = data['graduation_year']
+		user.profile.year = int(data['graduation_year'])
+
+		if not (user.profile.submitted
+			and Calendar.objects.filter(profile=user.profile).exists()):
+			calendar = Calendar.objects.create(profile=user.profile,
+				degree_id=1, major_id=int(data['major']))
+			now = timezone.now()
+			if now.month in {1, 9, 10, 11, 12}:
+				next_sem_name = 'Spring %d' % (now.year+1)
+				future_sem_name = 'Fall %d' % (now.year+1)
+			else: # Spring or summer
+				next_sem_name = 'Fall %d' % now.year
+				future_sem_name = 'Spring %d' % (now.year+1)
+
+			sem1 = Semester.objects.create(calendar=calendar, name=next_sem_name)
+			sem2 = Semester.objects.create(calendar=calendar, name=future_sem_name)
+
 		user.profile.submitted = True
 		user.save()
 		user.profile.save()
