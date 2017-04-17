@@ -185,8 +185,11 @@ class CourseForm extends React.Component {
 							<div className="12u">
 								<h2>Courses Entered</h2>
 								<div className='center'>
+									{this.state.courses.size > 0 ?
 									<GridView t={this.renderCourse} data={this.state.courses}
 										blankText='None yet!' cols={2} />
+									:
+									<span>No classes entered!</span>}
 								</div>
 							</div>
 						</div>
