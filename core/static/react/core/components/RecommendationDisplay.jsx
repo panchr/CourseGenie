@@ -14,7 +14,7 @@ function RecommendationDisplay(props) {
 		<div className='12u'>
 			<div>{props.short_name}</div>
 			<div>{props.name}</div>
-			<div>Reason: {props.reason}</div>
+			<div><font color='CadetBlue'>Reason: {props.reason}</font></div>
 		</div>
 	</div>);
 	}

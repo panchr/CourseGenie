@@ -43,7 +43,14 @@
 		color: #7C9CD0;
 	}
 
-	h3,h4,h5,h6
+	h3
+{
+	font-weight: 300;
+	text-align: left;
+	font-size: 125%;
+	color: #888787;
+}
+	h4,h5,h6
 	{
 		font-weight: 300;
 		color: #333131;
@@ -604,6 +611,23 @@
 			background: rgba(0,0,0,0);
 			border: 1px solid rgba(0,0,0,0.03);
 			color:  rgba(0,0,0,0.30);
+		}
+
+		.recs
+		{
+			position: relative;
+			display: inline-block;
+			background: none;
+			border: 2px solid #7C9CD0;
+			border-radius: 5px;
+			font-size: 85% !important;
+			line-height: 1.5em;
+			padding: 0.7em 0.2em 0.7em 1.2em;
+			margin: 0.5em 0.9em 0.2em 0;
+			color: #7C9CD0;
+			text-decoration: none;
+			font-weight: 300;
+			text-align: left;
 		}
 
 		.button
@@ -1227,7 +1251,7 @@
 	#footer
 	{
 		position: relative;
-		padding: 5em 0em 4em 0em;
+		padding: 4em 0em 4em 0em;
 	}
 
 		#footer header

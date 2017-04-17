@@ -90,11 +90,9 @@ class Dashboard extends React.Component {
 
 	render() {
 		return (<div className="container">
-			<div className="container">
 				<ErrorAlert msg={this.state.errorMsg} />
 				<div className="row">
 					<div className="7u">
-						<h1>Schedule</h1>
 						<ListView t={(e, i) =>
 							<SemesterDisplay {...e.toJS()}
 								onCourseAdd={(c) => this.addCourse(i, c)}
@@ -102,25 +100,26 @@ class Dashboard extends React.Component {
 							} data={this.state.semesters} />
 					</div>
 					<div className="5u">
-						<h1>Recommendations</h1>
+						<h3>Recommendations</h3>
 						<div style={{maxHeight: '80vh', overflowY: 'scroll'}}>
 							<ListView t={(e, i) => {
-								return <div className="row">
-									<div className='9u'>
+								return <div className='recs'>
+									<div className="row">
+									<div className='10u'>
 										<RecommendationDisplay {...e}
 											onDragEnd={() => this.removeSuggestion(i)} />
 									</div>
-									<div className='3u'>
+									<div className='2u'>
 										<Icon i='ios-close-outline'
-											className='btn large-icon' style={{color: 'red'}}
+											className='btn large-icon' style={{color: 'LightSlateGray'}}
 											onClick={() => this.dismissSuggestion(e.course_id, i)}
 										/>
+									</div>
 									</div>
 								</div>;
 								}} data={this.state.recommendations} />
 						</div>
 					</div>
-				</div>
 			</div>
 		</div>);
 		}

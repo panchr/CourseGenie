@@ -41,6 +41,10 @@
 	cursor: hand;
 	}
 
+	.vert-line {
+  border-right: thin solid #ddd;
+}
+
 .page-header {
 	position: relative;
 	padding: 9em 0 1em 0;
@@ -50,8 +54,25 @@
 	color: #7C9CD0;
 	}
 
-.page-header header h2 {
-	font-size: 3.5em;
-	font-weight: 100;
-	color: #7C9CD0;
-	}
+	.page-header header h2 {
+		font-size: 3.5em;
+		font-weight: 100;
+		color: #7C9CD0;
+		}
+
+		.dash-head {
+		position: relative;
+		padding: 2em 0 0 0;
+		margin-left: -3em;
+		margin-bottom: -0.5em;
+		background: #fff;
+		background-size: cover;
+		color: #7C9CD0;
+		}
+
+	.dash-head header h2 {
+		font-size: 2em;
+		font-weight: 100;
+		text-align: left;
+		color: #7C9CD0;
+		}
