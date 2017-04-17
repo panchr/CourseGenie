@@ -19,6 +19,8 @@ router.register(r'requirements', views.RequirementViewSet, base_name='requiremen
 router.register(r'nestedreqs', views.NestedReqViewSet, base_name='nestedreq')
 router.register(r'recommendations', views.RecommendationViewSet,
 	base_name='recommendation')
+router.register(r'preferences', views.PreferenceViewSet,
+	base_name='preference')
 
 app_name = 'api'
 urlpatterns = [

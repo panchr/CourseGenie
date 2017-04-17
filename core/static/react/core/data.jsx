@@ -73,9 +73,11 @@ module.exports = {
 
 		dismiss: function(id, callback=(e) => null) {
 			// dismiss recommendation with ID
-			console.log('Dismissing', id);
-			return callback(null);
-			}
+			setup_ajax_csrf();
+			return jQuery.post(dashboard_data.recommendations.blacklistUrl(id))
+				.done(callback)
+				.fail(shared.errorHandler);
+			},
 		},
 
 	requirements: {

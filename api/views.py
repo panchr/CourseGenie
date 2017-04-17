@@ -66,6 +66,30 @@ class PreferenceViewSet(viewsets.ModelViewSet):
     queryset = Preference.objects.all()
     serializer_class = PreferenceSerializer
 
+    @detail_route(methods=['post', 'delete'], url_path='bl-course')
+    def modify_course(self, request, pk=None):
+        pref = self.get_object()
+        course_id = request.query_params['course_id']
+
+        try:
+            course = Course.objects.get(course_id=course_id)
+        except Course.DoesNotExist:
+            raise NotFound('course %s not found' % course_id)
+
+        if request.method == 'POST':
+            # check if already there, and if so, raise 409
+            if pref.bl_courses.filter(id=course.id).exists():
+                raise ContentError('course %s already in blacklist' % course_id)
+
+            pref.bl_courses.add(course)
+        elif request.method == 'DELETE':
+            if not pref.bl_courses.filter(id=course.id).exists():
+                raise ContentError('course %s not in blacklist' % course_id)
+
+            pref.bl_courses.remove(course)
+
+        return Response({'success': True})
+
 class SemesterViewSet(viewsets.ModelViewSet):
     queryset = Semester.objects.all()
     serializer_class = SemesterSerializer

@@ -82,6 +82,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
 		user = self.request.user
 		user_calendars = list(Calendar.objects.filter(profile=user.profile.id).values_list('id', flat=True))
 		context['user_calendars'] = json.dumps(user_calendars)
+		context['preference_id'] = user.profile.preference.id
 
 		return context
 
