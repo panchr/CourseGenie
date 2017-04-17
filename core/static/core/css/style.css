@@ -27,13 +27,29 @@
 		color: #888787;
 	}
 
-	h1,h2,h3,h4,h5,h6
+	h1
+	{
+		font-weight: 300;
+		margin-bottom: -1em;
+		padding-left: 0.3em;
+		color: #7C9CD0;
+	}
+
+	h2
+	{
+		font-weight: 300;
+		text-align: center;
+		font-size: 125%;
+		color: #7C9CD0;
+	}
+
+	h3,h4,h5,h6
 	{
 		font-weight: 300;
 		color: #333131;
 	}
 
-		h1 a, h2 a, h3 a, h4 a, h5 a, h6 a
+		h3 a, h4 a, h5 a, h6 a
 		{
 			color: inherit;
 			text-decoration: none;
@@ -556,7 +572,7 @@
 			border: 3px solid #11DC84	;
 			border-radius: 5px;
 			font-size: 0.65em;
-			padding: 0.50em 1em 0.50em 1em;
+			padding: 0.70em 2em 0.70em 2em;
 			color: #11DC84 !important;
 			text-decoration: none;
 			font-size: 1.2em;
