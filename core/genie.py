@@ -12,6 +12,18 @@ from django.db import transaction
 
 from core.models import *
 
+RANK_D = 36 # degree
+RANK_M = 33 # major
+RANK_T = 20 # track
+RANK_C = 22 # certificate
+RANK_WLD = 10 # white listed department
+RANK_WLA = 10 # white listed area
+RANK_BLD = 10 # black listed department
+RANK_BLA = 10 # black listed area
+RANK_F = 3 # flexibility; other BSE majors
+RANK_A = 5 # untaken distribution area
+TOP_COUNT = 20
+
 # store user records for manual input of courses
 # REQUESTED sample input from manual form:
 # ["PHY 104", "WRI 105", "FRS 118", "ECO 101A"]
@@ -145,6 +157,7 @@ def calculate_progress(calendar):
 # calculate for one single degree/major/track/certificate; to be called from calculate_progress
 # NEED TO DEBUG
 def calculate_single_progress(calendar, category, list_courses):
+	DISTRO_AREA_REQ = Requirement.objects.get(t="distribution-areas", number=4)
 	FACTOR = 5
 	number_choices = [] # number of courses to choose from for this requirement
 	number_remaining = [] # number of courses left to fulfill for this requirement
@@ -159,7 +172,7 @@ def calculate_single_progress(calendar, category, list_courses):
 		nested_reqs = requirement.nested_reqs.all()
 		for nreq in nested_reqs:
 			c += nreq.courses.count()
-		if requirement == Requirement.objects.get(t="distribution-areas", number=4):
+		if requirement == DISTRO_AREA_REQ:
 			c = 800 # small hack... need this to be less than 880 of distribution-additional
 		print requirement.name + " has " + str(c) # prints how many courses qualify under a requirement
 		number_choices.append(c) 
@@ -250,26 +263,14 @@ def _add_nested_courses(reqs):
 
 def _update_entry(entry, requirements, req_courses, course, delta, fmt):
 	SCALE = 40
-	if delta == 3: # flexibility needs to be weighed less
+	if delta == RANK_F: # flexibility needs to be weighed less
 		SCALE = 20
 	for req in requirements:
 		if course in req_courses[req]:
 			entry['score'] += delta + req.intrinsic_score * SCALE
 			entry['reason'] += fmt.format(req.name)
-					
-def recommend(calendar):
-	RANK_D = 36 # degree
-	RANK_M = 33 # major
-	RANK_T = 20 # track
-	RANK_C = 22 # certificate
-	RANK_WLD = 10 # white listed department
-	RANK_WLA = 10 # white listed area
-	RANK_BLD = 10 # black listed department
-	RANK_BLA = 10 # black listed area
-	RANK_F = 3 # flexibility; other BSE majors
-	RANK_A = 5 # untaken distribution area
-	TOP_COUNT = 20
 
+def recommend(calendar):
 	profile = calendar.profile
 	major = calendar.major
 	degree = calendar.degree
