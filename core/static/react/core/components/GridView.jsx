@@ -19,14 +19,16 @@ function GridView(props) {
 	*
 	* Optional Props
 	* 	Function blankElement - element to output when blank
+	* 	Number minRows - minimum number of rows
 	*/
 	var t = props.t,
 		data = new List(props.data);
 
 	var rows = props.rows;
 	if (rows == -1) rows = Math.ceil(data.size / props.cols);
+	if (rows < props.minRows) rows = props.minRows;
 
-	if (data.size) {
+	if (data.size || props.minRows) {
 		var index = 0;
 		var grid = new Array();
 		for (var r=0; r<rows; r++) {
@@ -67,6 +69,7 @@ GridView.propTypes = {
 		]).isRequired,
 	t: React.PropTypes.func.isRequired,
 	rows: React.PropTypes.number,
+	minRows: React.PropTypes.number,
 	cols: React.PropTypes.number.isRequired,
 	blankElement: React.PropTypes.func,	
 	};
@@ -74,6 +77,7 @@ GridView.propTypes = {
 GridView.defaultProps = {
 	blankElement: () => {<span></span>},
 	rows: -1,
+	minRows: 0,
 	};
 
 module.exports = GridView;

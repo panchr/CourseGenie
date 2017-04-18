@@ -29,7 +29,7 @@ function SemesterDisplay(props) {
 				</div>
 			</div>
 			</div>;
-			}} rows={2} cols={3} data={props.courses}
+			}} rows={2} cols={3} minRows={2} data={props.courses}
 			blankElement={() =>
 				<div className='course-blank'><Icon i='ios-plus-empty' className='large-icon'
 				style={{color: 'green'}} /></div>} />
