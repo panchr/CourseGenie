@@ -12,7 +12,8 @@ import { List } from 'immutable';
 
 var CourseDisplay = require('core/components/CourseDisplay.jsx'),
 GridView = require('core/components/GridView.jsx'),
-Icon = require('core/components/Icon.jsx');
+Icon = require('core/components/Icon.jsx'),
+utils = require('core/utils.jsx');
 
 function SemesterDisplay(props) {
 	return props.connectDropTarget(<div>
@@ -44,18 +45,36 @@ SemesterDisplay.propTypes = {
 	onCourseRemove: React.PropTypes.func.isRequired,
 	name: React.PropTypes.string.isRequired,
 	courses: React.PropTypes.array.isRequired,
+	maxSize: React.PropTypes.number,
+	};
+
+SemesterDisplay.defaultProps = {
+	maxSize: -1,
 	};
 
 module.exports = DropTarget('course', {
 	drop: (props, monitor, component) => {
 		if (! monitor.didDrop()) {
 			var data = monitor.getItem();
-			props.onCourseAdd(data);
+			props.onCourseAdd(data.course);
 			data.onDragEnd();
 			// Hack to make monitor recognize deletion, see:
 			// https://github.com/react-dnd/react-dnd/issues/545
 			monitor.internalMonitor.store.dispatch({type: "dnd-core/END_DRAG"});
 			}
+		},
+	canDrop: (props, monitor) => {
+		// should probably display error/warning here
+		if (props.maxSize != -1 && props.maxSize <= utils.length(props.courses)) {
+			return false;
+			}
+		var course = monitor.getItem().course;
+		if (course.term != props.term &&
+			(course.term_display == 'Fall' || course.term_display == 'Spring')) {
+			return false;
+			}
+
+		return true;
 		}
 	},
 	(connect, monitor) => {

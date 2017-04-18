@@ -245,8 +245,15 @@ class Semester(models.Model):
 		related_name='semesters')
 	courses = models.ManyToManyField(Course)
 
+	TERM_FALL = 1
+	TERM_SPRING = 2
+	term = models.PositiveSmallIntegerField(choices=(
+		(TERM_FALL, 'Fall'),
+		(TERM_SPRING, 'Spring'),
+		), default=TERM_FALL)
+
 	class Meta:
 		unique_together = ('name', 'calendar')
 
 	def __str__(self):
-		return self.name
+		return '{} ({})'.format(self.name, self.get_term_display())

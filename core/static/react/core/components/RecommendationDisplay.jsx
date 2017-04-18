@@ -12,8 +12,8 @@ import { DragSource } from 'react-dnd';
 function RecommendationDisplay(props) {
 	return props.connectDragSource(<div className='suggestion-display'>
 		<div className='12u'>
-			<div>{props.short_name}</div>
-			<div>{props.name}</div>
+			<div>{props.course.short_name} ({props.course.term_display})</div>
+			<div>{props.course.name}</div>
 			<div><font color='CadetBlue'>Reason: {props.reason}</font></div>
 		</div>
 	</div>);
@@ -22,8 +22,7 @@ function RecommendationDisplay(props) {
 RecommendationDisplay.propTypes = {
 	connectDragSource: React.PropTypes.func.isRequired,
 	onDragEnd: React.PropTypes.func.isRequired,
-	short_name: React.PropTypes.string.isRequired,
-	name: React.PropTypes.string.isRequired,
+	course: React.PropTypes.object.isRequired,
 	reason: React.PropTypes.string.isRequired,
 	};
 
