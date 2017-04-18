@@ -26,6 +26,7 @@ CourseDisplay.propTypes = {
 		React.PropTypes.string,
 		React.PropTypes.number,
 		]).isRequired,
+	term_display: React.PropTypes.string,
 	letter: React.PropTypes.string,
 	name: React.PropTypes.string,
 	area: React.PropTypes.string,
@@ -33,6 +34,7 @@ CourseDisplay.propTypes = {
 
 CourseDisplay.defaultProps = {
 	extended: false,
+	term_display: 'Both',
 	letter: '',
 	name: '',
 	area: '',

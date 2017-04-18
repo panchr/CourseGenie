@@ -30,6 +30,8 @@ class CrossListingSerializer(serializers.ModelSerializer):
 
 class CourseSerializer(serializers.ModelSerializer):
     listings = CrossListingSerializer(many=True, read_only=True)
+    term_display = serializers.CharField(source='get_term_display')
+    short_name = serializers.CharField(source='__str__')
 
     class Meta:
         model = Course
@@ -55,6 +57,7 @@ class PreferenceSerializer(serializers.ModelSerializer):
 
 class SemesterSerializer(serializers.ModelSerializer):
     courses = CourseSerializer(many = True, read_only=True)
+    term_display = serializers.CharField(source='get_term_display')
 
     class Meta:
         model = Semester
@@ -143,11 +146,6 @@ class CalendarSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class RecommendationSerializer(serializers.Serializer):
-    course_id = serializers.CharField(max_length=10)
-    name = serializers.CharField(max_length=150)
-    short_name = serializers.CharField(max_length=20)
-    department = serializers.CharField(max_length=3)
-    number = serializers.IntegerField()
-    letter = serializers.CharField(max_length=1)
-    reason = serializers.CharField(max_length=256)
+    course = CourseSerializer()
+    reason = serializers.CharField()
     score = serializers.IntegerField()

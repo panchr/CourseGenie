@@ -59,14 +59,20 @@ class TranscriptView(LoginRequiredMixin, TemplateView):
 				degree_id=1, major_id=int(data['major']))
 			now = timezone.now()
 			if now.month in {1, 9, 10, 11, 12}:
-				next_sem_name = 'Spring %d' % (now.year+1)
 				future_sem_name = 'Fall %d' % (now.year+1)
+
+				sem1 = Semester.objects.create(calendar=calendar,
+					name='Spring %d' % (now.year+1), term=Semester.TERM_SPRING)
+				sem2 = Semester.objects.create(calendar=calendar,
+					name='Fall %d' % (now.year+1), term=Semester.TERM_FALL)
 			else: # Spring or summer
 				next_sem_name = 'Fall %d' % now.year
 				future_sem_name = 'Spring %d' % (now.year+1)
 
-			sem1 = Semester.objects.create(calendar=calendar, name=next_sem_name)
-			sem2 = Semester.objects.create(calendar=calendar, name=future_sem_name)
+				sem1 = Semester.objects.create(calendar=calendar,
+					name='Fall %d' % (now.year), term=Semester.TERM_FALL)
+				sem2 = Semester.objects.create(calendar=calendar,
+					name='Spring %d' % (now.year+1), term=Semester.TERM_SPRING)
 
 		user.profile.submitted = True
 		user.save()

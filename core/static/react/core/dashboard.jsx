@@ -94,7 +94,7 @@ class Dashboard extends React.Component {
 				<div className="row">
 					<div className="7u">
 						<ListView t={(e, i) =>
-							<SemesterDisplay {...e.toJS()}
+							<SemesterDisplay {...e.toJS()} maxSize={6}
 								onCourseAdd={(c) => this.addCourse(i, c)}
 								onCourseRemove={(c, j) => this.removeCourse(i, j, c)} />
 							} data={this.state.semesters} />
