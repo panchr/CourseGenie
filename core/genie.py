@@ -7,6 +7,7 @@
 
 import json
 import re
+import random
 
 from django.db import transaction
 
@@ -22,14 +23,10 @@ RANK_BLD = 10 # black listed department
 RANK_BLA = 10 # black listed area
 RANK_F = 3 # flexibility; other BSE majors
 RANK_A = 5 # untaken distribution area
-TOP_COUNT = 20
+TOP_COUNT = 5 # multiply by 4
+DISTRO_AREA_REQ = Requirement.objects.get(t="distribution-areas", number=4)
 
 # store user records for manual input of courses
-# REQUESTED sample input from manual form:
-# ["PHY 104", "WRI 105", "FRS 118", "ECO 101A"]
-# BASICALLY FINISHED
-# NEED TO CHANGE HOW TO ACCESS PROFILE
-# MAY NEED TO CHECK: IF COURSE IS ALREADY IN TRANSCRIPT AND USER WAS STUPID
 def store_manual(user, courses):
 	list_records = []
 	course_re = re.compile(r'^(?P<dept>[A-Z]{3}) (?P<num>\d{3})(?P<letter>[A-Z]?)$')
@@ -157,7 +154,6 @@ def calculate_progress(calendar):
 # calculate for one single degree/major/track/certificate; to be called from calculate_progress
 # NEED TO DEBUG
 def calculate_single_progress(calendar, category, list_courses):
-	DISTRO_AREA_REQ = Requirement.objects.get(t="distribution-areas", number=4)
 	FACTOR = 5
 	number_choices = [] # number of courses to choose from for this requirement
 	number_remaining = [] # number of courses left to fulfill for this requirement
@@ -261,27 +257,41 @@ def _add_nested_courses(reqs):
 			courses_list[r] |= set(nested.courses.all())
 	return courses_list
 
-def _update_entry(entry, requirements, req_courses, course, delta, fmt):
+def _update_entry(filters, entry, requirements, req_courses, course, delta, fmt, is_dist):
 	SCALE = 40
 	if delta == RANK_F: # flexibility needs to be weighed less
 		SCALE = 20
 	for req in requirements:
 		if course in req_courses[req]:
-			entry['score'] += delta + req.intrinsic_score * SCALE
+			entry['score'] += delta + req.intrinsic_score * SCALE # base
+			if delta == RANK_D:
+				if req in filters: # add points for empty reqs for degree
+					entry['score'] += 4
+				if req == DISTRO_AREA_REQ:
+					is_dist[0] = 1
+			if delta == RANK_M and req in filters: # add points for empty reqs for major
+				entry['score'] += 4
 			entry['reason'] += fmt.format(req.name)
 
 def recommend(calendar):
 	profile = calendar.profile
 	major = calendar.major
 	degree = calendar.degree
+	random.seed(profile.user_id)
 
-	progresses = Progress.objects.filter(calendar=calendar)
-	if progresses.count() == 0:
+	user_progresses = Progress.objects.filter(calendar=calendar)
+	if user_progresses.count() == 0:
 		calculate_progress(calendar)
-	progresses = progresses.filter(completed=True)
+
+	progresses = user_progresses.filter(completed=True)
 	satisfied_reqs = []
 	for progress in progresses:
 		satisfied_reqs.append(progress.requirement)
+
+	zero_progresses = user_progresses.filter(number_taken=0)
+	empty_reqs = []
+	for progress in zero_progresses:
+		empty_reqs.append(progress.requirement)
 
 	degree_requirements = list(degree.requirements.exclude(id__in=[o.id for o in satisfied_reqs]))
 	degree_req_courses = _add_nested_courses(degree_requirements)
@@ -341,7 +351,10 @@ def recommend(calendar):
 		bl_depts_short = set(preference.bl_depts.all().values_list('short_name', flat=True))
 		bl_areas = set(preference.bl_areas.all().values_list('short_name', flat=True))
 
+	list_suggestions_main = dict()
+	list_suggestions_dist = dict()
 	list_suggestions = dict()
+	is_dist = [0] # 0 is false, 1 is true
 	# create list of all the courses. Each entry is a dictionary
 	# [
 	#	{
@@ -356,6 +369,7 @@ def recommend(calendar):
 	#	}
 	# ]
 	for course in Course.objects.all():
+		is_dist[0] = 0
 		if course not in filter_out and course.pk not in list_suggestions:
 			department = course.department
 			area = course.area
@@ -385,37 +399,47 @@ def recommend(calendar):
 				entry['score'] += RANK_A
 
 			# add points if satisfy unsatisfied degree requirements
-			_update_entry(entry, degree_requirements, degree_req_courses, course,
+			_update_entry(empty_reqs, entry, degree_requirements, degree_req_courses, course,
 				RANK_D,
-				'{} requirement of your %s degree,\n' % degree.short_name)
+				'{} requirement of your %s degree,\n' % degree.short_name, is_dist)
 
 			# add points if satisfy unsatisfied major requirements
-			_update_entry(entry, major_requirements, major_req_courses, course,
-				RANK_M, '{} requirement of your %s major,\n' % major.short_name)
+			_update_entry(empty_reqs, entry, major_requirements, major_req_courses, course,
+				RANK_M, '{} requirement of your %s major,\n' % major.short_name, is_dist)
 
 			# add points if satisfy unsatisfied track requirements
 			if calendar.track is not None:
-				_update_entry(entry, track_requirements, track_req_courses, course,
-					RANK_T, '{} requirement of your %s track,\n' % calendar.track.short_name)
+				_update_entry([], entry, track_requirements, track_req_courses, course,
+					RANK_T, '{} requirement of your %s track,\n' % calendar.track.short_name, is_dist)
 
 			# for each certificate, add points if satisfy unsatisfied certificate requirements
 			for cert in certificates:
-				_update_entry(entry, certificates[cert][0], certificates[cert][1][req],
+				_update_entry([], entry, certificates[cert][0], certificates[cert][1][req],
 				 	course, RANK_C,
-					'{} requirement of your %s certificate,\n' % certificate.short_name)
+					'{} requirement of your %s certificate,\n' % certificate.short_name, is_dist)
 
 			# add points if satisfy flexibility (requirements of other majors themselves, excluding their tracks)
 			for maj in other_majors:
-				_update_entry(entry, other_majors[maj][0], other_majors[maj][1],
+				_update_entry([], entry, other_majors[maj][0], other_majors[maj][1],
 				 	course, RANK_F,
-					'{} requirement of the %s major for flexibility,\n' % maj.short_name)
+					'{} requirement of the %s major for flexibility,\n' % maj.short_name, is_dist)
 
 			if len(entry['reason']) > 1:
 				entry['reason'] = "This course satisfies the " + entry['reason']
 				entry['reason'] = entry['reason'][:-2] # take off last ,\n
 
-			list_suggestions[course.id] = entry
+			if is_dist[0] == 0:
+				list_suggestions_main[course.id] = entry
+			else:
+				list_suggestions_dist[course.id] = entry
 
-	sorted_list = sorted(list_suggestions.values(), key=lambda k: k['score'],
+	sorted_list_main = sorted(list_suggestions_main.values(), key=lambda k: k['score'],
 		reverse=True)
-	return sorted_list[:TOP_COUNT]
+	sorted_list_dist = sorted(list_suggestions_dist.values(), key=lambda k: k['score'],
+		reverse=True)
+
+	sorted_list = []
+	for i in range(0, TOP_COUNT):
+		sorted_list.extend(sorted_list_main[3*i:3*i+3])
+		sorted_list.append(sorted_list_dist[i])
+	return sorted_list
