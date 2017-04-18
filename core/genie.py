@@ -370,9 +370,7 @@ def recommend(calendar):
 			department = course.department
 			area = course.area
 
-			entry = {'course_id': course.course_id, 'name': course.name, 'department': department,
-			'number': course.number, 'letter': course.letter, 'short_name': department + " " + str(course.number) + course.letter,
-			'score': 0, 'reason': ""} 
+			entry = {'course': course, 'score': 0, 'reason': ''}
 
 			# add points if in wl_depts (primary department only)
 			if department in wl_depts_short:
