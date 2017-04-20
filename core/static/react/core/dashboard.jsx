@@ -17,6 +17,7 @@ var CourseDisplay = require('core/components/CourseDisplay.jsx'),
   SemesterDisplay = require('core/components/SemesterDisplay.jsx'),
 	ListView = require('core/components/ListView.jsx'),
 	GridView = require('core/components/GridView.jsx'),
+	MessageList = require('core/components/MessageList.jsx'),
 	ErrorAlert = require('core/components/ErrorAlert.jsx'),
 	Icon = require('core/components/Icon.jsx'),
 	data = require('core/data.jsx');
@@ -35,6 +36,7 @@ class Dashboard extends React.Component {
 			semesters: new List(),
 			recommendations: new List(),
 			errorMsg: '',
+			messages: new List(),
 			};
 
 		this.elems = {};
@@ -91,10 +93,15 @@ class Dashboard extends React.Component {
 	render() {
 		return (<div className="container">
 				<ErrorAlert msg={this.state.errorMsg} />
+				<div className='messages-list'>
+					<MessageList messages={this.state.messages.toJS()}
+						onDismiss={(i) => this.setState({messages: this.state.messages.delete(i)})} />
+				</div>
 				<div className="row">
 					<div className="7u">
 						<ListView t={(e, i) =>
 							<SemesterDisplay {...e.toJS()} maxSize={6}
+								onError={(e) => this.setState({messages: this.state.messages.push(e)})}
 								onCourseAdd={(c) => this.addCourse(i, c)}
 								onCourseRemove={(c, j) => this.removeCourse(i, j, c)} />
 							} data={this.state.semesters} />

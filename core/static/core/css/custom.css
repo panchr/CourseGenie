@@ -23,6 +23,28 @@
 	text-align: center;
 	}
 
+.messages-list {
+	position: fixed;
+	z-index: 999;
+	bottom: 0;
+	left: 0;
+	padding: 1em;
+	}
+
+.messages-list .message {
+	border-radius: 0.5em;
+	padding-top: 1em;
+	}
+
+.messages-list .message.error {
+	background-color: #f3d6d6;
+	opacity: 0.85;
+	}
+
+.messages-list .message.error h1 {
+	color: #0a3986;
+	}
+
 .alert {
 	padding: 15px;
   margin-bottom: 20px;
