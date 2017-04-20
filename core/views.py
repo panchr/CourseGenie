@@ -53,6 +53,8 @@ class TranscriptView(LoginRequiredMixin, TemplateView):
 		user.last_name = data['user']['last_name']
 		user.profile.year = int(data['graduation_year'])
 		grad_year = int(data['graduation_year'])
+		if grad_year > now.year + 4:
+			grad_year = now.year + 4
 
 		if not (user.profile.submitted
 			and Calendar.objects.filter(profile=user.profile).exists()):
