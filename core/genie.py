@@ -167,7 +167,7 @@ def calculate_single_progress(calendar, category, list_courses):
 		nested_reqs = requirement.nested_reqs.all()
 		for nreq in nested_reqs:
 			c += nreq.courses.count()
-		if requirement['t'] == 'distribution-areas':
+		if requirement.t == 'distribution-areas':
 			c = 800 # small hack... need this to be less than 880 of distribution-additional
 		print requirement.name + " has " + str(c) # prints how many courses qualify under a requirement
 		number_choices.append(c) 
@@ -266,7 +266,7 @@ def _update_entry(filters, entry, requirements, req_courses, course, delta, fmt)
 			if delta == RANK_D:
 				if req in filters: # add points for empty reqs for degree
 					entry['score'] += 4
-				if req['t'] == 'distribution-areas':
+				if req.t == 'distribution-areas':
 					entry['score'] += random.randint(20, 30)
 			if delta == RANK_M and req in filters: # add points for empty reqs for major
 				entry['score'] += 4
