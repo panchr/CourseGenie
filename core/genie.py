@@ -24,7 +24,6 @@ RANK_BLA = 10 # black listed area
 RANK_F = 3 # flexibility; other BSE majors
 RANK_A = 5 # untaken distribution area
 TOP_COUNT = 20
-DISTRO_AREA_REQ = Requirement.objects.get(t="distribution-areas", number=4)
 
 # store user records for manual input of courses
 def store_manual(user, courses):
@@ -168,7 +167,7 @@ def calculate_single_progress(calendar, category, list_courses):
 		nested_reqs = requirement.nested_reqs.all()
 		for nreq in nested_reqs:
 			c += nreq.courses.count()
-		if requirement == DISTRO_AREA_REQ:
+		if requirement['t'] == 'distribution-areas':
 			c = 800 # small hack... need this to be less than 880 of distribution-additional
 		print requirement.name + " has " + str(c) # prints how many courses qualify under a requirement
 		number_choices.append(c) 
@@ -267,7 +266,7 @@ def _update_entry(filters, entry, requirements, req_courses, course, delta, fmt)
 			if delta == RANK_D:
 				if req in filters: # add points for empty reqs for degree
 					entry['score'] += 4
-				if req == DISTRO_AREA_REQ:
+				if req['t'] == 'distribution-areas':
 					entry['score'] += random.randint(20, 30)
 			if delta == RANK_M and req in filters: # add points for empty reqs for major
 				entry['score'] += 4
