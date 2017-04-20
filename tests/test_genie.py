@@ -73,7 +73,10 @@ for i, item in enumerate(results, 1):
 	for key, value in item.items():
 		if isinstance(value, (str, unicode)):
 			value = value.encode('utf-8')
-		if key == 'score' or key == 'reason':
+		if key == 'score': #or key == 'reason':
 			print key, value
 		if key == 'course':
 			print value.department + str(value.number)
+		if key == 'reason_list':
+			for item in value:
+				print item.encode('utf-8')

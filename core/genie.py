@@ -256,7 +256,7 @@ def _add_nested_courses(reqs):
 			courses_list[r] |= set(nested.courses.all())
 	return courses_list
 
-def _update_entry(filters, entry, requirements, req_courses, course, delta, fmt, is_dist):
+def _update_entry(filters, entry, requirements, req_courses, course, delta, fmt, is_dist, short):
 	SCALE = 40
 	if delta == RANK_F: # flexibility needs to be weighed less
 		SCALE = 20
@@ -273,6 +273,7 @@ def _update_entry(filters, entry, requirements, req_courses, course, delta, fmt,
 			if delta == RANK_M and req in filters: # add points for empty reqs for major
 				entry['score'] += 4
 			entry['reason'] += fmt.format(req.name)
+			entry['reason_list'].append(short.format(req.name))
 
 def recommend(calendar):
 	profile = calendar.profile
@@ -366,6 +367,7 @@ def recommend(calendar):
 	#		'number': 101,
 	#		'letter': 'A',
 	#		'reason': 'some string here', # build string before passing it in
+	#		'reason_list': ['string', 'string']
 	#		'score': 3
 	#	}
 	# ]
@@ -374,7 +376,7 @@ def recommend(calendar):
 			department = course.department
 			area = course.area
 
-			entry = {'course': course, 'score': 0, 'reason': ''}
+			entry = {'course': course, 'score': 0, 'reason': '', 'reason_list': []}
 
 			# add points if in wl_depts (primary department only)
 			if department in wl_depts_short:
@@ -396,28 +398,33 @@ def recommend(calendar):
 			# add points if satisfy unsatisfied degree requirements
 			_update_entry(empty_reqs, entry, degree_requirements, degree_req_courses, course,
 				RANK_D,
-				'{} requirement of your %s degree,\n' % degree.short_name, is_dist)
+				'{} requirement of your %s degree,\n' % degree.short_name, is_dist,
+				'%s {}' % degree.short_name)
 
 			# add points if satisfy unsatisfied major requirements
 			_update_entry(empty_reqs, entry, major_requirements, major_req_courses, course,
-				RANK_M, '{} requirement of your %s major,\n' % major.short_name, is_dist)
+				RANK_M, '{} requirement of your %s major,\n' % major.short_name, is_dist,
+				'%s {}' % major.short_name)
 
 			# add points if satisfy unsatisfied track requirements
 			if calendar.track is not None:
 				_update_entry([], entry, track_requirements, track_req_courses, course,
-					RANK_T, '{} requirement of your %s track,\n' % calendar.track.short_name, is_dist)
+					RANK_T, '{} requirement of your %s track,\n' % calendar.track.short_name, is_dist,
+					'%s {}' % calendar.track.short_name)
 
 			# for each certificate, add points if satisfy unsatisfied certificate requirements
 			for cert in certificates:
 				_update_entry([], entry, certificates[cert][0], certificates[cert][1][req],
 				 	course, RANK_C,
-					'{} requirement of your %s certificate,\n' % certificate.short_name, is_dist)
+					'{} requirement of your %s certificate,\n' % certificate.short_name, is_dist,
+					'%s {}' % certificate.short_name)
 
 			# add points if satisfy flexibility (requirements of other majors themselves, excluding their tracks)
 			for maj in other_majors:
 				_update_entry([], entry, other_majors[maj][0], other_majors[maj][1],
 				 	course, RANK_F,
-					'{} requirement of the %s major for flexibility,\n' % maj.short_name, is_dist)
+					'{} requirement of the %s major for flexibility,\n' % maj.short_name, is_dist,
+					'%s {}' % maj.short_name)
 
 			if len(entry['reason']) > 1:
 				entry['reason'] = "This course satisfies the " + entry['reason']

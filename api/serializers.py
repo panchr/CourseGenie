@@ -149,3 +149,5 @@ class RecommendationSerializer(serializers.Serializer):
     course = CourseSerializer()
     reason = serializers.CharField()
     score = serializers.IntegerField()
+    reason_list = serializers.ListField(
+        child=serializers.CharField())

@@ -93,11 +93,13 @@ class Dashboard extends React.Component {
 				<ErrorAlert msg={this.state.errorMsg} />
 				<div className="row">
 					<div className="7u">
-						<ListView t={(e, i) =>
-							<SemesterDisplay {...e.toJS()} maxSize={6}
-								onCourseAdd={(c) => this.addCourse(i, c)}
-								onCourseRemove={(c, j) => this.removeCourse(i, j, c)} />
-							} data={this.state.semesters} />
+						<div style={{maxHeight: '80vh', overflowY: 'scroll'}}>
+							<ListView t={(e, i) =>
+								<SemesterDisplay {...e.toJS()} maxSize={6}
+									onCourseAdd={(c) => this.addCourse(i, c)}
+									onCourseRemove={(c, j) => this.removeCourse(i, j, c)} />
+								} data={this.state.semesters} />
+						</div>
 					</div>
 					<div className="5u">
 						<h3>Recommendations</h3>
