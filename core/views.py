@@ -53,14 +53,14 @@ class TranscriptView(LoginRequiredMixin, TemplateView):
 		user.last_name = data['user']['last_name']
 		user.profile.year = int(data['graduation_year'])
 		grad_year = int(data['graduation_year'])
-		if grad_year > now.year + 4:
-			grad_year = now.year + 4
 
 		if not (user.profile.submitted
 			and Calendar.objects.filter(profile=user.profile).exists()):
 			calendar = Calendar.objects.create(profile=user.profile,
 				degree_id=1, major_id=int(data['major']))
 			now = timezone.now()
+			if grad_year > now.year + 4:
+				grad_year = now.year + 4
 			if now.month in {1, 9, 10, 11, 12}: # SF SF ... S
 				for y in range(now.year+1, grad_year):
 					sem1 = Semester.objects.create(calendar=calendar,
