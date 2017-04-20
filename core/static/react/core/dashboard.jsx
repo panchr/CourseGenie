@@ -112,7 +112,7 @@ class Dashboard extends React.Component {
 									<div className='2u'>
 										<Icon i='ios-close-empty'
 											className='btn large-icon' style={{color: 'LightSlateGray'}}
-											onClick={() => this.dismissSuggestion(e.course_id, i)}
+											onClick={() => this.dismissSuggestion(e.course.course_id, i)}
 										/>
 									</div>
 									</div>
