@@ -18,7 +18,7 @@ utils = require('core/utils.jsx');
 function SemesterDisplay(props) {
 	return props.connectDropTarget(<div>
 		<div className='topbtm-pad'>
-		<h2>{props.name}</h2></div>
+		<h2>{props.term_display} {props.year}</h2></div>
 		<GridView t={(c, i) => {
 			return <div className='course-list'>
 					<div className='row'>
@@ -43,7 +43,8 @@ SemesterDisplay.propTypes = {
 	connectDropTarget: React.PropTypes.func.isRequired,
 	onCourseAdd: React.PropTypes.func.isRequired,
 	onCourseRemove: React.PropTypes.func.isRequired,
-	name: React.PropTypes.string.isRequired,
+	term_display: React.PropTypes.string.isRequired,
+	year: React.PropTypes.number.isRequired,
 	courses: React.PropTypes.array.isRequired,
 	maxSize: React.PropTypes.number,
 	};
