@@ -17,10 +17,12 @@ from core.models import *
 from core.genie import calculate_progress, recommend
 
 # tests calculate_progress and calculate_single_progress
-
+'''
 user1, _ = User.objects.get_or_create(username='user1')
 prof1 = user1.profile
-
+'''
+user1, _ = User.objects.get_or_create(username='zyfan')
+prof1 = user1.profile
 # CASE ONE
 '''
 c1 = Course.objects.get(department="PHY", number=104)
@@ -32,6 +34,7 @@ rec3, _ = Record.objects.get_or_create(profile=prof1, course=c3)
 '''
 
 # CASE TWO
+'''
 rec_ids = []
 c1 = Course.objects.get(department="PHY", number=104)
 c2 = Course.objects.get(department="MAT", number=202)
@@ -53,6 +56,7 @@ rec7, _ = Record.objects.get_or_create(profile=prof1, course=c7)
 rec8, _ = Record.objects.get_or_create(profile=prof1, course=c8)
 rec9, _ = Record.objects.get_or_create(profile=prof1, course=c9)
 rec10, _ = Record.objects.get_or_create(profile=prof1, course=c10)
+'''
 
 degree1 = Degree.objects.get(short_name="B.S.E.")
 major1 = Major.objects.get(short_name="COS")
@@ -69,29 +73,7 @@ for i, item in enumerate(results, 1):
 	for key, value in item.items():
 		if isinstance(value, (str, unicode)):
 			value = value.encode('utf-8')
-		if key == 'short_name' or key == 'score' or key == 'reason':
+		if key == 'score' or key == 'reason':
 			print key, value
-
-# CASE 2: me...?
-'''
-c1 = Course.objects.get(department="PHY", number=104)
-c2 = Course.objects.get(department="MAT", number=202)
-c3 = Course.objects.get(department="COS", number=126)
-c4 = Course.objects.get(department="PHY", number=103)
-c5 = Course.objects.get(department="MAT", number=201)
-c6 = Course.objects.get(department="FRE", number=207)
-c7 = Course.objects.get(department="COS", number=333)
-c8 = Course.objects.get(department="ORF", number=309)
-c9 = Course.objects.get(department="COS", number=461)
-c10 = Course.objects.get(department="COS", number=340)
-rec1, _ = Record.objects.get_or_create(profile=prof1, course=c1)
-rec2, _ = Record.objects.get_or_create(profile=prof1, course=c2)
-rec3, _ = Record.objects.get_or_create(profile=prof1, course=c3)
-rec4, _ = Record.objects.get_or_create(profile=prof1, course=c4)
-rec5, _ = Record.objects.get_or_create(profile=prof1, course=c5)
-rec6, _ = Record.objects.get_or_create(profile=prof1, course=c6)
-rec7, _ = Record.objects.get_or_create(profile=prof1, course=c7)
-rec8, _ = Record.objects.get_or_create(profile=prof1, course=c8)
-rec9, _ = Record.objects.get_or_create(profile=prof1, course=c9)
-rec10, _ = Record.objects.get_or_create(profile=prof1, course=c10)
-'''
+		if key == 'course':
+			print value.department + str(value.number)
