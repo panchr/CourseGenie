@@ -240,11 +240,10 @@ class Preference(models.Model):
 		return "preference"
 
 class Semester(models.Model):
-	name = models.CharField(max_length=25)
 	calendar = models.ForeignKey(Calendar, on_delete=models.CASCADE,
 		related_name='semesters')
 	courses = models.ManyToManyField(Course)
-
+	year = models.PositiveSmallIntegerField()
 	TERM_FALL = 1
 	TERM_SPRING = 2
 	term = models.PositiveSmallIntegerField(choices=(
@@ -253,7 +252,8 @@ class Semester(models.Model):
 		), default=TERM_FALL)
 
 	class Meta:
-		unique_together = ('name', 'calendar')
+		unique_together = ('year', 'term', 'calendar')
+		ordering = ('year', '-term')
 
 	def __str__(self):
-		return '{} ({})'.format(self.name, self.get_term_display())
+		return '{} ({})'.format('', self.get_term_display())
