@@ -47,11 +47,14 @@ class PreferenceForm extends React.Component {
 	addMessage(m) {
 		try {
 			var m_json = JSON.parse(m);
-			this.setState({messages: this.state.messages.push(m_json.detail)});
+			m = m_json.detail;
 			}
-		catch (err) {
-			this.setState({messages: this.state.messages.push(m)});
-			}
+		catch (err) {}
+
+		this.setState({messages: this.state.messages.push({
+			message: m,
+			t: 'error',
+			})});
 		}
 
 	componentWillMount() {
