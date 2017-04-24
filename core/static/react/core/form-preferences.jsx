@@ -55,7 +55,18 @@ class PreferenceForm extends React.Component {
 		}
 
 	componentWillMount() {
-		data.installErrorHandler((msg) => this.addMessage(msg));
+		data.installErrorHandler((msg) => {
+			this.addMessage(msg);
+			this.requests.push(data.preferences.get((data) => {
+				this.setState({
+					bl_courses: new List(data.bl_courses.map((x) => x.short_name)),
+					bl_areas: new List(data.bl_areas.map((x) => x.short_name)),
+					bl_depts: new List(data.bl_depts.map((x) => x.short_name)),
+					wl_depts: new List(data.wl_depts.map((x) => x.short_name)),
+					wl_areas: new List(data.wl_areas.map((x) => x.short_name)),
+					});
+				}));
+			});
 		this.requests.push(data.preferences.get((data) => {
 			this.setState({
 				bl_courses: new List(data.bl_courses.map((x) => x.short_name)),
