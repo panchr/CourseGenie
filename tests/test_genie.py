@@ -62,10 +62,13 @@ degree1 = Degree.objects.get(short_name="B.S.E.")
 major1 = Major.objects.get(short_name="COS")
 cal1, _ = Calendar.objects.get_or_create(profile=prof1, degree=degree1 , major=major1)
 calculate_progress(cal1)
-for progress in Progress.objects.all():
+i = 0
+for progress in Progress.objects.filter(calendar=cal1):
  	print progress
 
+
 # tests recommend()
+'''
 results = recommend(cal1)
 
 for i, item in enumerate(results, 1):
@@ -80,3 +83,4 @@ for i, item in enumerate(results, 1):
 		if key == 'reason_list':
 			for item in value:
 				print item.encode('utf-8')
+'''
