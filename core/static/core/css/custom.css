@@ -123,6 +123,17 @@
 	margin: 0.5em 0.9em 0 0;
 }
 
+.course-list {
+	display: block;
+	width: 100%;
+	margin: 0.5em 0.9em 0 0;
+}
+
+.row {
+	width: initial;
+	display: flex;
+}
+
 #float {
 	top: 0;
     position: sticky;
