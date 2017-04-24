@@ -15,7 +15,7 @@ function RecommendationDisplay(props) {
 			<div>{props.course.short_name} ({props.course.term_display})</div>
 			<div>{props.course.name}</div>
 			<div style={{color: 'CadetBlue'}}>Reason:</div>
-			<div>{props.reason_list.map((r) => <div><span key={Math.random()}>{r}</span><br/></div>)}</div>
+			<div style={{color: 'CadetBlue'}}>{props.reason_list.map((r) => <div><span key={Math.random()}>{r}</span><br/></div>)}</div>
 		</div>
 	</div>);
 	}
