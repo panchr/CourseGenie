@@ -27,13 +27,36 @@
 		color: #888787;
 	}
 
-	h1,h2,h3,h4,h5,h6
+	h1
+	{
+		font-weight: 300;
+		margin-bottom: -1em;
+		padding-left: 0.3em;
+		color: #7C9CD0;
+	}
+
+	h2
+	{
+		font-weight: 300;
+		text-align: center;
+		font-size: 125%;
+		color: #7C9CD0;
+	}
+
+	h3
+{
+	font-weight: 300;
+	text-align: left;
+	font-size: 125%;
+	color: #888787;
+}
+	h4,h5,h6
 	{
 		font-weight: 300;
 		color: #333131;
 	}
 
-		h1 a, h2 a, h3 a, h4 a, h5 a, h6 a
+		h3 a, h4 a, h5 a, h6 a
 		{
 			color: inherit;
 			text-decoration: none;
@@ -556,7 +579,7 @@
 			border: 3px solid #11DC84	;
 			border-radius: 5px;
 			font-size: 0.65em;
-			padding: 0.50em 1em 0.50em 1em;
+			padding: 0.70em 2em 0.70em 2em;
 			color: #11DC84 !important;
 			text-decoration: none;
 			font-size: 1.2em;
@@ -588,6 +611,60 @@
 			background: rgba(0,0,0,0);
 			border: 1px solid rgba(0,0,0,0.03);
 			color:  rgba(0,0,0,0.30);
+		}
+
+		.recs
+		{
+			position: relative;
+			display: inline-block;
+			background: none;
+			border: 2px solid #7C9CD0;
+			border-radius: 5px;
+			font-size: 85% !important;
+			line-height: 1.5em;
+			padding: 0.7em 0.2em 0.7em 1.2em;
+			margin: 0.5em 0.9em 0.2em 0;
+			color: #7C9CD0;
+			text-decoration: none;
+			font-weight: 300;
+			text-align: left;
+		}
+
+		.course-list
+		{
+			position: relative;
+			display: inline-block;
+			background: none;
+			border: 2px solid #D8D8D8;
+			height: 8em;
+			width: 12.2em;
+			border-radius: 5px;
+			line-height: 1.5em;
+			padding: 0.7em 0.2em 0.7em 1.2em;
+			margin: 0.5em 0.9em -2em 0;
+			color: #afafaf;
+			text-decoration: none;
+			font-weight: 300;
+			text-align: left;
+		}
+
+		.course-blank
+		{
+			position: relative;
+			display: inline-block;
+			background: none;
+			border: 2px solid #57d157;
+			border-style: dashed;
+			height: 8em;
+			width: 12.2em;
+			border-radius: 5px;
+			line-height: 1.5em;
+			padding-top: 2.8em;
+			margin: 0.5em 0.9em -2em 0;
+			color: #57d157;
+			text-decoration: none;
+			font-weight: 300;
+			text-align: center;
 		}
 
 		.button
@@ -873,21 +950,6 @@
 /*********************************************************************************/
 /* Banner                                                                        */
 /*********************************************************************************/
-#transcript {
-	position: relative;
-	padding: 9em 0 1em 0;
-	background: #fff;
-	background-size: cover;
-	text-align: center;
-	color: #7C9CD0;
-}
-#transcript header h2
-{
-	font-size: 3.5em;
-	font-weight: 100;
-	color: #7C9CD0;
-}
-
 #banner-form
 {
 	position: relative;
@@ -1226,7 +1288,7 @@
 	#footer
 	{
 		position: relative;
-		padding: 5em 0em 4em 0em;
+		padding: 4em 0em 4em 0em;
 	}
 
 		#footer header

@@ -1,4 +1,4 @@
-# core/models.py
+ # core/models.py
 # CourseGenie
 # Author: Rushy Panchal
 # Date: March 24th, 2017
@@ -74,7 +74,7 @@ class Track(models.Model):
 
 class Course(models.Model):
 	name = models.CharField(max_length=255)
-	course_id = models.CharField(max_length=10, default="")
+	course_id = models.CharField(max_length=10, default="", unique=True)
 	number = models.PositiveSmallIntegerField()
 	letter = models.CharField(max_length=1, default="")
 	department = models.CharField(max_length=3)
@@ -115,6 +115,7 @@ class Requirement(models.Model):
 	t = models.CharField(max_length=50) # requirement type
 	number = models.PositiveSmallIntegerField(default=0) # number required
 	notes = models.CharField(max_length=255, default='')
+	intrinsic_score = models.SmallIntegerField(default=0)
 
 	# Courses can be listed in many different requirements
 	courses = models.ManyToManyField(Course)
@@ -138,7 +139,7 @@ class Requirement(models.Model):
 		return '{}: {} ({})'.format(self.parent, self.t, self.number)
 
 	class Meta:
-		unique_together = ('object_id', 't')
+		unique_together = ('content_type', 'object_id', 't')
 
 # belongs under a requirement
 class NestedReq(models.Model):
@@ -146,20 +147,26 @@ class NestedReq(models.Model):
 	courses = models.ManyToManyField(Course)
 	requirement = models.ForeignKey(Requirement, on_delete=models.CASCADE, related_name='nested_reqs')
 
+	def __str__(self):
+		return self.number
+
 class Profile(models.Model):
-    user = models.OneToOneField(User, on_delete = models.CASCADE, unique=True) # Django User model
-    year = models.PositiveSmallIntegerField(validators=[MinValueValidator(2015)]) # graduation year
-    submitted = models.BooleanField(default=False)
-    
-    def __str__(self):
-        return self.user.username
+		user = models.OneToOneField(User, on_delete = models.CASCADE, unique=True) # Django User model
+		year = models.PositiveSmallIntegerField(validators=[MinValueValidator(2015)]) # graduation year
+		submitted = models.BooleanField(default=False)
+		
+		def __str__(self):
+				return self.user.username
+
+		def course_list(self):
+			return map(str, self.records.all())
 
 # automatically create profile when create user
 # according to https://simpleisbetterthancomplex.com/tutorial/2016/07/22/how-to-extend-django-user-model.html#onetoone
 @receiver(post_save, sender = User)
 def create_user_profile(sender, instance, created, **kwargs):
-    if created: 
-        Profile.objects.create(user=instance, year=0)
+	if created:
+		Profile.objects.create(user=instance, year=0)
 
 class Record(models.Model):
 	profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='records')
@@ -167,7 +174,7 @@ class Record(models.Model):
 	semester = models.CharField(max_length = 25, default="")
 	
 	def __str__(self):
-		return '{} {}'.format(self.semester, self.course)
+		return str(self.course)
 
 class Calendar(models.Model):
 	profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='calendars')
@@ -182,7 +189,7 @@ class Calendar(models.Model):
 		ordering = ['-last_accessed']
 	
 	def __str__(self):
-		return '{} {}'.format(self.major, self.certificates) # not sure if this works
+		return '{} {}'.format(self.major, self.track)
  
 # a calendar has progresses corresponding to all requirements
 class Progress(models.Model):
@@ -190,16 +197,18 @@ class Progress(models.Model):
 	courses_taken = models.ManyToManyField(Course)
 	number_taken = models.PositiveSmallIntegerField(default=0)
 	completed = models.BooleanField(default=False)
-	requirement = models.ForeignKey(Requirement, related_name='progress') # check if this is what I intend; shouldn't change parent of requirement
-	# should be able to access degree/major/certificate via requirement; parent isn't changed to a progress
+	requirement = models.ForeignKey(Requirement, related_name='progress')
 
 	class Meta:
 		unique_together = ('calendar', 'requirement')
 
+	def __str__(self):
+		return '{} {} {}'.format(self.requirement.name, self.number_taken, self.completed)
+
 class Area(models.Model): # distribution area
 	#name = models.CharField(max_length = 50)
 	short_name = models.CharField(max_length = 3, unique=True)
-    
+		
 	def __str__(self):
 		return self.short_name
 
@@ -209,17 +218,21 @@ class Department(models.Model):
 
 	def __str__(self):
 		return self.short_name
-		    	
+
+@receiver(post_save, sender = Profile)
+def create_profile_preferences(sender, instance, created, **kwargs):
+	if created:
+		Preference.objects.create(profile=instance)
+
 # preference is a property of a user's profile and consistent across calendars
 class Preference(models.Model):
-	profile = models.ForeignKey(Profile, on_delete=models.CASCADE,
-        related_name='preferences')
-    # bl: black listed. NOTE: not sure if these related_names work
+	profile = models.OneToOneField(Profile, on_delete=models.CASCADE)
+		# bl: black listed. NOTE: not sure if these related_names work
 	bl_courses = models.ManyToManyField(Course)
 	bl_areas = models.ManyToManyField(Area, related_name='bl_area')
 	bl_depts = models.ManyToManyField(Department, related_name='bl_dept')
-    
-    # wl: white listed
+		
+		# wl: white listed
 	wl_areas = models.ManyToManyField(Area, related_name='wl_course')
 	wl_depts = models.ManyToManyField(Department, related_name='wl_dept')
 
@@ -227,9 +240,20 @@ class Preference(models.Model):
 		return "preference"
 
 class Semester(models.Model):
-	name = models.CharField(max_length = 25, unique=True)
-	calendar = models.ForeignKey(Calendar, on_delete=models.CASCADE, related_name='semester')
+	calendar = models.ForeignKey(Calendar, on_delete=models.CASCADE,
+		related_name='semesters')
 	courses = models.ManyToManyField(Course)
+	year = models.PositiveSmallIntegerField()
+	TERM_FALL = 1
+	TERM_SPRING = 2
+	term = models.PositiveSmallIntegerField(choices=(
+		(TERM_FALL, 'Fall'),
+		(TERM_SPRING, 'Spring'),
+		), default=TERM_FALL)
+
+	class Meta:
+		unique_together = ('year', 'term', 'calendar')
+		ordering = ('year', '-term')
 
 	def __str__(self):
-		return self.name
+		return '{} ({})'.format('', self.get_term_display())

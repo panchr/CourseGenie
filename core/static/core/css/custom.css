@@ -2,12 +2,56 @@
 	padding-bottom: 1em;
 	}
 
+.topbtm-pad {
+	padding-top: 1em;
+	padding-bottom: 0.5em;
+}
+
 .list-view .list-item {
 	display: block;
 	}
 
+.large-icon {
+	font-size: 2em;
+	}
+
+.no-left-padding {
+	padding-left: 0;
+	}
+
 .center {
 	text-align: center;
+	}
+
+.center-parent {
+	margin-left: auto;
+	margin-right: auto;
+	}
+
+.fit {
+	width: 100%;
+	}
+
+.messages-list {
+	position: fixed;
+	z-index: 999;
+	bottom: 0;
+	left: 0;
+	padding: 1em;
+	}
+
+.messages-list .message {
+	border-radius: 0.5em;
+	padding-top: 1em;
+	}
+
+.messages-list .message.error {
+	background-color: #f3d6d6;
+	opacity: 0.85;
+	}
+
+.messages-list .message.error h1 {
+	color: #0a3986;
 	}
 
 .alert {
@@ -32,3 +76,39 @@
 	cursor: pointer;
 	cursor: hand;
 	}
+
+	.vert-line {
+  border-right: thin solid #ddd;
+}
+
+.page-header {
+	position: relative;
+	padding: 7em 0 1em 0;
+	background: #fff;
+	background-size: cover;
+	text-align: center;
+	color: #7C9CD0;
+	}
+
+	.page-header header h2 {
+		font-size: 3.5em;
+		font-weight: 100;
+		color: #7C9CD0;
+		}
+
+		.dash-head {
+		position: relative;
+		padding: 2em 0 0 0;
+		margin-left: -3em;
+		margin-bottom: -0.5em;
+		background: #fff;
+		background-size: cover;
+		color: #7C9CD0;
+		}
+
+	.dash-head header h2 {
+		font-size: 2em;
+		font-weight: 100;
+		text-align: left;
+		color: #7C9CD0;
+		}

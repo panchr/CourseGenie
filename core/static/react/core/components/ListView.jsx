@@ -7,6 +7,8 @@
 
 var React = require('react');
 
+import { List } from 'immutable';
+
 function ListView(props) {
 	/*
 	* Required Props
@@ -18,11 +20,11 @@ function ListView(props) {
 	*/
 	var t = props.t;
 
-	if (props.data.length) {
+	if (props.data.length || props.data.size) {
 		return <div className='list-view'>
-			{props.data.map((x) => {
+			{props.data.map((x, i, xs) => {
 				return <div className='list-item' key={'list-item-' + Math.random()}>
-					{t(x)}
+					{t(x, i, xs)}
 					</div>
 				})}
 		</div>;
@@ -33,7 +35,10 @@ function ListView(props) {
 	}
 
 ListView.propTypes = {
-	data: React.PropTypes.array.isRequired,
+	data: React.PropTypes.oneOfType([
+		React.PropTypes.array,
+		React.PropTypes.instanceOf(List),
+		]).isRequired,
 	t: React.PropTypes.func.isRequired,
 	blankText: React.PropTypes.string,	
 	};

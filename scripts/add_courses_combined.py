@@ -26,8 +26,14 @@ except (IndexError, KeyError):
 	print("Usage: python scripts/add_courses.py {fall,spring}")
 	sys.exit(1)
 
+USG_DATA_FILE = os.path.join("data", "usg-courses-fall17.json")
+BWK_DATA_FILE = os.path.join("data", "courses_fall17.json")
+if CURRENT_TERM != Course.TERM_FALL:
+	USG_DATA_FILE = os.path.join("data", "usg-courses-spring17.json")
+	BWK_DATA_FILE = os.path.join("data", "courses_spring17.json")
+
 def main():
-	with open("data/usg-courses.json") as f:
+	with open(USG_DATA_FILE) as f:
 		raw_data = json.load(f)
 
 	for record in raw_data:
@@ -45,10 +51,14 @@ def main():
 			letter = ""
 		department = record["subj_code"]
 		try:
-			course = Course.objects.get(name=name, course_id=id_number, number=number, department=department, letter=letter)
+			course = Course.objects.get(course_id=id_number)
 			if course.term != Course.TERM_INCONSISTENT and course.term != CURRENT_TERM:
 				course.term = Course.TERM_BOTH
-				course.save()
+			course.name = name
+			course.department = department
+			course.number = number
+			course.letter = letter
+			course.save()
 		except Course.DoesNotExist:
 			course = Course(name=name, number=number, course_id=id_number, department=department, letter=letter, term=CURRENT_TERM)
 			course.save()
@@ -71,7 +81,7 @@ def main():
 
 	f.close()
 
-	with open("data/courses.json") as f:
+	with open(BWK_DATA_FILE) as f:
 		raw_data = json.load(f)
 
 		for record in raw_data:

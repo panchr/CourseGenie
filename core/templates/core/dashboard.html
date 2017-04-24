@@ -1,1 +1,50 @@
-<h1>Dashboard</h1>
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}CourseGenie - Dashboard{% endblock %}
+{% block body %}
+	<body class="left-sidebar">
+		<!-- Main -->
+		<div class="dash-head">
+			<div class="container">
+				<section>
+					<header>
+						<h2 class="title">Dashboard</h2>
+						<a href="{% url 'core:transcript' %}">Past Courses</a>
+						<a href="{% url 'core:preferences' %}">Preferences</a>
+					</header>
+				</section>
+			</div>
+		</div>
+		<hr/>
+		<div class="title"></div>
+		<div id="dashboard"></div>
+		<script>
+			var dashboard_data = {
+				user_calendars: JSON.parse('{{ user_calendars|safe }}'),
+				preference_id: {{ preference_id }},
+				calendar: {
+					url: function(id) {
+						var base = "{% url 'api:calendar-detail' pk=889 %}";
+						return base.replace('889', id);
+						},
+					semesterCourseUrl: function(semester_id, course_id) {
+						var base = "{% url 'api:semester-course' pk=889 %}";
+						return base.replace('889', semester_id) + '?course_id=' + course_id;
+						}
+					},
+				recommendations: {
+					url: function(id) {
+						var base = "{% url 'api:recommendation-list' %}";
+						return base + "?calendar=" + id;
+						},
+					blacklistUrl: function(id) {
+						var base = "{% url 'api:preference-bl-course' pk=889 %}";
+						return base.replace('889', dashboard_data.preference_id) + "?course_id=" + id;
+						},
+					},
+				};
+		</script>
+		<script src="{% static 'core/js/bundle/dashboard.js' %}"></script>
+	</body>
+{% endblock %}

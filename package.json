@@ -3,10 +3,13 @@
   "version": "0.1.0",
   "description": "Customized course recommendations based on concentration.",
   "dependencies": {
+    "immutable": "^3.8.1",
     "jquery": "^3.2.1",
     "moment": "^2.14.1",
     "query-string": "^4.3.2",
     "react": "^0.14.8",
+    "react-dnd": "^2.3.0",
+    "react-dnd-html5-backend": "^2.3.0",
     "react-dom": "^0.14.8"
   },
   "devDependencies": {
