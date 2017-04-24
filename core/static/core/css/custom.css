@@ -23,6 +23,15 @@
 	text-align: center;
 	}
 
+.center-parent {
+	margin-left: auto;
+	margin-right: auto;
+	}
+
+.fit {
+	width: 100%;
+	}
+
 .messages-list {
 	position: fixed;
 	z-index: 999;

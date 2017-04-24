@@ -105,3 +105,12 @@ class DashboardView(LoginRequiredMixin, TemplateView):
 			return super(DashboardView, self).get(request)
 
 		return redirect('core:transcript')
+
+class PreferenceView(LoginRequiredMixin, TemplateView):
+	template_name = 'core/form-preferences.html'
+
+	def get_context_data(self, **kwargs):
+		context = super(PreferenceView, self).get_context_data(**kwargs)
+		context['preference_id'] = self.request.user.profile.preference.id
+
+		return context
