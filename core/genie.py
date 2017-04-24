@@ -19,8 +19,6 @@ RANK_T = 20 # track
 RANK_C = 22 # certificate
 RANK_WLD = 10 # white listed department
 RANK_WLA = 10 # white listed area
-RANK_BLD = 10 # black listed department
-RANK_BLA = 10 # black listed area
 RANK_F = 3 # flexibility; other BSE majors
 RANK_A = 5 # untaken distribution area
 TOP_COUNT = 20
@@ -46,7 +44,6 @@ def store_manual(user, courses):
 				crossed = CrossListing.objects.get(department=dept, number=num, letter=letter)
 				list_records.append(Record(course=crossed.course, profile=profile))
 			except CrossListing.DoesNotExist:
-				# do something to tell us c was not added	
 				pass
 
 	# This should be an atomic transaction so existing records are deleted
@@ -58,8 +55,6 @@ def store_manual(user, courses):
 # store rest of info from form: name, year, partial preferences (interests)
 # from form_name: list of strings ['first name', 'last name', 'year']
 # from form_interests: list of departments ['Economics', 'History', 'French']
-# REQUESTED FORMAT FROM FRONT END ALREADY
-# BASICALLY FINISHED
 def store_rest_form(profile, form_name_input, departments):
 	# parse form_name_input
 	first_name = form_name_input[0]
@@ -94,34 +89,11 @@ def store_rest_form(profile, form_name_input, departments):
 # 	degree
 # 	major
 #	certificates: a list of certificates
-# BASICALLY DONE
 def create_calendar(profile, degree, major, certificates):
 	calendar = Calendar(profile=profile, degree=degree, major=major)
 	calendar.save()
 	for certificate in certificates:
 		calendar.certificates.add(certificate)
-
-# update preferences of a profile (from magic lamp menu)
-# ASK FRONTEND data format
-# {
-#	 'bl_courses': [],
-#	 'bl_areas': [],
-# 	 'bl_depts': [],
-# 	 'wl_areas': [],
-#	 'wl_depts': []
-# }
-# IN PROGRESS
-def update_preferences(profile, raw_data):
-	try:
-		pref = Preference.objects.get(profile=profile)
-		# find differences, update (instead of deleting and starting from scratch)
-
-	except Preference.DoesNotExist:
-		pref = Preference(profile=profile)
-		pref.save()
-		# add everything in
-
-	pass
 
 # calculate all progresses corresponding to a calendar
 def calculate_progress(calendar):
@@ -132,13 +104,18 @@ def calculate_progress(calendar):
 
 	for record in Record.objects.filter(profile=calendar.profile).prefetch_related('course'):
 		list_courses.append(record.course)
+
+	for semester in Semester.objects.filter(calendar=calendar).prefetch_related('courses'):
+		for c in semester.courses.all():
+			list_courses.append(c)
 	
+	for c in list_courses:
+		print c
+
 	# degree requirements
-	#print "now doing degree"
 	calculate_single_progress(calendar, calendar.degree, list_courses)
 
 	# requirements of major itself
-	#print "now doing major"
 	calculate_single_progress(calendar, calendar.major, list_courses)
 
 	# track requirements, if any
@@ -151,7 +128,6 @@ def calculate_progress(calendar):
 		calculate_single_progress(calendar, certificate, list_courses)
 
 # calculate for one single degree/major/track/certificate; to be called from calculate_progress
-# NEED TO DEBUG
 def calculate_single_progress(calendar, category, list_courses):
 	FACTOR = 5
 	number_choices = [] # number of courses to choose from for this requirement
@@ -248,7 +224,6 @@ def calculate_single_progress(calendar, category, list_courses):
 
 # the brains of the project!!!
 # wow so much brains :o (all due to Rushy)
-# IN PROGRESS
 def _add_nested_courses(reqs):
 	courses_list = {r: set(r.courses.all()) for r in reqs}
 	for r in courses_list:
@@ -327,13 +302,8 @@ def recommend(calendar):
 
 	# filter out courses they've taken already
 	filter_out = set(map(lambda r: r.course, profile.records.all().prefetch_related('course')))
-	#taken_areas = set(map(lambda x: x.area, filter_out))
- 
- 	# some courses don't have distribution requirements and so if this was not
- 	# added as taken, those courses would get arbitrarily suggested.
-	#taken_areas.add("")
 
-	# filter out courses already in calendar, no repeatss
+	# filter out courses already in calendar
 	for semester in calendar.semesters.all().prefetch_related('courses'):
 		filter_out |= set(semester.courses.all())
 
@@ -346,27 +316,20 @@ def recommend(calendar):
 	except Preference.DoesNotExist:
 		pass
 	else:
-		# filter out black listed courses, no repeats
+		# filter out black listed courses
 		filter_out |= set(preference.bl_courses.all())
 		wl_depts_short = set(preference.wl_depts.all().values_list('short_name', flat=True))
 		wl_areas = set(preference.wl_areas.all().values_list('short_name', flat=True))
 		bl_depts_short = set(preference.bl_depts.all().values_list('short_name', flat=True))
 		bl_areas = set(preference.bl_areas.all().values_list('short_name', flat=True))
 
-	#list_suggestions = dict()
-	#list_suggestions = dict()
 	list_suggestions_reg = dict()
 	list_suggestions_dist = dict()
 	# create list of all the courses. Each entry is a dictionary
 	# [
 	#	{
-	#		'course_id': '123456', 
-	#		'name': 'Macroeconomics', 
-	#		'short_name': 'ECO 101A',
-	#		'department': 'ECO',
-	#		'number': 101,
-	#		'letter': 'A',
-	#		'reason': 'some string here', # build string before passing it in
+	#		'course': some course object, 
+	#		'reason': 'some string here',
 	#		'reason_list': ['string', 'string']
 	#		'score': 3
 	#	}
@@ -378,6 +341,14 @@ def recommend(calendar):
 
 			entry = {'course': course, 'score': 0, 'reason': '', 'reason_list': []}
 
+			# don't add blacklisted departments
+			if department in bl_depts_short:
+				continue
+
+			# don't add blacklisted areas
+			if area in bl_areas:
+				continue
+
 			# add points if in wl_depts (primary department only)
 			if department in wl_depts_short:
 				entry['score'] += RANK_WLD
@@ -385,14 +356,6 @@ def recommend(calendar):
 			# add points if in wl_areas
 			if area in wl_areas:
 				entry['score'] += RANK_WLA
-
-			# subtract points if in bl_depts
-			if department in bl_depts_short:
-				entry['score'] -= RANK_BLD
-
-			# subtract points if in bl_areas
-			if area in bl_areas:
-				entry['score'] -= RANK_BLA
 
 			is_dist = [0]
 			# add points if satisfy unsatisfied degree requirements
@@ -434,10 +397,6 @@ def recommend(calendar):
 				list_suggestions_dist[course.id] = entry
 			else:
 				list_suggestions_reg[course.id] = entry
-
-	#sorted_list = sorted(list_suggestions.values(), key=lambda k: k['score'],
-	#	reverse=True)
-	#return sorted_list[:TOP_COUNT]
 
 	sorted_reg = sorted(list_suggestions_reg.values(), key=lambda k: k['score'],
 		reverse=True)
