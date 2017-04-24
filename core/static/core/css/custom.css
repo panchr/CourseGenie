@@ -42,12 +42,14 @@
 
 .messages-list .message {
 	border-radius: 0.5em;
-	padding-top: 1em;
+	margin-top: 1em;
+	padding: 1em;
+	font-size: 0.9em;
+	opacity: 0.9;
 	}
 
 .messages-list .message.error {
 	background-color: #f3d6d6;
-	opacity: 0.85;
 	}
 
 .messages-list .message.error h1 {
