@@ -80,6 +80,89 @@ module.exports = {
 			},
 		},
 
+	preferences: {
+		get: function(callback=(e) => null) {
+			return jQuery.get(preference_data.urls.preference())
+				.done(callback)
+				.fail(shared.errorHandler);
+			},
+
+		bl_course: function(course, callback=(e) => null) {
+			setup_ajax_csrf();
+			return jQuery.post(preference_data.urls.bl_course(course))
+				.done(callback)
+				.fail(shared.errorHandler);
+			},
+
+		bl_dept: function(dept, callback=(e) => null) {
+			setup_ajax_csrf();
+			return jQuery.post(preference_data.urls.bl_dept(dept))
+				.done(callback)
+				.fail(shared.errorHandler);
+			},
+
+		wl_dept: function(dept, callback=(e) => null) {
+			setup_ajax_csrf();
+			return jQuery.post(preference_data.urls.wl_dept(dept))
+				.done(callback)
+				.fail(shared.errorHandler);
+			},	
+
+		bl_area: function(area, callback=(e) => null) {
+			setup_ajax_csrf();
+			return jQuery.post(preference_data.urls.bl_area(area))
+				.done(callback)
+				.fail(shared.errorHandler);
+			},	
+
+		wl_area: function(area, callback=(e) => null) {
+			setup_ajax_csrf();
+			return jQuery.post(preference_data.urls.wl_area(area))
+				.done(callback)
+				.fail(shared.errorHandler);
+			},	
+
+		del_bl_course: function(course, callback=(e) => null) {
+			setup_ajax_csrf();
+			return jQuery.ajax(preference_data.urls.bl_course(course),
+				{method: 'DELETE'})
+				.done(callback)
+				.fail(shared.errorHandler);
+			},
+
+		del_bl_dept: function(dept, callback=(e) => null) {
+			setup_ajax_csrf();
+			return jQuery.ajax(preference_data.urls.bl_dept(dept),
+				{method: 'DELETE'})
+				.done(callback)
+				.fail(shared.errorHandler);
+			},
+
+		del_wl_dept: function(dept, callback=(e) => null) {
+			setup_ajax_csrf();
+			return jQuery.ajax(preference_data.urls.wl_dept(dept),
+				{method: 'DELETE'})
+				.done(callback)
+				.fail(shared.errorHandler);
+			},	
+
+		del_bl_area: function(area, callback=(e) => null) {
+			setup_ajax_csrf();
+			return jQuery.ajax(preference_data.urls.bl_area(area),
+				{method: 'DELETE'})
+				.done(callback)
+				.fail(shared.errorHandler);
+			},	
+
+		del_wl_area: function(area, callback=(e) => null) {
+			setup_ajax_csrf();
+			return jQuery.ajax(preference_data.urls.wl_area(area),
+				{method: 'DELETE'})
+				.done(callback)
+				.fail(shared.errorHandler);
+			},	
+		},
+
 	requirements: {
 		degree: function(callback) {
 			var data = [
