@@ -15,7 +15,8 @@ import { List } from 'immutable';
 var CourseDisplay = require('core/components/CourseDisplay.jsx'),
 	GridView = require('core/components/GridView.jsx'),
 	ErrorAlert = require('core/components/ErrorAlert.jsx'),
-	Icon = require('core/components/Icon.jsx');
+	Icon = require('core/components/Icon.jsx'),
+	ListInput = require('core/components/ListInput.jsx');
 
 function main() {
 	var queryParameters = queryString.parse(window.location.search);
@@ -53,10 +54,8 @@ class CourseForm extends React.Component {
 			};
 
 		this.elems = {};
-		this.renderCourse = this.renderCourse.bind(this);
-		this.removeCourse = this.removeCourse.bind(this);
-		this.addCourse = this.addCourse.bind(this);
 		this.submitForm = this.submitForm.bind(this);
+		this.getCourse = this.getCourse.bind(this);
 		}
 
 	componentWillMount() {
@@ -84,21 +83,7 @@ class CourseForm extends React.Component {
 		if (this.transcriptRequest) this.transcriptRequest.abort();
 		}
 
-	renderCourse(c, index) {
-		var split = c.split(" ");
-		return (<div>
-			<CourseDisplay department={split[0]} number={split[1]} />
-			&nbsp;
-			<Icon i='ios-close-outline' onClick={() => {this.removeCourse(index)}}
-				style={{color: 'red'}} className='btn' />
-			</div>);
-		}
-
-	removeCourse(index) {
-		this.setState({courses: this.state.courses.remove(index)});
-		}
-
-	addCourse(c) {
+	getCourse(c) {
 		var department = this.elems.department_input.value,
 			number = this.elems.number_input.value,
 			c = (department + " " + number).toUpperCase();
@@ -114,20 +99,17 @@ class CourseForm extends React.Component {
 		else if (! /^\w{3}$/.test(department)) {
 			this.setState({errorMsg: 'The department must be 3 letters.'});
 			}
-		else if (! /^\d{3}\w?$/.test(number)) {
+		else if (! /^\d{3}[a-zA-Z]?$/.test(number)) {
 			this.setState({errorMsg: 'The course number must be a number, optionally followed by a letter.'});
 			}
 		else {
-			this.setState({
-				// only works well because courses is an List
-				courses: this.state.courses.push(c)
-				});
+			return c;
 			}
 		}
 
 	submitForm(event) {
 		var data = {
-			courses: this.state.courses,
+			courses: this.elems.courses_list.getValues(),
 			user: {
 				first_name: this.elems.first_name_input.value,
 				last_name: this.elems.last_name_input.value,
@@ -159,40 +141,32 @@ class CourseForm extends React.Component {
 							ref={(e) => this.elems.data_out = e} />
 						<input type="hidden" name="csrfmiddlewaretoken"
 							value={window._csrf_token}/>
-						<div className="row 50%">
-							<div className="3u">
-								<h1>Department</h1>
-							</div>
-							<div className="3u$">
-								<h1>Number</h1>
-							</div>
-							<div className="3u">
-								<input placeholder="e.g. COS" type="text" className="text"
-								ref={(e) => this.elems.department_input = e} />
-							</div>
-							<div className="3u">
-								<input placeholder="e.g. 333" type="text" className="text"
-							 	ref={(e) => this.elems.number_input = e} />
-								{/* refs are required (as callbacks) to get input */}
-							</div>
-							<div className="3u">
-								<a className="button-add fit btn"
-									onClick={this.addCourse}>Add</a>
+						<div className="row">
+							<div className="12u">
+								<h2>Courses Entered</h2>
+								<ListInput ref={(e) => this.elems.courses_list = e} t={(c) => {
+									var split = c.split(" ");
+									return <CourseDisplay department={split[0]} number={split[1]} />;
+									}} getInput={this.getCourse} data={this.state.courses} cols={2} blankText='None yet!' >
+									<div className="6u">
+										<h1>Department</h1>
+									</div>
+									<div className="6u$">
+										<h1>Number</h1>
+									</div>
+									<div className="6u">
+										<input placeholder="e.g. COS" type="text" className="text"
+										ref={(e) => this.elems.department_input = e} />
+									</div>
+									<div className="6u$">
+										<input placeholder="e.g. 333" type="text" className="text"
+									 	ref={(e) => this.elems.number_input = e} />
+										{/* refs are required (as callbacks) to get input */}
+									</div>
+								</ListInput>
 							</div>
 						</div>
 					</section>
-						<div className="row 50%">
-							<div className="12u">
-								<h2>Courses Entered</h2>
-								<div className='center'>
-									{this.state.courses.size > 0 ?
-									<GridView t={this.renderCourse} data={this.state.courses}
-										blankText='None yet!' cols={2} />
-									:
-									<span>No courses entered!</span>}
-								</div>
-							</div>
-						</div>
 					<hr/>
 					<div className="row 50%">
 						<div className="6u"><h1>First Name</h1></div>
