@@ -11,7 +11,7 @@ function CourseDisplay(props) {
 	if (props.extended) {
 		// maybe display area as badge, color-coded?
 		return (<span className='course-display'>
-			<div>{props.department} {props.number}{props.letter}
+			<div>{props.short_name}
 				{props.area == '' ? null : ` (${props.area})` }</div>
 			<div>{props.name}</div>
 		</span>);
@@ -30,6 +30,7 @@ CourseDisplay.propTypes = {
 	letter: React.PropTypes.string,
 	name: React.PropTypes.string,
 	area: React.PropTypes.string,
+	short_name: React.PropTypes.string,
 	};
 
 CourseDisplay.defaultProps = {

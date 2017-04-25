@@ -1,0 +1,52 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}CourseGenie - Preferences{% endblock %}
+{% block body %}
+	<body class="left-sidebar">
+		<!-- Main -->
+		<div class="page-header">
+			<div class="container">
+				<section>
+					<header><h2 class="title">Preferences</h2></header>
+				</section>
+			</div>
+		</div>
+
+		<hr/>
+		<div id="preference-form">
+
+		<script>
+			var preference_data = {
+				preference_id: "{{ preference_id }}",
+				urls: {
+					preference: function() {
+						var base = "{% url 'api:preference-detail' pk=889 %}";
+						return base.replace('889', preference_data.preference_id);
+						},
+					bl_course: function(id) {
+						var base = "{% url 'api:preference-bl-course' pk=889 %}";
+						return base.replace('889', preference_data.preference_id) + "?short_name=" + id;
+						},
+					bl_area: function(id) {
+						var base = "{% url 'api:preference-area' pk=889 %}";
+						return base.replace('889', preference_data.preference_id) + "?t=bl&short_name=" + id;
+						},
+					bl_dept: function(id) {
+						var base = "{% url 'api:preference-dept' pk=889 %}";
+						return base.replace('889', preference_data.preference_id) + "?t=bl&short_name=" + id;
+						},
+					wl_area: function(id) {
+						var base = "{% url 'api:preference-area' pk=889 %}";
+						return base.replace('889', preference_data.preference_id) + "?t=wl&short_name=" + id;
+						},
+					wl_dept: function(id) {
+						var base = "{% url 'api:preference-dept' pk=889 %}";
+						return base.replace('889', preference_data.preference_id) + "?t=wl&short_name=" + id;
+						},
+					},
+				};
+		</script>
+		<script src="{% static 'core/js/bundle/form-preferences.js' %}"></script>
+	</body>
+{% endblock %}

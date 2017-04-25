@@ -243,8 +243,6 @@ def _update_entry(filters, entry, requirements, req_courses, course, delta, fmt,
 					entry['score'] += 5
 				#if req.t == 'distribution-areas':
 				#	entry['score'] += random.randint(20, 35)
-				if req.t == 'distribution-areas':
-					is_dist[0] = 1
 			if delta == RANK_M and req in filters: # add points for empty reqs for major
 				entry['score'] += 4
 			entry['reason'] += fmt.format(req.name)
@@ -256,24 +254,23 @@ def recommend(calendar):
 	degree = calendar.degree
 	random.seed(profile.user_id)
 
+	calculate_progress(calendar)
 	user_progresses = Progress.objects.filter(calendar=calendar)
-	if user_progresses.count() == 0:
-		calculate_progress(calendar)
 
-	progresses = user_progresses.filter(completed=True)
+	progresses = user_progresses.filter(completed=True).prefetch_related('requirement')
 	satisfied_reqs = []
 	for progress in progresses:
 		satisfied_reqs.append(progress.requirement)
 
-	zero_progresses = user_progresses.filter(number_taken=0)
+	zero_progresses = user_progresses.filter(number_taken=0).prefetch_related('requirement')
 	empty_reqs = []
 	for progress in zero_progresses:
 		empty_reqs.append(progress.requirement)
 
-	degree_requirements = list(degree.requirements.exclude(id__in=[o.id for o in satisfied_reqs]))
+	degree_requirements = list(degree.requirements.exclude(id__in={o.id for o in satisfied_reqs}))
 	degree_req_courses = _add_nested_courses(degree_requirements)
 
-	major_requirements = list(major.requirements.exclude(id__in=[o.id for o in satisfied_reqs]))
+	major_requirements = list(major.requirements.exclude(id__in={o.id for o in satisfied_reqs}))
 	major_req_courses = _add_nested_courses(major_requirements)
 
 	track_requirements = []

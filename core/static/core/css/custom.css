@@ -23,6 +23,42 @@
 	text-align: center;
 	}
 
+.center-parent {
+	margin-left: auto;
+	margin-right: auto;
+	}
+
+.fit {
+	width: 100%;
+	}
+
+.messages-list {
+	position: fixed;
+	z-index: 999;
+	bottom: 0;
+	left: 0;
+	padding: 1em;
+	}
+
+.messages-list .message {
+	border-radius: 0.45em;
+	margin-top: 1em;
+	padding: 1em;
+	font-size: 0.9em;
+	opacity: 0.9;
+	}
+
+.messages-list .message h1 {
+	padding-left: 0;
+	color: black;
+	font-size: 1.25em;
+	}
+
+.messages-list .message.error {
+	background-color: #f3d6d6;
+	color: black;
+	}
+
 .alert {
 	padding: 15px;
   margin-bottom: 20px;
@@ -65,7 +101,7 @@
 		color: #7C9CD0;
 		}
 
-		.dash-head {
+	.dash-head {
 		position: relative;
 		padding: 2em 0 0 0;
 		margin-left: -3em;

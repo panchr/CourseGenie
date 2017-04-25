@@ -43,6 +43,7 @@ SemesterDisplay.propTypes = {
 	connectDropTarget: React.PropTypes.func.isRequired,
 	onCourseAdd: React.PropTypes.func.isRequired,
 	onCourseRemove: React.PropTypes.func.isRequired,
+	onError: React.PropTypes.func.isRequired,
 	term_display: React.PropTypes.string.isRequired,
 	year: React.PropTypes.number.isRequired,
 	courses: React.PropTypes.array.isRequired,
@@ -55,28 +56,32 @@ SemesterDisplay.defaultProps = {
 
 module.exports = DropTarget('course', {
 	drop: (props, monitor, component) => {
-		if (! monitor.didDrop()) {
-			var data = monitor.getItem();
+		var data = monitor.getItem();
+
+		// These checks must be performed here (instead of in the canDrop() method)
+		// because we only want to display an error message on drop, not on hover.
+		if (props.maxSize != -1 && props.maxSize <= utils.length(props.courses)) {
+			props.onError({
+				header: `${props.term_display} ${props.year}`,
+				t: 'error',
+				message: `Cannot add more than ${props.maxSize} courses.`});
+			}
+		else if (data.course.term != props.term &&
+			(data.course.term_display == 'Fall' || data.course.term_display == 'Spring')) {
+			props.onError({
+				header: `${props.term_display} ${props.year}`,
+				t: 'error',
+				message: `Cannot add ${data.course.term_display}-only course (${data.course.short_name}) to ${props.term_display} semester.`
+				});
+			}
+		else if (! monitor.didDrop()) {
 			props.onCourseAdd(data.course);
 			data.onDragEnd();
-			// Hack to make monitor recognize deletion, see:
-			// https://github.com/react-dnd/react-dnd/issues/545
-			monitor.internalMonitor.store.dispatch({type: "dnd-core/END_DRAG"});
 			}
+		// Hack to make monitor recognize deletion, see:
+		// https://github.com/react-dnd/react-dnd/issues/545
+		monitor.internalMonitor.store.dispatch({type: "dnd-core/END_DRAG"});
 		},
-	canDrop: (props, monitor) => {
-		// should probably display error/warning here
-		if (props.maxSize != -1 && props.maxSize <= utils.length(props.courses)) {
-			return false;
-			}
-		var course = monitor.getItem().course;
-		if (course.term != props.term &&
-			(course.term_display == 'Fall' || course.term_display == 'Spring')) {
-			return false;
-			}
-
-		return true;
-		}
 	},
 	(connect, monitor) => {
 		return {

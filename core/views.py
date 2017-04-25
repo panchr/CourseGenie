@@ -59,6 +59,8 @@ class TranscriptView(LoginRequiredMixin, TemplateView):
 			calendar = Calendar.objects.create(profile=user.profile,
 				degree_id=1, major_id=int(data['major']))
 			now = timezone.now()
+			if grad_year > now.year + 4:
+				grad_year = now.year + 4
 			if now.month in {1, 9, 10, 11, 12}: # SF SF ... S
 				for y in range(now.year+1, grad_year):
 					sem1 = Semester.objects.create(calendar=calendar,
@@ -103,3 +105,12 @@ class DashboardView(LoginRequiredMixin, TemplateView):
 			return super(DashboardView, self).get(request)
 
 		return redirect('core:transcript')
+
+class PreferenceView(LoginRequiredMixin, TemplateView):
+	template_name = 'core/form-preferences.html'
+
+	def get_context_data(self, **kwargs):
+		context = super(PreferenceView, self).get_context_data(**kwargs)
+		context['preference_id'] = self.request.user.profile.preference.id
+
+		return context
