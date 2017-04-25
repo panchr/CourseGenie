@@ -16,10 +16,12 @@ function MessageList(props) {
 	return <ListView t={(e, i) => {
 		if (typeof e == "string") e = {header: '', message: e, t: 'default'};
 				return <div className={`message ${e.t}`}>
-					<h1>{e.header}</h1>
-					<Icon i='ios-close-empty' className='btn large-icon'
-						style={{color: 'LightSlateGray', float: 'right'}}
-						onClick={() => props.onDismiss(i)} />
+					<h1>
+						{e.header}
+						<Icon i='ios-close-empty' className='btn large-icon'
+							style={{color: 'LightSlateGray', float: 'right'}}
+							onClick={() => props.onDismiss(i)} />
+					</h1>
 					<br/>
 					<span>{e.message}</span>
 				</div>;

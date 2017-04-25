@@ -628,6 +628,7 @@
 			text-decoration: none;
 			font-weight: 300;
 			text-align: left;
+			min-width: 100%;
 		}
 
 		.course-list
