@@ -10,6 +10,7 @@ import re
 import random
 
 from django.db import transaction
+from django.db.models import Count
 
 from core.models import *
 
@@ -112,11 +113,6 @@ def calculate_progress(calendar):
 			.values_list('courses', flat=True)
 		)
 
-	# for semester in Semester.objects.filter(calendar=calendar):
-	# 	list_courses.extend(semester.courses.values_list('pk', flat=True))
-		# for c in semester.courses.all():
-		# 	list_courses.append(c)
-
 	# degree requirements
 	calculate_single_progress(calendar, calendar.degree, list_courses)
 
@@ -142,17 +138,21 @@ def calculate_single_progress(calendar, category, list_courses):
 	nested_reqs = None
 	progresses = {}
 	progress_courses = {}
-	cat_requirements = category.requirements.all().prefetch_related('nested_reqs', 'nested_reqs__courses', 'courses')
+	cat_requirements = list(category.requirements.all())
 
-	# req_courses = {r: map(lambda x: x.pk, r.courses.all()) for r in cat_requirements}
-	req_courses = {r: r.courses.all().values_list('pk', flat=True) for r in cat_requirements}
-
+	req_courses = {r: set(r.courses.values_list('pk', flat=True)) for r in cat_requirements}
+	nreq_courses = {r:
+		{nr: set(nr.courses.values_list('pk', flat=True)) for nr in r.nested_reqs.all()}
+		for r in cat_requirements}
+	
 	for requirement in cat_requirements:
 		number_remaining.append(requirement.number)
-		c += requirement.courses.count()
-		nested_reqs = requirement.nested_reqs.all()
-		for nreq in nested_reqs:
-			c += nreq.courses.count()
+		c += len(req_courses[requirement])
+		# this is slower due to caching:
+		# c += requirement.nested_reqs.aggregate(number=Count('courses')).get('number', 0)
+		nested_reqs = nreq_courses[requirement]
+		for nreq, cs in nested_reqs.items():
+			c += len(cs)
 		if requirement.t == 'distribution-areas':
 			c = 800 # small hack... need this to be less than 880 of distribution-additional
 		#print requirement.name + " has " + str(c) # prints how many courses qualify under a requirement
@@ -177,10 +177,12 @@ def calculate_single_progress(calendar, category, list_courses):
 			#if course in requirement.courses.all().values_list('pk', flat=True):
 				matched[i] = requirement
 
-			nested_reqs = NestedReq.objects.filter(requirement=requirement).exclude(id__in=other_than[i])
-			for nreq in nested_reqs:
+			# nested_reqs = NestedReq.objects.filter(requirement=requirement).exclude(id__in=other_than[i])
+			for nreq, nreq_cs in nreq_courses[requirement].items():
 				#if course in map(lambda x: x.pk, nreq.courses.all()):
-				if course in nreq.courses.all().values_list('id', flat=True):
+				if nreq.pk in other_than[i]:
+					continue
+				if course in nreq_cs:
 					small_list = [nreq, requirement]
 					matched[i] = small_list
 			i += 1
@@ -205,7 +207,7 @@ def calculate_single_progress(calendar, category, list_courses):
 					progress = progresses[req]
 					progress.number_taken += 1
 					progress_courses[req].add(course)
-					if progress.number_taken >= req.number and progress.completed == False:
+					if progress.number_taken >= req.number and not progress.completed:
 						progress.completed = True
 					number_remaining[index] -= 1
 
@@ -236,14 +238,14 @@ def calculate_single_progress(calendar, category, list_courses):
 			number_remaining[min_key] -= 1
 
 	for r, p in progresses.items():
-		p.courses_taken.add(*list(progress_courses[r]))
+		p.courses_taken.add(*progress_courses[r])
 		p.save()
 
 # the brains of the project!!!
 # wow so much brains :o (all due to Rushy)
 def _add_nested_courses(reqs):
 	courses_list = {r: set(r.courses.all()) for r in reqs}
-	for r in courses_list:
+	for r in reqs:
 		for nested in NestedReq.objects.filter(requirement=r):
 			courses_list[r] |= set(nested.courses.all())
 	return courses_list
@@ -440,7 +442,3 @@ def recommend(calendar):
 		sorted_total.extend(sorted_reg[3*actual:])
 
 	return sorted_total[:TOP_COUNT]
-
-
-
-

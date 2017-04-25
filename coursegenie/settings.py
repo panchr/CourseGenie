@@ -107,14 +107,17 @@ DATABASES = {
 CACHEOPS_REDIS = os.environ.get('CACHE_URL', '')
 CACHEOPS_DEFAULTS = {'timeout': 60*15}
 CACHEOPS = {
-    'core.Degree': {'ops': 'all'},
-    'core.Major': {'ops': 'all'},
-    'core.Certificate': {'ops': 'all'},
-    'core.Track': {'ops': 'all'},
+    # local_get allows the caching to occur in-memory on the Python side, which
+    # is still faster than hitting the Redis cache. Should *only* happen for
+    # data that never changes (i.e. loaded requirement data).
+    'core.Degree': {'ops': 'all', 'local_get': True},
+    'core.Major': {'ops': 'all', 'local_get': True},
+    'core.Certificate': {'ops': 'all', 'local_get': True},
+    'core.Track': {'ops': 'all', 'local_get': True},
     'core.Course': {'ops': 'all', 'local_get': True},
-    'core.CrossListing': {'ops': 'all'},
+    'core.CrossListing': {'ops': 'all', 'local_get': True},
     'core.Requirement': {'ops': 'all', 'local_get': True},
-    'core.NestedReq': {'ops': 'all'},
+    'core.NestedReq': {'ops': 'all', 'local_get': True},
     }
 CACHEOPS_DEGRADE_ON_FAILURE = True
 
