@@ -11,6 +11,7 @@ import random
 
 from django.db import transaction
 from django.db.models import Count
+from django.core.cache import cache
 
 from core.models import *
 
@@ -269,6 +270,10 @@ def _update_entry(filters, entry, requirements, req_courses, course, delta, fmt,
 			entry['reason_list'].append(short.format(req.name))
 
 def recommend(calendar):
+	cached_recs = get_cached_recommendation(calendar)
+	if cached_recs is not None:
+		return cached_recs
+
 	profile = calendar.profile
 	major = calendar.major
 	degree = calendar.degree
@@ -442,4 +447,18 @@ def recommend(calendar):
 	if marker == 1:
 		sorted_total.extend(sorted_reg[3*actual:])
 
-	return sorted_total[:TOP_COUNT]
+	result = sorted_total[:TOP_COUNT]
+	set_cached_recommendation(calendar, result)
+	return result
+
+def _form_cache_key(calendar):
+	return '%d-%d' % (calendar.profile_id, calendar.pk)
+
+def get_cached_recommendation(calendar):
+	return cache.get(_form_cache_key(calendar))
+
+def set_cached_recommendation(calendar, recs):
+	return cache.set(_form_cache_key(calendar), recs, timeout=15*60)
+
+def clear_cached_recommendations(profile_id):
+	return cache.delete_pattern('%d-*' % profile_id)

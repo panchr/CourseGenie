@@ -85,6 +85,7 @@ class TranscriptView(LoginRequiredMixin, TemplateView):
 		user.save()
 		user.profile.save()
 
+		genie.clear_cached_recommendations(user.profile.pk)
 		return redirect('core:dashboard')
 
 class DashboardView(LoginRequiredMixin, TemplateView):

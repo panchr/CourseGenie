@@ -104,7 +104,20 @@ DATABASES = {
     'default': dj_database_url.config(conn_max_age=600)
 }
 
-CACHEOPS_REDIS = os.environ.get('CACHE_URL', '')
+# Cache Configuration
+REDIS_URL = os.environ.get('REDIS_URL', '')
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': '%s/cache' % REDIS_URL,
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+            },
+        },
+    }
+
+CACHEOPS_REDIS = '%s/cacheops' % REDIS_URL
 CACHEOPS_DEFAULTS = {'timeout': 60*15}
 CACHEOPS = {
     # local_get allows the caching to occur in-memory on the Python side, which

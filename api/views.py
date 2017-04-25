@@ -102,6 +102,7 @@ class PreferenceViewSet(viewsets.ModelViewSet):
 
             pref.bl_courses.remove(course)
 
+        genie.clear_cached_recommendations(pref.profile_id)
         return Response({'success': True})
 
     @detail_route(methods=['post', 'delete'], url_path='area')
@@ -140,6 +141,7 @@ class PreferenceViewSet(viewsets.ModelViewSet):
 
             pref_list.remove(area)
 
+        genie.clear_cached_recommendations(pref.profile_id)
         return Response({'success': True})
 
     @detail_route(methods=['post', 'delete'], url_path='dept')
@@ -178,6 +180,7 @@ class PreferenceViewSet(viewsets.ModelViewSet):
 
             pref_list.remove(dept)
 
+        genie.clear_cached_recommendations(pref.profile_id)
         return Response({'success': True})
 
 class SemesterViewSet(viewsets.ModelViewSet):
@@ -205,6 +208,7 @@ class SemesterViewSet(viewsets.ModelViewSet):
 
             semester.courses.remove(course)
 
+        genie.clear_cached_recommendations(semester.calendar.profile_id)
         return Response({'success': True})
 
 class ProgressViewSet(viewsets.ModelViewSet):
