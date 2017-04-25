@@ -97,6 +97,7 @@ def create_calendar(profile, degree, major, certificates):
 		calendar.certificates.add(certificate)
 
 # calculate all progresses corresponding to a calendar
+@transaction.atomic
 def calculate_progress(calendar):
 	profile = calendar.profile
 	list_courses = []
