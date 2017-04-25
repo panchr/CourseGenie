@@ -144,7 +144,8 @@ def calculate_single_progress(calendar, category, list_courses):
 	progress_courses = {}
 	cat_requirements = category.requirements.all().prefetch_related('nested_reqs', 'nested_reqs__courses', 'courses')
 
-	req_courses = {r: map(lambda x: x.pk, r.courses.all()) for r in cat_requirements}
+	# req_courses = {r: map(lambda x: x.pk, r.courses.all()) for r in cat_requirements}
+	req_courses = {r: r.courses.all().values_list('pk', flat=True) for r in cat_requirements}
 
 	for requirement in cat_requirements:
 		number_remaining.append(requirement.number)
@@ -178,8 +179,8 @@ def calculate_single_progress(calendar, category, list_courses):
 
 			nested_reqs = NestedReq.objects.filter(requirement=requirement).exclude(id__in=other_than[i])
 			for nreq in nested_reqs:
-				if course in map(lambda x: x.pk, nreq.courses.all()):
-				# if course in nreq.courses.all().values_list('id', flat=True):
+				#if course in map(lambda x: x.pk, nreq.courses.all()):
+				if course in nreq.courses.all().values_list('id', flat=True):
 					small_list = [nreq, requirement]
 					matched[i] = small_list
 			i += 1

@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     # Installed Applications
     'django_cas_ng',
     'rest_framework',
+    'cacheops',
 
     # Custom applications
     'core',
@@ -103,17 +104,19 @@ DATABASES = {
     'default': dj_database_url.config(conn_max_age=600)
 }
 
-# CACHES = {
-#     'default': {
-#         'BACKEND': 'django.core.cache.backends.locmem.LocMemCache'
-#     }
-# }
-CACHES = {
-    'default': {
-        'BACKEND': 'caching.backends.memcached.MemcachedCache',
-        'LOCATION': os.environ.get('CACHE_URL', '')
-    },
-}
+CACHEOPS_REDIS = os.environ.get('CACHE_URL', '')
+CACHEOPS_DEFAULTS = {'timeout': 60*15}
+CACHEOPS = {
+    'core.Degree': {'ops': 'all'},
+    'core.Major': {'ops': 'all'},
+    'core.Certificate': {'ops': 'all'},
+    'core.Track': {'ops': 'all'},
+    'core.Course': {'ops': 'all', 'local_get': True},
+    'core.CrossListing': {'ops': 'all'},
+    'core.Requirement': {'ops': 'all', 'local_get': True},
+    'core.NestedReq': {'ops': 'all'},
+    }
+CACHEOPS_DEGRADE_ON_FAILURE = True
 
 # Password validation
 # https://docs.djangoproject.com/en/1.10/ref/settings/#auth-password-validators
