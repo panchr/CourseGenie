@@ -102,15 +102,20 @@ def calculate_progress(calendar):
 
 	Progress.objects.filter(calendar=calendar).delete() # delete old ones, start from scratch
 
-	for record in Record.objects.filter(profile=calendar.profile).prefetch_related('course'):
-		list_courses.append(record.course)
+	list_courses.extend(
+		Record.objects.filter(profile=calendar.profile)
+			.values_list('course_id', flat=True)
+		)
 
-	for semester in Semester.objects.filter(calendar=calendar).prefetch_related('courses'):
-		for c in semester.courses.all():
-			list_courses.append(c)
-	
-	for c in list_courses:
-		print c
+	list_courses.extend(
+		Semester.objects.filter(calendar=calendar)
+			.values_list('courses', flat=True)
+		)
+
+	# for semester in Semester.objects.filter(calendar=calendar):
+	# 	list_courses.extend(semester.courses.values_list('pk', flat=True))
+		# for c in semester.courses.all():
+		# 	list_courses.append(c)
 
 	# degree requirements
 	calculate_single_progress(calendar, calendar.degree, list_courses)
@@ -135,8 +140,12 @@ def calculate_single_progress(calendar, category, list_courses):
 	other_than = [] # list of lists of nestedreq IDs that should no longer be considered
 	c = 0 # count of number of choices
 	nested_reqs = None
-	list_progresses = []
-	cat_requirements = category.requirements.all()
+	progresses = {}
+	progress_courses = {}
+	cat_requirements = category.requirements.all().prefetch_related('nested_reqs', 'nested_reqs__courses', 'courses')
+
+	req_courses = {r: map(lambda x: x.pk, r.courses.all()) for r in cat_requirements}
+
 	for requirement in cat_requirements:
 		number_remaining.append(requirement.number)
 		c += requirement.courses.count()
@@ -151,8 +160,11 @@ def calculate_single_progress(calendar, category, list_courses):
 		c = 0
 
 		# create default progresses for all requirements, with number_taken = 0, completed = False
-		list_progresses.append(Progress(calendar=calendar, requirement=requirement))
-	Progress.objects.bulk_create(list_progresses)
+		p = Progress(calendar=calendar, requirement=requirement)
+		progresses[requirement] = p
+		progress_courses[requirement] = set()
+
+	Progress.objects.bulk_create(progresses.values())
 
 	for course in list_courses:
 		#print course.department + str(course.number) # prints the course
@@ -160,12 +172,14 @@ def calculate_single_progress(calendar, category, list_courses):
 		i = 0
 
 		for requirement in cat_requirements:
-			if course in requirement.courses.all():
+			if course in req_courses[requirement]:
+			#if course in requirement.courses.all().values_list('pk', flat=True):
 				matched[i] = requirement
 
 			nested_reqs = NestedReq.objects.filter(requirement=requirement).exclude(id__in=other_than[i])
 			for nreq in nested_reqs:
-				if course in nreq.courses.all():
+				if course in map(lambda x: x.pk, nreq.courses.all()):
+				# if course in nreq.courses.all().values_list('id', flat=True):
 					small_list = [nreq, requirement]
 					matched[i] = small_list
 			i += 1
@@ -187,12 +201,11 @@ def calculate_single_progress(calendar, category, list_courses):
 					other_than.append(nreq.id)
 				if req != None: # doesn't make sense that req would still be None though
 					#print req
-					progress = Progress.objects.get(calendar=calendar, requirement=req)	
+					progress = progresses[req]
 					progress.number_taken += 1
-					progress.courses_taken.add(course)
+					progress_courses[req].add(course)
 					if progress.number_taken >= req.number and progress.completed == False:
 						progress.completed = True
-					progress.save()
 					number_remaining[index] -= 1
 
 		else: # course satisfied multiple requirements
@@ -214,13 +227,16 @@ def calculate_single_progress(calendar, category, list_courses):
 				nreq = matched[min_key][0]
 				req = matched[min_key][1]
 				other_than.append(nreq.id)			
-			progress = Progress.objects.get(calendar=calendar, requirement=req)
+			progress = progresses[req]
 			progress.number_taken += 1
-			progress.courses_taken.add(course)
+			progress_courses[req].add(course)
 			if progress.number_taken >= req.number and progress.completed == False:
 				progress.completed = True
-			progress.save()
 			number_remaining[min_key] -= 1
+
+	for r, p in progresses.items():
+		p.courses_taken.add(*list(progress_courses[r]))
+		p.save()
 
 # the brains of the project!!!
 # wow so much brains :o (all due to Rushy)
@@ -257,12 +273,12 @@ def recommend(calendar):
 	calculate_progress(calendar)
 	user_progresses = Progress.objects.filter(calendar=calendar)
 
-	progresses = user_progresses.filter(completed=True).prefetch_related('requirement')
+	progresses = user_progresses.filter(completed=True).select_related('requirement')
 	satisfied_reqs = []
 	for progress in progresses:
 		satisfied_reqs.append(progress.requirement)
 
-	zero_progresses = user_progresses.filter(number_taken=0).prefetch_related('requirement')
+	zero_progresses = user_progresses.filter(number_taken=0).select_related('requirement')
 	empty_reqs = []
 	for progress in zero_progresses:
 		empty_reqs.append(progress.requirement)
@@ -298,11 +314,11 @@ def recommend(calendar):
 		other_majors[maj][1] = maj_req_courses
 
 	# filter out courses they've taken already
-	filter_out = set(map(lambda r: r.course, profile.records.all().prefetch_related('course')))
+	filter_out = set(profile.records.all().values_list('course_id', flat=True))
+	# filter_out = set(map(lambda r: r.course, profile.records.all().select_related('course')))
 
 	# filter out courses already in calendar
-	for semester in calendar.semesters.all().prefetch_related('courses'):
-		filter_out |= set(semester.courses.all())
+	filter_out |= set(calendar.semesters.all().values_list('courses', flat=True))
 
 	wl_depts_short = set()
 	wl_areas = set()
@@ -314,7 +330,7 @@ def recommend(calendar):
 		pass
 	else:
 		# filter out black listed courses
-		filter_out |= set(preference.bl_courses.all())
+		filter_out |= set(preference.bl_courses.all().values_list('pk', flat=True))
 		wl_depts_short = set(preference.wl_depts.all().values_list('short_name', flat=True))
 		wl_areas = set(preference.wl_areas.all().values_list('short_name', flat=True))
 		bl_depts_short = set(preference.bl_depts.all().values_list('short_name', flat=True))
@@ -332,7 +348,7 @@ def recommend(calendar):
 	#	}
 	# ]
 	for course in Course.objects.all():
-		if course not in filter_out and course.pk not in list_suggestions_reg and course.pk not in list_suggestions_dist:
+		if course.pk not in filter_out and course.pk not in list_suggestions_reg and course.pk not in list_suggestions_dist:
 			department = course.department
 			area = course.area
 

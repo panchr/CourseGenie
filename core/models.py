@@ -15,8 +15,9 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.core.validators import MaxValueValidator, MinValueValidator
 
+from caching.base import CachingManager, CachingMixin
 
-class Degree(models.Model):
+class Degree(CachingMixin, models.Model):
 	name = models.CharField(max_length=255, unique=True)
 	short_name = models.CharField(max_length=15, unique=True)
 	requirements = GenericRelation('Requirement', related_query_name='degree')
@@ -24,7 +25,9 @@ class Degree(models.Model):
 	def __str__(self):
 		return self.short_name
 
-class Major(models.Model):
+	objects = CachingManager()
+
+class Major(CachingMixin, models.Model):
 	name = models.CharField(max_length=255, unique=True)
 	short_name = models.CharField(max_length=15, unique=True)
 	degree = models.ForeignKey(Degree, on_delete=models.CASCADE, related_name='majors')
@@ -41,7 +44,9 @@ class Major(models.Model):
 	class Meta:
 		unique_together = ('name', 'degree')
 
-class Certificate(models.Model):
+	objects = CachingManager()
+
+class Certificate(CachingMixin, models.Model):
 	name = models.CharField(max_length=255, unique=True)
 	short_name = models.CharField(max_length=50, unique=True)
 	requirements = GenericRelation('Requirement',
@@ -55,7 +60,9 @@ class Certificate(models.Model):
 	def __str__(self):
 		return self.short_name
 
-class Track(models.Model):
+	objects = CachingManager()
+
+class Track(CachingMixin, models.Model):
 	major = models.ForeignKey(Major, on_delete=models.CASCADE, related_name='tracks')
 	name = models.CharField(max_length=255)
 	short_name = models.CharField(max_length=15)
@@ -72,7 +79,9 @@ class Track(models.Model):
 	class Meta:
 		unique_together = ('major', 'name')
 
-class Course(models.Model):
+	objects = CachingManager()
+
+class Course(CachingMixin, models.Model):
 	name = models.CharField(max_length=255)
 	course_id = models.CharField(max_length=10, default="", unique=True)
 	number = models.PositiveSmallIntegerField()
@@ -97,6 +106,8 @@ class Course(models.Model):
 	class Meta:
 		unique_together = ('number', 'department', 'letter')
 
+	objects = CachingManager()
+
 class CrossListing(models.Model):
 	course = models.ForeignKey(Course, on_delete=models.CASCADE,
 		related_name='listings')
@@ -110,7 +121,7 @@ class CrossListing(models.Model):
 	class Meta:
 		unique_together = ('course', 'number', 'department', 'letter')
 	
-class Requirement(models.Model):
+class Requirement(CachingMixin, models.Model):
 	name = models.CharField(max_length=255)
 	t = models.CharField(max_length=50) # requirement type
 	number = models.PositiveSmallIntegerField(default=0) # number required
@@ -141,14 +152,18 @@ class Requirement(models.Model):
 	class Meta:
 		unique_together = ('content_type', 'object_id', 't')
 
+	objects = CachingManager()
+
 # belongs under a requirement
-class NestedReq(models.Model):
+class NestedReq(CachingMixin, models.Model):
 	number = models.PositiveSmallIntegerField()
 	courses = models.ManyToManyField(Course)
 	requirement = models.ForeignKey(Requirement, on_delete=models.CASCADE, related_name='nested_reqs')
 
 	def __str__(self):
 		return self.number
+
+	objects = CachingManager()
 
 class Profile(models.Model):
 		user = models.OneToOneField(User, on_delete = models.CASCADE, unique=True) # Django User model
