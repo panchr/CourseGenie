@@ -10,6 +10,11 @@ services:
       file: default.yml
       service: db
 
+  cache:
+  extends:
+    file: default.yml
+    service: cache
+
   # Primary web server
   web:
     extends:
@@ -28,5 +33,7 @@ services:
       - CLOUDFLARE=1
     links:
       - db
+      - cache
     depends_on:
       - db
+      - cache

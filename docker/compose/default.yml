@@ -9,6 +9,10 @@ services:
   db:
     image: postgres:9.6.2
 
+  # Caching (memcached)
+  cache:
+    image: memcached:1.4.36
+
   web:
     build:
       context: ../..
@@ -23,6 +27,7 @@ services:
       - PORT=80
       - ENV=production
       - DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+      - CACHE_URL=cache:11211
       - CAS_URL=https://cast.cs.princeton.edu/
       - TRANSCRIPT_API_URL=https://transcriptapi.tigerapps.org
     volumes: []

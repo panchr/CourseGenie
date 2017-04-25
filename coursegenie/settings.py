@@ -23,6 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'sf#(b=^nfm$8@1fiqi2qvmp&ot-5(zat=+twv8$50d^29cayp#'
 
 # SECURITY WARNING: don't run with debug turned on in production!
+# DEBUG = os.environ.get('ENV', 'development') == 'development'
 DEBUG = True
 
 ALLOWED_HOSTS = []
@@ -100,6 +101,18 @@ WSGI_APPLICATION = 'coursegenie.wsgi.application'
 import dj_database_url
 DATABASES = {
     'default': dj_database_url.config(conn_max_age=600)
+}
+
+# CACHES = {
+#     'default': {
+#         'BACKEND': 'django.core.cache.backends.locmem.LocMemCache'
+#     }
+# }
+CACHES = {
+    'default': {
+        'BACKEND': 'caching.backends.memcached.MemcachedCache',
+        'LOCATION': os.environ.get('CACHE_URL', '')
+    },
 }
 
 # Password validation

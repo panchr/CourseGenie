@@ -5,9 +5,11 @@
 
 Django==1.10
 dj-database-url==0.4.2
+django-cache-machine==0.9.1
 django-cas-ng==3.5.4
 djangorestframework==3.6.2
 psycopg2==2.6.1
 python-cas==1.1.0
+python-memcached==1.58
 PyYAML==3.11
 six==1.10.0
