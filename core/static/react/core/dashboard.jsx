@@ -20,6 +20,7 @@ var CourseDisplay = require('core/components/CourseDisplay.jsx'),
 	MessageList = require('core/components/MessageList.jsx'),
 	ErrorAlert = require('core/components/ErrorAlert.jsx'),
 	Icon = require('core/components/Icon.jsx'),
+	Modal = require('core/components/Modal.jsx'),
 	data = require('core/data.jsx');
 
 function main() {
@@ -37,6 +38,9 @@ class Dashboard extends React.Component {
 			recommendations: new List(),
 			errorMsg: '',
 			messages: new List(),
+			courseInputModalOpen: false,
+			selectedSemester: new Object(),
+			selectedSemester_index: null,
 			};
 
 		this.elems = {};
@@ -51,6 +55,10 @@ class Dashboard extends React.Component {
 			(data) => this.setState({recommendations: new List(data)})));
 		}
 
+	addMessage(m) {
+		this.setState({messages: this.state.messages.push(m)});
+		}
+
 	dismissSuggestion(id, index) {
 		this.requests.push(data.recommendations.dismiss(id));
 		this.removeSuggestion(index);
@@ -63,15 +71,24 @@ class Dashboard extends React.Component {
 		}
 
 	addCourse(index, course) {
+		var current = this.state.semesters.get(index);
+
+		this.requests.push(data.calendar.addToSemester(current.get('id'), course,
+			() => {this.addCourseToDisplay(index, course)}));
+		}
+
+	addCourseToDisplay(index, course) {
 		var sems = this.state.semesters,
 			current = sems.get(index);
+
+		console.log(this.state.recommendations.get(0));
+		console.log(course);
 
 		this.setState({
 			semesters: sems.set(index,
 				current.set('courses', current.get('courses').push(course))),
+			recommendations: this.state.recommendations.filter((r) => r.course.course_id != course.course_id)
 			});
-		this.requests.push(data.calendar.addToSemester(current.get('id'), course,
-			() => {}));
 		}
 
 	removeCourse(index, course_index, course) {
@@ -86,6 +103,28 @@ class Dashboard extends React.Component {
 			course, () => {}));
 		}
 
+	addDirectCourse(semester_index) {
+		var department = this.elems.department_input.value,
+			number = this.elems.number_input.value,
+			c = (department + " " + number).toUpperCase(),
+			current = this.state.semesters.get(semester_index);
+
+		if (department == '' || number == '') {
+			this.addMessage({message: 'Cannot input a blank course.', t: 'error'});
+			}
+		else if (! /^\w{3}$/.test(department)) {
+			this.addMessage({message: 'The department must be 3 letters.', t: 'error'});
+			}
+		else if (! /^\d{3}[a-zA-Z]?$/.test(number)) {
+			this.addMessage({message: 'The course number must be a number, optionally followed by a letter.', t: 'error'});
+			}
+		else {
+			this.requests.push(data.calendar.addToSemesterByCourseName(current.get('id'), c, (course_data) => {
+				this.addCourseToDisplay(semester_index, course_data);
+				}));
+			}
+		}
+
 	componentWillUnmount() {
 		this.requests.map((r) => r.abort());
 		}
@@ -93,6 +132,35 @@ class Dashboard extends React.Component {
 	render() {
 		return (<div className="container">
 				<ErrorAlert msg={this.state.errorMsg} />
+				<Modal open={this.state.courseInputModalOpen} buttonText='Add'
+					onButtonClick={() => {
+						this.addDirectCourse(this.state.selectedSemester_index);
+						this.setState({courseInputModalOpen: false, selectedSemester: {}});
+						}}
+					onClose={() => this.setState({courseInputModalOpen: false, selectedSemester: {},
+						selectedSemester_index: null})}>
+					<h1>{this.state.selectedSemester.term_display} {this.state.selectedSemester.year}</h1>
+					<div className='row'>
+						<div className='6u'>
+							<span>Department</span>
+						</div>
+						<div className='6u'>
+							<span>Number</span>
+						</div>
+					</div>
+					<div className='row no-children-top-padding'>
+						<div className="6u">
+							<input placeholder="e.g. COS" type="text" className="text"
+							ref={(e) => this.elems.department_input = e} />
+						</div>
+						<div className="6u$">
+							<input placeholder="e.g. 333" type="text" className="text"
+						 	ref={(e) => this.elems.number_input = e} />
+							{/* refs are required (as callbacks) to get input */}
+						</div>
+					</div>
+
+				</Modal>
 				<div className='messages-list'>
 					<MessageList messages={this.state.messages.toJS()}
 						onDismiss={(i) => this.setState({messages: this.state.messages.delete(i)})} />
@@ -102,9 +170,14 @@ class Dashboard extends React.Component {
 						<div style={{maxHeight: '80vh', overflowY: 'scroll'}}>
 							<ListView t={(e, i) =>
 								<SemesterDisplay {...e.toJS()} maxSize={6}
-									onError={(e) => this.setState({messages: this.state.messages.push(e)})}
+									onError={(err) => this.setState({messages: this.state.messages.push(err)})}
 									onCourseAdd={(c) => this.addCourse(i, c)}
-									onCourseRemove={(c, j) => this.removeCourse(i, j, c)} />
+									onCourseRemove={(c, j) => this.removeCourse(i, j, c)}
+									onPlusClick={() => {
+										if (! this.state.courseInputModalOpen)
+											this.setState({courseInputModalOpen: true, selectedSemester: e.toJS(),
+												selectedSemester_index: i});
+										}} />
 								} data={this.state.semesters} />
 						</div>
 					</div>

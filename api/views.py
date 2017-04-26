@@ -10,6 +10,8 @@ from core.models import *
 from core.errors import *
 from core import genie
 
+COURSE_RE = re.compile(r'^(?P<dept>[A-Z]{3}) (?P<num>\d{3})(?P<letter>[A-Z]?)$')
+
 # things that should not be changed
 class DegreeViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Degree.objects.all()
@@ -72,11 +74,14 @@ class PreferenceViewSet(viewsets.ModelViewSet):
     def modify_course(self, request, pk=None):
         pref = self.get_object()
         search_kwargs = {}
+        course_name = ''
+
         if 'course_id' in request.query_params:
-            search_kwargs['course_id'] = request.query_params['course_id']
+            course_name = request.query_params['course_id']
+            search_kwargs['course_id'] = course_name
         else:
-            course_re = re.compile(r'^(?P<dept>[A-Z]{3}) (?P<num>\d{3})(?P<letter>[A-Z]?)$')
-            short_name = course_re.match(request.query_params['short_name'])
+            course_name = request.query_params['short_name']
+            short_name = COURSE_RE.match(course_name)
             if not short_name:
                 raise NotAcceptable(detail='unacceptable')
 
@@ -88,17 +93,17 @@ class PreferenceViewSet(viewsets.ModelViewSet):
         try:
             course = Course.objects.get(**search_kwargs)
         except Course.DoesNotExist:
-            raise NotFound('course %s not found' % course_id)
+            raise NotFound('course %s not found' % course_name)
 
         if request.method == 'POST':
             # check if already there, and if so, raise 409
             if pref.bl_courses.filter(id=course.id).exists():
-                raise ContentError('course %s already in blacklist' % course_id)
+                raise ContentError('course %s already in blacklist' % course_name)
 
             pref.bl_courses.add(course)
         elif request.method == 'DELETE':
             if not pref.bl_courses.filter(id=course.id).exists():
-                raise ContentError('course %s not in blacklist' % course_id)
+                raise ContentError('course %s not in blacklist' % course_name)
 
             pref.bl_courses.remove(course)
 
@@ -187,25 +192,43 @@ class SemesterViewSet(viewsets.ModelViewSet):
     @detail_route(methods=['post', 'delete'], url_path='course')
     def modify_course(self, request, pk=None):
         semester = self.get_object()
-        course_id = request.query_params['course_id']
+
+        search_kwargs = {}
+        course_name = ''
+        if 'course_id' in request.query_params:
+            course_name = request.query_params['course_id']
+            search_kwargs['course_id'] = course_name
+        else:
+            course_name = request.query_params['short_name']
+            short_name = COURSE_RE.match(course_name)
+            if not short_name:
+                raise NotAcceptable(detail='unacceptable')
+
+            search_kwargs['number'] = short_name.group('num')
+            search_kwargs['department'] = short_name.group('dept')
+            if short_name.group('letter'):
+                search_kwargs['letter'] = short_name.group('letter')
+
+
         try:
-            course = Course.objects.get(course_id=course_id)
+            course = Course.objects.get(**search_kwargs)
         except Course.DoesNotExist:
-            raise NotFound('course %s not found' % course_id)
+            raise NotFound('course %s not found' % course_name)
 
         if request.method == 'POST':
             # check if already there, and if so, raise 409
             if semester.courses.filter(id=course.id).exists():
-                raise ContentError('course %s already in semester' % course_id)
+                raise ContentError('course %s already in semester' % course_name)
 
             semester.courses.add(course)
         elif request.method == 'DELETE':
             if not semester.courses.filter(id=course.id).exists():
-                raise ContentError('course %s not in semester' % course_id)
+                raise ContentError('course %s not in semester' % course_name)
 
             semester.courses.remove(course)
 
-        return Response({'success': True})
+        serializer = CourseSerializer(course)
+        return Response(serializer.data)
 
 class ProgressViewSet(viewsets.ModelViewSet):
     queryset = Progress.objects.all()

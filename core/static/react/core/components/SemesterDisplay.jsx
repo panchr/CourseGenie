@@ -11,9 +11,9 @@ import { DropTarget } from 'react-dnd';
 import { List } from 'immutable';
 
 var CourseDisplay = require('core/components/CourseDisplay.jsx'),
-GridView = require('core/components/GridView.jsx'),
-Icon = require('core/components/Icon.jsx'),
-utils = require('core/utils.jsx');
+	GridView = require('core/components/GridView.jsx'),
+	Icon = require('core/components/Icon.jsx'),
+	utils = require('core/utils.jsx');
 
 function SemesterDisplay(props) {
 	return props.connectDropTarget(<div>
@@ -32,8 +32,9 @@ function SemesterDisplay(props) {
 			</div>;
 			}} rows={2} cols={3} minRows={2} data={props.courses}
 			blankElement={() =>
-				<div className='course-blank'><Icon i='ios-plus-empty' className='large-icon'
-				style={{color: 'green'}} /></div>} />
+				<div className='course-blank btn course-color' onClick={props.onPlusClick}>
+				<Icon i='ios-plus-empty' className='large-icon course-plus' />
+				</div>} />
 			<div className='topbtm-pad'></div>
 			<div className='topbtm-pad'></div>
 	</div>);
@@ -43,6 +44,7 @@ SemesterDisplay.propTypes = {
 	connectDropTarget: React.PropTypes.func.isRequired,
 	onCourseAdd: React.PropTypes.func.isRequired,
 	onCourseRemove: React.PropTypes.func.isRequired,
+	onPlusClick: React.PropTypes.func.isRequired,
 	onError: React.PropTypes.func.isRequired,
 	term_display: React.PropTypes.string.isRequired,
 	year: React.PropTypes.number.isRequired,

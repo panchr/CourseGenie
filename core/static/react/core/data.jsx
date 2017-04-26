@@ -55,6 +55,14 @@ module.exports = {
 				.fail(shared.errorHandler);
 			},
 
+		addToSemesterByCourseName: function(semester_id, course_short_name, callback) {
+			setup_ajax_csrf();
+			return jQuery.post(dashboard_data.calendar.semesterShortCourseUrl(semester_id,
+				course_short_name))
+				.done((data) => callback(data))
+				.fail(shared.errorHandler);
+			},
+
 		removeFromSemester: function(semester_id, course, callback) {
 			setup_ajax_csrf();
 			return jQuery.ajax(dashboard_data.calendar.semesterCourseUrl(semester_id,
