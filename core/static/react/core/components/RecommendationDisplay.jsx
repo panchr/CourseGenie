@@ -14,7 +14,10 @@ function RecommendationDisplay(props) {
 		<div className='12u'>
 			<div>{props.course.short_name} ({props.course.term_display})</div>
 			<div>{props.course.name}</div>
-			<div><font color='CadetBlue'>Reason: {props.reason}</font></div>
+			<div style={{color: 'CadetBlue'}}>Reason:</div>
+			<div style={{color: 'CadetBlue'}}>{props.reason_list.map((r) =>
+				<div key={Math.random()}><span>{r}</span><br/></div>)}
+			</div>
 		</div>
 	</div>);
 	}
@@ -23,7 +26,7 @@ RecommendationDisplay.propTypes = {
 	connectDragSource: React.PropTypes.func.isRequired,
 	onDragEnd: React.PropTypes.func.isRequired,
 	course: React.PropTypes.object.isRequired,
-	reason: React.PropTypes.string.isRequired,
+	reason_list: React.PropTypes.array.isRequired,
 	};
 
 module.exports = DragSource('course', {

@@ -31,7 +31,11 @@
 					semesterCourseUrl: function(semester_id, course_id) {
 						var base = "{% url 'api:semester-course' pk=889 %}";
 						return base.replace('889', semester_id) + '?course_id=' + course_id;
-						}
+						},
+					semesterShortCourseUrl: function(semester_id, short_name) {
+						var base = "{% url 'api:semester-course' pk=889 %}";
+						return base.replace('889', semester_id) + '?short_name=' + short_name;
+						},
 					},
 				recommendations: {
 					url: function(id) {

@@ -19,6 +19,10 @@
 	padding-left: 0;
 	}
 
+.no-children-top-padding * {
+	padding-top: 0;
+	}
+
 .center {
 	text-align: center;
 	}
@@ -60,12 +64,12 @@
 	}
 
 .alert {
-	padding: 15px;
+  padding: 15px;
   margin-bottom: 20px;
   border: 1px solid transparent;
   border-radius: 4px;
   padding-bottom: 0;
-	}
+  }
 
 .danger {
   color: #a94442;
@@ -85,6 +89,15 @@
 	.vert-line {
   border-right: thin solid #ddd;
 }
+
+.course-color:hover {
+	background-color: rgb(222, 251, 222);
+	transition: color .2s;
+	}
+
+.course-plus {
+	color: green;
+	}
 
 .page-header {
 	position: relative;
@@ -117,3 +130,24 @@
 		text-align: left;
 		color: #7C9CD0;
 		}
+
+.modal {
+	z-index: 999;
+	position: fixed;
+	background: white;
+	border: black 1px solid;
+	border-radius: 0.5em;
+	padding: 1em;
+	min-width: 25vh;
+	min-height: 15vw;
+	}
+
+.modal:focus {
+	outline: none;
+	}
+
+.fixed-center {
+	left: 50%;
+    top: 50%;
+	transform: translateX(-50%) translateY(-50%);
+	}
