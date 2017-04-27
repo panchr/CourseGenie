@@ -23,11 +23,11 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'sf#(b=^nfm$8@1fiqi2qvmp&ot-5(zat=+twv8$50d^29cayp#'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG = os.environ.get('ENV', 'development') == 'development'
-DEBUG = True
+DEBUG = os.environ.get('ENV', 'development') == 'development'
 
 ALLOWED_HOSTS = []
-
+if os.envrion.get('HOST'):
+    ALLOWED_HOSTS.append(os.environ['HOST'])
 
 # Application definition
 
