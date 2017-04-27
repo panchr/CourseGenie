@@ -29,9 +29,8 @@ services:
     environment:
       - ENV=production
       - PORT=80
-      - DJANGO_HOST=transcriptapi.tigerapps.org
       - CLOUDFLARE=1
-      - HOST=coursegenie.co
+      - DJANGO_HOST=coursegenie.co
     links:
       - db
       - cache

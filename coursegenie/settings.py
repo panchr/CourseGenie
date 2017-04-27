@@ -26,8 +26,14 @@ SECRET_KEY = 'sf#(b=^nfm$8@1fiqi2qvmp&ot-5(zat=+twv8$50d^29cayp#'
 DEBUG = os.environ.get('ENV', 'development') == 'development'
 
 ALLOWED_HOSTS = []
-if os.envrion.get('HOST'):
-    ALLOWED_HOSTS.append(os.environ['HOST'])
+if 'DJANGO_HOST' in os.environ:
+    ALLOWED_HOSTS.append(os.environ['DJANGO_HOST'])
+
+if 'CLOUDFLARE' in os.environ:
+    # CloudFlare forwarding enabled
+    USE_X_FORWARDED_HOST = True
+    USE_X_FORWARDED_PORT = True
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # Application definition
 
@@ -59,6 +65,7 @@ REST_FRAMEWORK = {
 
 MIDDLEWARE_CLASSES = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -171,10 +178,14 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, os.environ.get('STATIC_ROOT', '_static'))
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 )
+
+if not DEBUG:
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Installed Application Configuration
 CAS_SERVER_URL = os.environ.get('CAS_URL')

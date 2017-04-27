@@ -51,3 +51,9 @@ COPY . "$APP_DIR/"
 # Port to expose
 ARG PORT
 EXPOSE $PORT
+
+# Application-specific build steps
+WORKDIR "$APP_DIR"
+RUN gulp external
+RUN gulp bundle -a core
+RUN gulp collect
