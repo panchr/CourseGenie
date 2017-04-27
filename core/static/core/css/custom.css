@@ -20,8 +20,21 @@
 	padding-left: 0;
 	}
 
+.no-children-top-padding * {
+	padding-top: 0;
+	}
+
 .center {
 	text-align: center;
+	}
+
+.center-parent {
+	margin-left: auto;
+	margin-right: auto;
+	}
+
+.fit {
+	width: 100%;
 	}
 
 .messages-list {
@@ -33,26 +46,31 @@
 	}
 
 .messages-list .message {
-	border-radius: 0.5em;
-	padding-top: 1em;
+	border-radius: 0.45em;
+	margin-top: 1em;
+	padding: 1em;
+	font-size: 0.9em;
+	opacity: 0.9;
+	}
+
+.messages-list .message h1 {
+	padding-left: 0;
+	color: black;
+	font-size: 1.25em;
 	}
 
 .messages-list .message.error {
 	background-color: #f3d6d6;
-	opacity: 0.85;
-	}
-
-.messages-list .message.error h1 {
-	color: #0a3986;
+	color: black;
 	}
 
 .alert {
-	padding: 15px;
+  padding: 15px;
   margin-bottom: 20px;
   border: 1px solid transparent;
   border-radius: 4px;
   padding-bottom: 0;
-	}
+  }
 
 .danger {
   color: #a94442;
@@ -77,6 +95,15 @@
 	margin: 0 3% 3% 0;
 }
 
+.course-color:hover {
+	background-color: rgb(222, 251, 222);
+	transition: color .2s;
+	}
+
+.course-plus {
+	color: green;
+	}
+
 .page-header {
 	position: relative;
 	padding: 7em 0 1em 0;
@@ -92,7 +119,7 @@
 		color: #7C9CD0;
 		}
 
-		.dash-head {
+	.dash-head {
 		position: relative;
 		padding: 1.1em 0 0 0;
 		margin-left: 0;
@@ -144,3 +171,24 @@
 	top: 0;
     position: sticky;
 }
+
+.modal {
+	z-index: 999;
+	position: fixed;
+	background: white;
+	border: black 1px solid;
+	border-radius: 0.5em;
+	padding: 1em;
+	min-width: 25vh;
+	min-height: 15vw;
+	}
+
+.modal:focus {
+	outline: none;
+	}
+
+.fixed-center {
+	left: 50%;
+    top: 50%;
+	transform: translateX(-50%) translateY(-50%);
+	}

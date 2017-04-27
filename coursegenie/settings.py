@@ -23,6 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'sf#(b=^nfm$8@1fiqi2qvmp&ot-5(zat=+twv8$50d^29cayp#'
 
 # SECURITY WARNING: don't run with debug turned on in production!
+# DEBUG = os.environ.get('ENV', 'development') == 'development'
 DEBUG = True
 
 ALLOWED_HOSTS = []
@@ -41,6 +42,7 @@ INSTALLED_APPS = [
     # Installed Applications
     'django_cas_ng',
     'rest_framework',
+    'cacheops',
 
     # Custom applications
     'core',
@@ -101,6 +103,36 @@ import dj_database_url
 DATABASES = {
     'default': dj_database_url.config(conn_max_age=600)
 }
+
+# Cache Configuration
+REDIS_URL = os.environ.get('REDIS_URL', '')
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': '%s/cache' % REDIS_URL,
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+            },
+        },
+    }
+
+CACHEOPS_REDIS = '%s/cacheops' % REDIS_URL
+CACHEOPS_DEFAULTS = {'timeout': 60*15}
+CACHEOPS = {
+    # local_get allows the caching to occur in-memory on the Python side, which
+    # is still faster than hitting the Redis cache. Should *only* happen for
+    # data that never changes (i.e. loaded requirement data).
+    'core.Degree': {'ops': 'all', 'local_get': True},
+    'core.Major': {'ops': 'all', 'local_get': True},
+    'core.Certificate': {'ops': 'all', 'local_get': True},
+    'core.Track': {'ops': 'all', 'local_get': True},
+    'core.Course': {'ops': 'all', 'local_get': True},
+    'core.CrossListing': {'ops': 'all', 'local_get': True},
+    'core.Requirement': {'ops': 'all', 'local_get': True},
+    'core.NestedReq': {'ops': 'all', 'local_get': True},
+    }
+CACHEOPS_DEGRADE_ON_FAILURE = True
 
 # Password validation
 # https://docs.djangoproject.com/en/1.10/ref/settings/#auth-password-validators

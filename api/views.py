@@ -1,12 +1,16 @@
+import re
+
 from rest_framework import viewsets
 from rest_framework.decorators import detail_route
-from rest_framework.exceptions import NotFound
+from rest_framework.exceptions import NotFound, NotAcceptable
 from rest_framework.response import Response
 
 from api.serializers import *
 from core.models import *
 from core.errors import *
 from core import genie
+
+COURSE_RE = re.compile(r'^(?P<dept>[A-Z]{3}) (?P<num>\d{3})(?P<letter>[A-Z]?)$')
 
 # things that should not be changed
 class DegreeViewSet(viewsets.ReadOnlyModelViewSet):
@@ -69,25 +73,119 @@ class PreferenceViewSet(viewsets.ModelViewSet):
     @detail_route(methods=['post', 'delete'], url_path='bl-course')
     def modify_course(self, request, pk=None):
         pref = self.get_object()
-        course_id = request.query_params['course_id']
+        search_kwargs = {}
+        course_name = ''
+
+        if 'course_id' in request.query_params:
+            course_name = request.query_params['course_id']
+            search_kwargs['course_id'] = course_name
+        else:
+            course_name = request.query_params['short_name']
+            short_name = COURSE_RE.match(course_name)
+            if not short_name:
+                raise NotAcceptable(detail='unacceptable')
+
+            search_kwargs['number'] = short_name.group('num')
+            search_kwargs['department'] = short_name.group('dept')
+            if short_name.group('letter'):
+                search_kwargs['letter'] = short_name.group('letter')
 
         try:
-            course = Course.objects.get(course_id=course_id)
+            course = Course.objects.get(**search_kwargs)
         except Course.DoesNotExist:
-            raise NotFound('course %s not found' % course_id)
+            raise NotFound('course %s not found' % course_name)
 
         if request.method == 'POST':
             # check if already there, and if so, raise 409
             if pref.bl_courses.filter(id=course.id).exists():
-                raise ContentError('course %s already in blacklist' % course_id)
+                raise ContentError('course %s already in blacklist' % course_name)
 
             pref.bl_courses.add(course)
         elif request.method == 'DELETE':
             if not pref.bl_courses.filter(id=course.id).exists():
-                raise ContentError('course %s not in blacklist' % course_id)
+                raise ContentError('course %s not in blacklist' % course_name)
 
             pref.bl_courses.remove(course)
 
+        genie.clear_cached_recommendations(pref.profile_id)
+        return Response({'success': True})
+
+    @detail_route(methods=['post', 'delete'], url_path='area')
+    def modify_area(self, request, pk=None):
+        pref = self.get_object()
+        short_name = request.query_params['short_name']
+        t = request.query_params['t']
+
+        if t not in {'wl', 'bl'}:
+            raise NotFound('area %s not found for type %s' % (short_name, t))
+
+        if t == 'wl':
+            pref_list = pref.wl_areas
+            other_list = pref.bl_areas
+        else:
+            pref_list = pref.bl_areas
+            other_list = pref.wl_areas
+
+        try:
+            area = Area.objects.get(short_name=short_name)
+        except Area.DoesNotExist:
+            raise NotFound('area %s not found' % short_name)
+
+        if request.method == 'POST':
+            # check if already there, and if so, raise 409
+            if pref_list.filter(id=area.id).exists():
+                raise ContentError('area %s already in list' % short_name)
+
+            if other_list.filter(id=area.id).exists():
+                raise ContentError('area %s in opposing list' % short_name)
+
+            pref_list.add(area)
+        elif request.method == 'DELETE':
+            if not pref_list.filter(id=area.id).exists():
+                raise ContentError('area %s not in list' % short_name)
+
+            pref_list.remove(area)
+
+        genie.clear_cached_recommendations(pref.profile_id)
+        return Response({'success': True})
+
+    @detail_route(methods=['post', 'delete'], url_path='dept')
+    def modify_dept(self, request, pk=None):
+        pref = self.get_object()
+        short_name = request.query_params['short_name']
+        t = request.query_params['t']
+
+        if t not in {'wl', 'bl'}:
+            raise NotFound('dept %s not found for type %s' % (short_name, t))
+
+        if t == 'wl':
+            pref_list = pref.wl_depts
+            other_list = pref.bl_depts
+        else:
+            pref_list = pref.bl_depts
+            other_list = pref.wl_depts
+
+        try:
+            dept = Department.objects.get(short_name=short_name)
+        except Department.DoesNotExist:
+            raise NotFound('dept %s not found' % short_name)
+
+        if request.method == 'POST':
+            # check if already there, and if so, raise 409
+            if pref_list.filter(id=dept.id).exists():
+                raise ContentError('dept %s already in list' % short_name)
+
+            if other_list.filter(id=dept.id).exists():
+                raise ContentError('dept %s in opposing list' % short_name)
+
+            pref_list.add(dept)
+        elif request.method == 'DELETE':
+            if not pref_list.filter(id=dept.id).exists():
+                raise ContentError('dept %s not in list' % short_name)
+
+            pref_list.remove(dept)
+
+        genie.clear_cached_recommendations(pref.profile_id)
         return Response({'success': True})
 
 class SemesterViewSet(viewsets.ModelViewSet):
@@ -97,25 +195,44 @@ class SemesterViewSet(viewsets.ModelViewSet):
     @detail_route(methods=['post', 'delete'], url_path='course')
     def modify_course(self, request, pk=None):
         semester = self.get_object()
-        course_id = request.query_params['course_id']
+
+        search_kwargs = {}
+        course_name = ''
+        if 'course_id' in request.query_params:
+            course_name = request.query_params['course_id']
+            search_kwargs['course_id'] = course_name
+        else:
+            course_name = request.query_params['short_name']
+            short_name = COURSE_RE.match(course_name)
+            if not short_name:
+                raise NotAcceptable(detail='unacceptable')
+
+            search_kwargs['number'] = short_name.group('num')
+            search_kwargs['department'] = short_name.group('dept')
+            if short_name.group('letter'):
+                search_kwargs['letter'] = short_name.group('letter')
+
+
         try:
-            course = Course.objects.get(course_id=course_id)
+            course = Course.objects.get(**search_kwargs)
         except Course.DoesNotExist:
-            raise NotFound('course %s not found' % course_id)
+            raise NotFound('course %s not found' % course_name)
 
         if request.method == 'POST':
             # check if already there, and if so, raise 409
             if semester.courses.filter(id=course.id).exists():
-                raise ContentError('course %s already in semester' % course_id)
+                raise ContentError('course %s already in semester' % course_name)
 
             semester.courses.add(course)
         elif request.method == 'DELETE':
             if not semester.courses.filter(id=course.id).exists():
-                raise ContentError('course %s not in semester' % course_id)
+                raise ContentError('course %s not in semester' % course_name)
 
             semester.courses.remove(course)
 
-        return Response({'success': True})
+        genie.clear_cached_recommendations(semester.calendar.profile_id)
+        serializer = CourseSerializer(course)
+        return Response(serializer.data)
 
 class ProgressViewSet(viewsets.ModelViewSet):
     queryset = Progress.objects.all()

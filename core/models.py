@@ -15,7 +15,6 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.core.validators import MaxValueValidator, MinValueValidator
 
-
 class Degree(models.Model):
 	name = models.CharField(max_length=255, unique=True)
 	short_name = models.CharField(max_length=15, unique=True)

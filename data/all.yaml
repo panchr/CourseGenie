@@ -16,6 +16,7 @@ degrees:
         - MAT 201
         - MAT 203
         - MAT 218
+        - EGR 192
     - type: linear algebra
       number: 1
       score: 3
@@ -28,6 +29,7 @@ degrees:
       courses:
         - PHY 103
         - PHY 105
+        - EGR 191
     - type: physics 2
       number: 1
       score: 3
