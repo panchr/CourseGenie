@@ -7,14 +7,14 @@
 		<!-- Main -->
 		<div class="dash-head">
 			<div class="container">
-				<section>
-					<header>
-						<h2 class="title">Dashboard</h2>
-						<a href="{% url 'core:transcript' %}">Past Courses</a>
-						<a href="{% url 'core:preferences' %}">Preferences</a>
-					</header>
-				</section>
-			</div>
+				<header><h2 class="title">
+				<div class="row">
+						<div class="10u">Dashboard</div>
+							<div class="2u">
+								<div class="icon-pad"><a href="{% url 'core:transcript' %}"><span class="icon2 fa-user"></span></a>
+						<a href="{% url 'core:preferences' %}"><span class="icon2 fa-cog"></span></a></div></div>
+				</div>
+			</h2></header>
 		</div>
 		<hr/>
 		<div class="title"></div>
