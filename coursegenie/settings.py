@@ -55,14 +55,6 @@ INSTALLED_APPS = [
     'api',
 ]
 
-REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': [
-        #'rest_framework.permissions.IsAdminUser',
-        'rest_framework.permissions.AllowAny',
-    ],
-    'PAGE_SIZE': 10
-}
-
 MIDDLEWARE_CLASSES = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
@@ -187,3 +179,7 @@ STATICFILES_FINDERS = (
 # Installed Application Configuration
 CAS_SERVER_URL = os.environ.get('CAS_URL')
 TRANSCRIPT_API_URL = os.environ.get('TRANSCRIPT_API_URL')
+
+REST_FRAMEWORK = {
+    'DEFAULT_FILTER_BACKENDS': ('rest_framework.filters.DjangoFilterBackend',),
+    }

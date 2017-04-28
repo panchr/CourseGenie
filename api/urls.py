@@ -21,6 +21,7 @@ router.register(r'recommendations', views.RecommendationViewSet,
 	base_name='recommendation')
 router.register(r'preferences', views.PreferenceViewSet,
 	base_name='preference')
+router.register(r'progresses', views.ProgressViewSet, base_name='progress')
 
 app_name = 'api'
 urlpatterns = [

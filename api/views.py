@@ -62,6 +62,31 @@ class CalendarViewSet(viewsets.ModelViewSet):
     queryset = Calendar.objects.all()
     serializer_class = CalendarSerializer
 
+    @detail_route(methods=['post', 'delete'], url_path='sandbox')
+    def modify_sandbox(self, request, pk=None):
+        calendar = self.get_object()
+        course_id = request.query_params['course_id']
+
+        try:
+            course = Course.objects.get(course_id=course_id)
+        except Course.DoesNotExist:
+            raise NotFound('course %s not found' % course_id)
+
+        if request.method == 'POST':
+            # check if already there, and if so, raise 409
+            if calendar.sandbox.filter(id=course.id).exists():
+                raise ContentError('course %s already in sandbox' % course_id)
+
+            calendar.sandbox.add(course)
+        elif request.method == 'DELETE':
+            if not calendar.sandbox.filter(id=course.id).exists():
+                raise ContentError('course %s not in sandbox' % course_id)
+
+            calendar.sandbox.remove(course)
+
+        genie.clear_cached_recommendations(calendar.profile_id)
+        return Response({'success': True})
+
 class RecordViewSet(viewsets.ModelViewSet):
     queryset = Record.objects.all()
     serializer_class = RecordSerializer
@@ -235,6 +260,7 @@ class SemesterViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
 class ProgressViewSet(viewsets.ModelViewSet):
+    filter_fields = ('calendar_id',)
     queryset = Progress.objects.all()
     serializer_class = ProgressSerializer
 

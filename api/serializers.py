@@ -63,65 +63,49 @@ class SemesterSerializer(serializers.ModelSerializer):
         model = Semester
         fields = '__all__'
 
-class ProgressSerializer(serializers.ModelSerializer):
-    courses_taken = CourseSerializer(many=True, read_only=True)
-    #calendar = CalendarSerializer(read_only=True)
-
+class BasicRequirementSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Progress
-        fields = '__all__'
+        model = Requirement
+        # fields = '__all__'
+        exclude = ('courses',)
 
-class RequirementSerializer(serializers.ModelSerializer):
+class RequirementSerializer(BasicRequirementSerializer):
     courses = CourseSerializer(many = True, read_only=True)
     nested_reqs = NestedReqSerializer(many=True, read_only=True)
 
-    class Meta:
-        model = Requirement
-        fields = '__all__'
-
-    # def to_representation(self, value):
-    #     if isinstance(value, Degree):
-    #         serializer = DegreeSerializer(value)
-    #     elif isinstance(value, Major):
-    #         serializer = MajorSerializer(value)
-    #     elif isinstance(value, Certificate):
-    #         serializer = CertificateSerializer(value)
-    #     elif isinstance(value, Track):
-    #         serializer = TrackSerializer(value)
-    #     else:
-    #         raise Exception('Unexpected type of tagged object: %s' % type(value))
-
-    #     return serializer.data
-
-class CertificateSerializer(serializers.ModelSerializer):
-    requirements = RequirementSerializer(many=True, read_only=True)
-
+class BasicCertificateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Certificate
         fields = '__all__'
 
-class DegreeSerializer(serializers.ModelSerializer):
+class CertificateSerializer(BasicCertificateSerializer):
     requirements = RequirementSerializer(many=True, read_only=True)
 
+class BasicDegreeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Degree
         fields = '__all__'
 
-class MajorSerializer(serializers.ModelSerializer):
-    degree = DegreeSerializer(read_only=True)
+class DegreeSerializer(BasicDegreeSerializer):
     requirements = RequirementSerializer(many=True, read_only=True)
 
+class BasicMajorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Major
         fields = '__all__'
 
-class TrackSerializer(serializers.ModelSerializer):
-    major = MajorSerializer(read_only=True)
+class MajorSerializer(BasicMajorSerializer):
+    degree = DegreeSerializer(read_only=True)
     requirements = RequirementSerializer(many=True, read_only=True)
 
+class BasicTrackSerializer(serializers.ModelSerializer):
     class Meta:
         model = Track
         fields = '__all__'
+
+class TrackSerializer(BasicTrackSerializer):
+    major = MajorSerializer(read_only=True)
+    requirements = RequirementSerializer(many=True, read_only=True)
 
 class ProfileSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
@@ -143,6 +127,29 @@ class CalendarSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Calendar
+        fields = '__all__'
+
+class ProgressSerializer(serializers.ModelSerializer):
+    # courses_taken = CourseSerializer(many=True, read_only=True)
+    # calendar = CalendarSerializer(read_only=True)
+    requirement = BasicRequirementSerializer(read_only=True)
+    parent = serializers.SerializerMethodField()
+
+    def get_parent(self, obj):
+        parent = obj.requirement.parent
+        if isinstance(parent, Degree):
+            return BasicDegreeSerializer(parent).data
+        elif isinstance(parent, Major):
+            return BasicMajorSerializer(parent).data
+        elif isinstance(parent, Track):
+            return BasicTrackSerializer(parent).data
+        elif isinstance(parent, Certificate):
+            return BasicCertificateSerializer(parent).data
+        else:
+            return None
+
+    class Meta:
+        model = Progress
         fields = '__all__'
 
 class RecommendationSerializer(serializers.Serializer):

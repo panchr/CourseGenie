@@ -21,6 +21,8 @@ var CourseDisplay = require('core/components/CourseDisplay.jsx'),
 	ErrorAlert = require('core/components/ErrorAlert.jsx'),
 	Icon = require('core/components/Icon.jsx'),
 	Modal = require('core/components/Modal.jsx'),
+	ExpandingTabs = require('core/components/ExpandingTabs.jsx'),
+	Sandbox = require('core/components/Sandbox.jsx'),
 	data = require('core/data.jsx');
 
 function main() {
@@ -41,6 +43,7 @@ class Dashboard extends React.Component {
 			courseInputModalOpen: false,
 			selectedSemester: new Object(),
 			selectedSemester_index: null,
+			sandbox: new List(),
 			};
 
 		this.elems = {};
@@ -49,8 +52,12 @@ class Dashboard extends React.Component {
 
 	componentWillMount() {
 		data.installErrorHandler((msg) => this.setState({errorMsg: msg}));
-		this.requests.push(data.calendar.getSemesters(this.props.calendar_ids[0],
-			(data) => this.setState({semesters: fromJS(data)})));
+		this.requests.push(data.calendar.getData(this.props.calendar_ids[0],
+			(data) => {
+				var data = fromJS(data);
+				this.setState({semesters: data.get('semesters'),
+					sandbox: data.get('sandbox')});
+			}));
 		this.requests.push(data.recommendations.get(this.props.calendar_ids[0],
 			(data) => this.setState({recommendations: new List(data)})));
 		}
@@ -125,6 +132,19 @@ class Dashboard extends React.Component {
 			}
 		}
 
+	addToSandbox(course) {
+		this.requests.push(data.calendar.addToSandbox(this.props.calendar_ids[0],
+			course, () => {
+			this.setState({sandbox: this.state.sandbox.push(course)});
+			}));
+		}
+
+	removeFromSandbox(i, course) {
+		this.setState({sandbox: this.state.sandbox.remove(i)});
+		this.requests.push(data.calendar.removeFromSandbox(
+			this.props.calendar_ids[0], course));
+		}
+
 	componentWillUnmount() {
 		this.requests.map((r) => r.abort());
 		}
@@ -159,13 +179,23 @@ class Dashboard extends React.Component {
 							{/* refs are required (as callbacks) to get input */}
 						</div>
 					</div>
-
 				</Modal>
 				<div className='messages-list'>
 					<MessageList messages={this.state.messages.toJS()}
 						onDismiss={(i) => this.setState({messages: this.state.messages.delete(i)})} />
 				</div>
+
 				<div className="row">
+					<div className='7u hovering-tabs no-children-top-padding'>
+						<ExpandingTabs tabs={[
+							{name: 'Sandbox', content:
+								<Sandbox onCourseAdd={(c) => this.addToSandbox(c)}
+									onCourseRemove={(c, i) => this.removeFromSandbox(i, c)}
+									courses={this.state.sandbox.toJS()} />},
+							{name: 'Progress', content: <span>Progress</span>},
+							]} />
+					</div>
+
 					<div className="7u">
 						<div style={{maxHeight: '80vh', overflowY: 'scroll'}}>
 							<ListView t={(e, i) =>

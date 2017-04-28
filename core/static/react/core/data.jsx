@@ -41,9 +41,9 @@ module.exports = {
 		},
 
 	calendar: {
-		getSemesters: function(id, callback) {
+		getData: function(id, callback) {
 			return jQuery.get(dashboard_data.calendar.url(id))
-				.done((data) => callback(data.semesters))
+				.done((data) => callback(data))
 				.fail(shared.errorHandler);
 			},
 
@@ -69,6 +69,21 @@ module.exports = {
 				course.course_id), {method: 'DELETE'})
 				.done((data) => callback(data))
 				.fail(shared.errorHandler);
+			},
+
+		addToSandbox: function(id, course, callback=(e) => null) {
+			setup_ajax_csrf();
+			return jQuery.post(dashboard_data.calendar.sandboxUrl(id,
+				course.course_id))
+				.done((data) => callback(data))
+				.fail(shared.errorHandler);
+			},
+
+		removeFromSandbox: function(id, course, callback=(e) => null) {
+			setup_ajax_csrf();
+			return jQuery.ajax(dashboard_data.calendar.sandboxUrl(id,
+				course.course_id), {method: 'DELETE'})
+				.done((data) => callback(data))
 			}
 		},
 
