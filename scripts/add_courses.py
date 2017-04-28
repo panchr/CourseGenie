@@ -1,9 +1,10 @@
 # scripts/add_courses.py
 # CourseGenie
 # Author: Kathy Fan
-# Date: March 30th, 2017
-# Description: script to help add course data into database.
+# Date: April 3rd, 2017
+# adds in course data in usg data and class data; v3 of original add_courses.py
 
+import sys
 import os
 if os.path.dirname(os.getcwd()) == 'scripts':
 	os.chdir('..')
@@ -14,6 +15,7 @@ else:
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "coursegenie.settings")
 import django
 django.setup()
+import json
 
 from core.models import *
 
@@ -24,35 +26,76 @@ except (IndexError, KeyError):
 	print("Usage: python scripts/add_courses.py {fall,spring}")
 	sys.exit(1)
 
+USG_DATA_FILE = os.path.join("data", "usg-courses-fall17.json")
+BWK_DATA_FILE = os.path.join("data", "courses_fall17.json")
+if CURRENT_TERM != Course.TERM_FALL:
+	USG_DATA_FILE = os.path.join("data", "usg-courses-spring17.json")
+	BWK_DATA_FILE = os.path.join("data", "courses_spring17.json")
+
 def main():
-	with open("data/courses.json") as f:
+	with open(USG_DATA_FILE) as f:
 		raw_data = json.load(f)
 
 	for record in raw_data:
 		name = record["title"]
-		number = record["listings"][0]["number"]
-		department = record["listings"][0]["dept"]
+		id_number = record["course_id"]
+		number = int(record["catalog_number"][:3])
+		try: 
+			dept = Department.objects.get(short_name=record["subj_code"])
+		except Department.DoesNotExist:
+			dept = Department(short_name=record["subj_code"], name=record["subj_name"])
+			dept.save()
+		if len(record["catalog_number"]) > 3:
+			letter = record["catalog_number"][3:4]
+		else:
+			letter = ""
+		department = record["subj_code"]
 		try:
-			course = Course.objects.get(name=name, number=number, department=department)
+			course = Course.objects.get(course_id=id_number)
 			if course.term != Course.TERM_INCONSISTENT and course.term != CURRENT_TERM:
 				course.term = Course.TERM_BOTH
-				course.save()
+			course.name = name
+			course.department = department
+			course.number = number
+			course.letter = letter
+			course.save()
 		except Course.DoesNotExist:
-			course = Course(name=name, number=number, department=department, term=CURRENT_TERM)
+			course = Course(name=name, number=number, course_id=id_number, department=department, letter=letter, term=CURRENT_TERM)
 			course.save()
 
 			# Should eventually migrate this to take a set difference of current
 			# listings (in the database) and listings present for the course; then,
 			# perform the necessary updates.
-			length = len(record["listings"])
-			if length > 1:
+			if "crosslistings" in record:
 				list_crosses = []
-				for k in range (1, length):
-					number = record["listings"][k]["number"]
-					department = record["listings"][k]["dept"]
-					crosslisting = CrossListing(course=course, number=number, department=department)
+				for item in record["crosslistings"]:
+					number = int(item["catalog_number"][:3])
+					if len(item["catalog_number"]) > 3:
+						letter = item["catalog_number"][3:4]
+					else:
+						letter = ""
+					department = item["subject"]
+					crosslisting = CrossListing(course=course, number=number, letter=letter, department=department)
 					list_crosses.append(crosslisting)
 				CrossListing.objects.bulk_create(list_crosses)
 
+	f.close()
+
+	with open(BWK_DATA_FILE) as f:
+		raw_data = json.load(f)
+
+		for record in raw_data:
+			try: 
+				course = Course.objects.get(course_id=record["courseid"])
+				course.area = record["area"]
+				try:
+					area = Area.objects.get(short_name=record["area"])
+				except Area.DoesNotExist:
+					area = Area(short_name=record["area"])
+					area.save()
+				course.save()
+			except Course.DoesNotExist:
+				pass
+	f.close()
 if __name__ == '__main__':
 	main()
