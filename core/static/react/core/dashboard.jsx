@@ -23,6 +23,7 @@ var CourseDisplay = require('core/components/CourseDisplay.jsx'),
 	Modal = require('core/components/Modal.jsx'),
 	ExpandingTabs = require('core/components/ExpandingTabs.jsx'),
 	Sandbox = require('core/components/Sandbox.jsx'),
+	Progresses = require('core/components/Progresses.jsx'),
 	data = require('core/data.jsx');
 
 function main() {
@@ -44,6 +45,7 @@ class Dashboard extends React.Component {
 			selectedSemester: new Object(),
 			selectedSemester_index: null,
 			sandbox: new List(),
+			progresses: new List(),
 			};
 
 		this.elems = {};
@@ -192,7 +194,11 @@ class Dashboard extends React.Component {
 								<Sandbox onCourseAdd={(c) => this.addToSandbox(c)}
 									onCourseRemove={(c, i) => this.removeFromSandbox(i, c)}
 									courses={this.state.sandbox.toJS()} />},
-							{name: 'Progress', content: <span>Progress</span>},
+							{name: 'Progress', content: 
+								<Progresses onCourseAdd={(c) => this.addToSandbox(c)}
+									onCourseRemove={(c, i) => this.removeFromSandbox(i, c)}
+									courses={this.state.sandbox.toJS()} 
+								/>},
 							]} />
 					</div>
 
