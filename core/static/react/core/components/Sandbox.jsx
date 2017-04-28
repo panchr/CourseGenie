@@ -15,10 +15,11 @@ var CourseDisplay = require('core/components/CourseDisplay.jsx'),
 
 function Sandbox(props) {
 	return props.connectDropTarget(<div>
+		<div className='topbtm-pad'></div>
 		<GridView t={(c, i) => {
-			return <div className='course-list'>
+			return <div>
 					<div className='row'>
-				<div className='11u'><CourseDisplay {...c} extended={true} /></div>
+				<div className='11u'><CourseDisplay {...c} /></div>
 				<div className='1u no-left-padding'>
 					<Icon i='ios-close-empty'
 						className='btn' style={{color: 'LightSlateGray'}}
@@ -26,11 +27,13 @@ function Sandbox(props) {
 				</div>
 			</div>
 			</div>;
-			}} cols={3} minRows={1} data={props.courses}
+			}} cols={4} minRows={1} data={props.courses}
 			blankElement={() =>
 				<div className='course-blank'>
 				<Icon i='ios-plus-empty' className='large-icon course-plus' />
 				</div>} />
+		<div className='topbtm-pad'></div>
+		<div className='topbtm-pad'></div>
 	</div>);
 	}
 
@@ -45,8 +48,6 @@ module.exports = DropTarget('course', {
 	drop: (props, monitor, component) => {
 		var data = monitor.getItem();
 
-		// These checks must be performed here (instead of in the canDrop() method)
-		// because we only want to display an error message on drop, not on hover.
 		if (! monitor.didDrop()) {
 			props.onCourseAdd(data.course);
 			data.onDragEnd();

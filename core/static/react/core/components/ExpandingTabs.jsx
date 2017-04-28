@@ -17,7 +17,8 @@ class ExpandingTabs extends React.Component {
 		}
 
 	componentWillReceiveProps(newProps) {
-		if (this.state.open != newProps.open) this.setState({open: newProps.open});
+		if (this.state.open != newProps.open && newProps.open != -1)
+			this.setState({open: newProps.open});
 		}
 
 	tabClickHandler(tabIndex) {

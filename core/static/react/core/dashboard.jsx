@@ -186,7 +186,7 @@ class Dashboard extends React.Component {
 				</div>
 
 				<div className="row">
-					<div className='7u hovering-tabs no-children-top-padding'>
+					<div className='7u hovering-tabs'>
 						<ExpandingTabs tabs={[
 							{name: 'Sandbox', content:
 								<Sandbox onCourseAdd={(c) => this.addToSandbox(c)}
