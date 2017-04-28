@@ -25,7 +25,7 @@ SECRET_KEY = 'sf#(b=^nfm$8@1fiqi2qvmp&ot-5(zat=+twv8$50d^29cayp#'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('ENV', 'development') == 'development'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost']
 if 'DJANGO_HOST' in os.environ:
     ALLOWED_HOSTS.append(os.environ['DJANGO_HOST'])
 
@@ -177,15 +177,12 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
-STATIC_URL = '/static/'
+STATIC_URL = os.environ.get('STATIC_URL', '/static/')
 STATIC_ROOT = os.path.join(BASE_DIR, os.environ.get('STATIC_ROOT', '_static'))
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 )
-
-if not DEBUG:
-    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Installed Application Configuration
 CAS_SERVER_URL = os.environ.get('CAS_URL')

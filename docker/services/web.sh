@@ -5,4 +5,8 @@
 # Description: Run CourseGenie web service.
 
 cd "$APP_DIR"
-docker/wait-for-it.sh -t 0 --strict db:5432 -- python manage.py runserver "0.0.0.0:$PORT"
+if [ "$ENV" = "production" ]; then
+	UWSGI_PORT="$PORT" docker/wait-for-it.sh -t 0 --strict db:5432 -- uwsgi --ini wsgi.ini
+else
+	docker/wait-for-it.sh -t 0 --strict db:5432 -- python manage.py runserver "0.0.0.0:$PORT"
+fi

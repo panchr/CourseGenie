@@ -22,6 +22,8 @@ services:
         NODE_VERSION: ${NODE_VERSION}
         ENV: ${ENV}
         PORT: ${PORT}
+        STATIC_ROOT: ${STATIC_ROOT}
+        STATIC_URL: ${STATIC_URL}
     command: /bin/bash docker/services/web.sh
     environment:
       - PORT=80
@@ -30,6 +32,7 @@ services:
       - REDIS_URL=redis://cache:6379
       - CAS_URL=https://cast.cs.princeton.edu/
       - TRANSCRIPT_API_URL=https://transcriptapi.tigerapps.org
+      - APP_DIR=${APP_DIR}
     volumes: []
 
     restart: always
