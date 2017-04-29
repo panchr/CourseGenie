@@ -89,8 +89,7 @@ module.exports = {
 
 		getProgress: function(id, callback=(e) => null) {
 			setup_ajax_csrf();
-			return jQuery.ajax(dashboard_data.calendar.progressUrl(id,
-				course.course_id))
+			return jQuery.ajax(dashboard_data.calendar.progressUrl(id))
 				.done((data) => callback(data))	
 				.fail(shared.errorHandler);		
 			}

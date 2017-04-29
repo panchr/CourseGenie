@@ -40,6 +40,11 @@
 					sandboxUrl: function(id, course_id) {
 						var base = "{% url 'api:calendar-sandbox' pk=889 %}";
 						return base.replace('889', id) + '?course_id=' + course_id;
+						},
+
+					progressUrl: function(id) {
+						var base = "{% url 'api:progress-list' %}";
+						return base + '?calendar_id=' + id;
 						}
 					},
 				recommendations: {

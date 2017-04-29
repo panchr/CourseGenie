@@ -23,7 +23,7 @@ var CourseDisplay = require('core/components/CourseDisplay.jsx'),
 	Modal = require('core/components/Modal.jsx'),
 	ExpandingTabs = require('core/components/ExpandingTabs.jsx'),
 	Sandbox = require('core/components/Sandbox.jsx'),
-	Progresses = require('core/components/Progresses.jsx'),
+	ProgressView = require('core/components/ProgressView.jsx'),
 	data = require('core/data.jsx');
 
 function main() {
@@ -45,7 +45,7 @@ class Dashboard extends React.Component {
 			selectedSemester: new Object(),
 			selectedSemester_index: null,
 			sandbox: new List(),
-			progresses: new List(),
+			progress: new Map(),
 			};
 
 		this.elems = {};
@@ -60,8 +60,47 @@ class Dashboard extends React.Component {
 				this.setState({semesters: data.get('semesters'),
 					sandbox: data.get('sandbox')});
 			}));
+		this.requests.push(data.calendar.getProgress(this.props.calendar_ids[0],
+			(data) => {
+				var progressData = {
+					degree: new Array(),
+					major: new Array(),
+					track: new Array(),
+					certificates: new Object(),
+					};
+
+				// Group progress data into degree/major/track/certificates.
+				for (var i=0; i < data.length; i++) {
+					var p = data[i],
+						parent_type = p.requirement.parent_t;
+					if (parent_type == 'certifcate') {
+						if (progressData.certificates[p.parent.id] == undefined)
+							progressData.certificates[p.parent.id] = new Array();
+						progressData.certificates[p.parent.id].push(p);
+						}
+					else progressData[p.requirement.parent_t].push(p);
+					}
+
+				// Bubble incomplete requirements to top
+				function bubbleIncomplete(rs) {
+					return rs.filter((x) => ! x.completed).concat(rs.filter(x => x.completed));
+					}
+
+				progressData.degree = bubbleIncomplete(progressData.degree);
+				progressData.major = bubbleIncomplete(progressData.major);
+				progressData.track = bubbleIncomplete(progressData.track);
+
+				progressData.certificates = Object.keys(progressData.certificates).sort().map(
+					(i) => bubbleIncomplete(progressData.certificates[i]));
+
+				this.setState({progress: fromJS(progressData)});
+				}));
 		this.requests.push(data.recommendations.get(this.props.calendar_ids[0],
 			(data) => this.setState({recommendations: new List(data)})));
+		}
+
+	componentWillUnmount() {
+		this.requests.map((r) => r.abort());
 		}
 
 	addMessage(m) {
@@ -89,9 +128,6 @@ class Dashboard extends React.Component {
 	addCourseToDisplay(index, course) {
 		var sems = this.state.semesters,
 			current = sems.get(index);
-
-		console.log(this.state.recommendations.get(0));
-		console.log(course);
 
 		this.setState({
 			semesters: sems.set(index,
@@ -147,10 +183,6 @@ class Dashboard extends React.Component {
 			this.props.calendar_ids[0], course));
 		}
 
-	componentWillUnmount() {
-		this.requests.map((r) => r.abort());
-		}
-
 	render() {
 		return (<div className="container">
 				<ErrorAlert msg={this.state.errorMsg} />
@@ -195,10 +227,7 @@ class Dashboard extends React.Component {
 									onCourseRemove={(c, i) => this.removeFromSandbox(i, c)}
 									courses={this.state.sandbox.toJS()} />},
 							{name: 'Progress', content: 
-								<Progresses onCourseAdd={(c) => this.addToSandbox(c)}
-									onCourseRemove={(c, i) => this.removeFromSandbox(i, c)}
-									courses={this.state.sandbox.toJS()} 
-								/>},
+								<ProgressView progress={this.state.progress.toJS()} />},
 							]} />
 					</div>
 
