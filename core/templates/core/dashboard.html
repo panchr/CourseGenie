@@ -45,6 +45,11 @@
 					progressUrl: function(id) {
 						var base = "{% url 'api:progress-list' %}";
 						return base + '?calendar_id=' + id;
+						},
+
+					singleProgressUrl: function(id) {
+						var base = "{% url 'api:progress-detail' pk=889 %}";
+						return base.replace('889', id);
 						}
 					},
 				recommendations: {

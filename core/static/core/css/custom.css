@@ -148,7 +148,7 @@
 
 .fixed-center {
 	left: 50%;
-    top: 50%;
+  top: 50%;
 	transform: translateX(-50%) translateY(-50%);
 	}
 
@@ -178,4 +178,18 @@
 	opacity: 1;
 	height: 45vh;
 	overflow-y: scroll;
+	}
+
+.icon-hover:hover {
+	color: green;
+	transition: color .2s;
+	}
+
+.icon-hover.success {
+	color: green;
+	}
+
+.icon-hover.success:hover {
+	color: black;
+	transition: color .2s;
 	}

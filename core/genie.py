@@ -464,5 +464,8 @@ def get_cached_recommendation(calendar):
 def set_cached_recommendation(calendar, recs):
 	return cache.set(_form_cache_key(calendar), recs, timeout=15*60)
 
-def clear_cached_recommendations(profile_id):
-	return cache.delete_pattern('%d-*' % profile_id)
+def clear_cached_recommendations(profile_id, calendar_id=None):
+	if calendar_id is not None:
+		return cache.delete('%d-%d' % (profile_id, calendar_id))
+	else:
+		return cache.delete_pattern('%d-*' % profile_id)

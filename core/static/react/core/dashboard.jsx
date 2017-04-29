@@ -50,6 +50,7 @@ class Dashboard extends React.Component {
 
 		this.elems = {};
 		this.requests = new Array();
+		this.progressChange = this.progressChange.bind(this);
 		}
 
 	componentWillMount() {
@@ -83,7 +84,8 @@ class Dashboard extends React.Component {
 
 				// Bubble incomplete requirements to top
 				function bubbleIncomplete(rs) {
-					return rs.filter((x) => ! x.completed).concat(rs.filter(x => x.completed));
+					return rs.filter((x) => ! (x.completed || x.user_completed))
+						.concat(rs.filter(x => x.completed || x.user_completed));
 					}
 
 				progressData.degree = bubbleIncomplete(progressData.degree);
@@ -183,6 +185,31 @@ class Dashboard extends React.Component {
 			this.props.calendar_ids[0], course));
 		}
 
+	progressChange(t, innerIndex, index, id) {
+		var toUpdate = this.state.progress.get(t);
+		if (t == 'certificate') toUpdate = toUpdate.get(innerIndex);
+
+		var p = toUpdate.get(index),
+			new_completed = ! (p.get('user_completed') || p.get('completed'));
+
+		var updated = null;
+		if (new_completed)
+			updated = toUpdate.delete(index).push(p.set('user_completed', true));
+		else
+			updated = toUpdate.delete(index).insert(0,
+				p.set('user_completed', false).set('completed', false));
+
+		var fullUpdated = null;
+		if (t == 'certificate') fullUpdated = this.state.progress.set(t, this.state.progress.set(innerIndex, updated));
+		else fullUpdated = this.state.progress.set(t, updated);
+
+		var patch_data = {user_completed: new_completed};
+		if (! new_completed) patch_data.completed = false;
+
+		this.setState({progress: fullUpdated});
+		this.requests.push(data.calendar.setSingleProgress(id, patch_data));
+		}
+
 	render() {
 		return (<div className="container">
 				<ErrorAlert msg={this.state.errorMsg} />
@@ -227,7 +254,8 @@ class Dashboard extends React.Component {
 									onCourseRemove={(c, i) => this.removeFromSandbox(i, c)}
 									courses={this.state.sandbox.toJS()} />},
 							{name: 'Progress', content: 
-								<ProgressView progress={this.state.progress.toJS()} />},
+								<ProgressView progress={this.state.progress.toJS()}
+									onProgressChange={this.progressChange} />},
 							]} />
 					</div>
 

@@ -264,6 +264,18 @@ class ProgressViewSet(viewsets.ModelViewSet):
     queryset = Progress.objects.all()
     serializer_class = ProgressSerializer
 
+    def update(self, request, pk=None, *args, **kwargs):
+        obj = self.get_object()
+        genie.clear_cached_recommendations(obj.calendar.profile_id,
+            obj.calendar_id)
+        return super(ProgressViewSet, self).update(request, pk, *args, **kwargs)
+
+    def partial_update(self, request, pk=None, *args, **kwargs):
+        obj = self.get_object()
+        genie.clear_cached_recommendations(obj.calendar.profile_id,
+            obj.calendar_id)
+        return super(ProgressViewSet, self).partial_update(request, pk, *args, **kwargs)
+
 # calculated on the stop
 class RecommendationViewSet(viewsets.ViewSet):
     def list(self, request):
