@@ -22,7 +22,7 @@ function ProgressView(props) {
 		<ListView data={p.certificates} t={(e, j) => 
 			<ProgressItem data={e}
 				onProgressChange={(i, id) =>
-					props.onProgressChange('certificate', j, i, id)}/>}
+					props.onProgressChange('certificates', j, i, id)}/>}
 		/>
 	</div>;
 	}
@@ -46,7 +46,7 @@ ProgressView.propTypes = {
 		major: React.PropTypes.arrayOf(reqType),
 		track: React.PropTypes.arrayOf(reqType),
 		certificates: React.PropTypes.arrayOf(
-			React.PropTypes.arrayOf(React.PropTypes.arrayOf(reqType),)),
+			React.PropTypes.arrayOf(reqType)),
 		}).isRequired,
 	onProgressChange: React.PropTypes.func,
 	};
@@ -59,10 +59,12 @@ function ProgressItem(props) {
 	var data = props.data;
 	if (data.length == 0) return <div style={{display: 'hidden'}}></div>;
 
-	var progress_type = data[0].requirement.parent_t[0].toUpperCase() + data[0].requirement.parent_t.slice(1);
+	var progress_type = data[0].requirement.parent_t[0].toUpperCase() + data[0].requirement.parent_t.slice(1),
+		parent = data[0].parent;
 
 	return <div>
-		<h2>{progress_type}: {data[0].parent.name} ({data[0].parent.short_name})</h2>
+		<h2>{progress_type}: {parent.name}
+			{parent.short_name ? ` (${parent.short_name})`: ''}</h2>
 		<ListView data={data} t={(e, i) => {
 			var checkmark = null;
 			if (e.completed || e.user_completed)

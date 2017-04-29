@@ -403,10 +403,10 @@ def recommend(calendar):
 
 			# for each certificate, add points if satisfy unsatisfied certificate requirements
 			for cert in certificates:
-				_update_entry([], entry, certificates[cert][0], certificates[cert][1][req],
+				_update_entry([], entry, certificates[cert][0], certificates[cert][1],
 				 	course, RANK_C,
-					'{} requirement of your %s certificate,\n' % certificate.short_name, is_dist,
-					'%s {}' % certificate.short_name)
+					'{} requirement of your %s certificate,\n' % cert.short_name, is_dist,
+					'%s {}' % cert.short_name)
 
 			# add points if satisfy flexibility (requirements of other majors themselves, excluding their tracks)
 			for maj in other_majors:

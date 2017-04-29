@@ -45,7 +45,12 @@ class Dashboard extends React.Component {
 			selectedSemester: new Object(),
 			selectedSemester_index: null,
 			sandbox: new List(),
-			progress: new Map(),
+			progress: new Map({
+				degree: new List(),
+				major: new List(),
+				track: new List(),
+				certificates: new List(),
+				}),
 			};
 
 		this.elems = {};
@@ -74,7 +79,7 @@ class Dashboard extends React.Component {
 				for (var i=0; i < data.length; i++) {
 					var p = data[i],
 						parent_type = p.requirement.parent_t;
-					if (parent_type == 'certifcate') {
+					if (parent_type == 'certificate') {
 						if (progressData.certificates[p.parent.id] == undefined)
 							progressData.certificates[p.parent.id] = new Array();
 						progressData.certificates[p.parent.id].push(p);
@@ -187,7 +192,8 @@ class Dashboard extends React.Component {
 
 	progressChange(t, innerIndex, index, id) {
 		var toUpdate = this.state.progress.get(t);
-		if (t == 'certificate') toUpdate = toUpdate.get(innerIndex);
+
+		if (t == 'certificates') toUpdate = toUpdate.get(innerIndex);
 
 		var p = toUpdate.get(index),
 			new_completed = ! (p.get('user_completed') || p.get('completed'));
@@ -200,7 +206,7 @@ class Dashboard extends React.Component {
 				p.set('user_completed', false).set('completed', false));
 
 		var fullUpdated = null;
-		if (t == 'certificate') fullUpdated = this.state.progress.set(t, this.state.progress.set(innerIndex, updated));
+		if (t == 'certificates') fullUpdated = this.state.progress.set(t, this.state.progress.get(t).set(innerIndex, updated));
 		else fullUpdated = this.state.progress.set(t, updated);
 
 		var patch_data = {user_completed: new_completed};
