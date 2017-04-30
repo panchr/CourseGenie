@@ -28,10 +28,24 @@ var CourseDisplay = require('core/components/CourseDisplay.jsx'),
 
 function main() {
 	var DashboardComp = DragDropContext(HTML5Backend)(Dashboard);
+	
+	// null value so it doesn't crash on initial load
+	var tracksByMajor = {};
+	tracksByMajor[null] = new Array();
+	for (var i=0; i < dashboard_data.majors.length; i++) {
+		tracksByMajor[dashboard_data.majors[i].id] = new Array();
+		}
+
+	for (var i=0; i < dashboard_data.tracks.length; i++) {
+		var t = dashboard_data.tracks[i];
+		tracksByMajor[t.major_id].push(t);
+		}
+
 	ReactDOM.render(
 		<DashboardComp calendar_ids={dashboard_data.user_calendars}
-		majors={dashboard_data.majors} tracks={dashboard_data.tracks}
-		certificates={dashboard_data.certificates} />,
+		majors={dashboard_data.majors} tracks={tracksByMajor}
+		certificates={dashboard_data.certificates}
+		minRecommendations={10} />,
 		document.getElementById('dashboard'));
 	}
 
@@ -56,23 +70,45 @@ class Dashboard extends React.Component {
 			calendarSettingsModalOpen: false,
 			currentMajor: null,
 			currentTrack: null,
+			currentCertificates: new List(),
 			};
 
 		this.elems = {};
+		this.nonstateData = {};
 		this.requests = new Array();
 		this.progressChange = this.progressChange.bind(this);
 		}
 
 	componentWillMount() {
 		data.installErrorHandler((msg) => this.setState({errorMsg: msg}));
+		this.loadAllData();
+		}
+
+	componentWillUnmount() {
+		this.requests.map((r) => r.abort());
+		}
+
+	loadAllData() {
 		this.requests.push(data.calendar.getData(this.props.calendar_ids[0],
 			(data) => {
 				var data = fromJS(data);
 				this.setState({semesters: data.get('semesters'),
 					sandbox: data.get('sandbox'), currentMajor: data.get('major'),
 					currentTrack: data.get('track'),
-					});
+					currentCertificates: data.get('certificates'),
+					}, () => this.loadRecommendations(() => this.loadProgress()));
 			}));
+		}
+
+	loadRecommendations(callback=() => null) {
+		this.requests.push(data.recommendations.get(this.props.calendar_ids[0],
+			(data) => {
+				this.setState({recommendations: new List(data)});
+				callback();
+			}));
+		}
+
+	loadProgress() {
 		this.requests.push(data.calendar.getProgress(this.props.calendar_ids[0],
 			(data) => {
 				var progressData = {
@@ -82,10 +118,16 @@ class Dashboard extends React.Component {
 					certificates: new Object(),
 					};
 
-				// Group progress data into degree/major/track/certificates.
 				for (var i=0; i < data.length; i++) {
 					var p = data[i],
 						parent_type = p.requirement.parent_t;
+
+					// Filter out irrelevant progresses (i.e. ones left over from
+					// user marking them complete manually).
+					if ((parent_type == 'major' && p.parent.id != this.state.currentMajor)
+						|| (parent_type == 'track' && p.parent.id != this.state.currentTrack)
+						|| (parent_type == 'certificate' && this.state.currentCertificates.indexOf(p.parent.id) == -1)) continue;
+
 					if (parent_type == 'certificate') {
 						if (progressData.certificates[p.parent.id] == undefined)
 							progressData.certificates[p.parent.id] = new Array();
@@ -109,12 +151,6 @@ class Dashboard extends React.Component {
 
 				this.setState({progress: fromJS(progressData)});
 				}));
-		this.requests.push(data.recommendations.get(this.props.calendar_ids[0],
-			(data) => this.setState({recommendations: new List(data)})));
-		}
-
-	componentWillUnmount() {
-		this.requests.map((r) => r.abort());
 		}
 
 	addMessage(m) {
@@ -127,9 +163,11 @@ class Dashboard extends React.Component {
 		}
 
 	removeSuggestion(index) {
-		// NOTE: may need to refetch list of recommendations when this list is
-		// nearly empty.
-		this.setState({recommendations: this.state.recommendations.delete(index)});
+		var newRecs = this.state.recommendations.delete(index);
+		this.setState({recommendations: newRecs});
+		if (newRecs.size < this.props.minRecommendations) {
+			this.loadRecommendations();
+			}
 		}
 
 	addCourse(index, course) {
@@ -228,8 +266,27 @@ class Dashboard extends React.Component {
 			major: this.elems.major_input.value,
 			track: this.elems.track_input.value == 'null' ? null: this.elems.track_input.value,
 			};
+
+		// Remove track if not found in the current major.
+		var trackInMajor = false;
+		for (var i=0; i < this.props.tracks[update_data.major].length; i++) {
+			var t = this.props.tracks[update_data.major][i];
+			if (t.id == update_data.track) {
+				trackInMajor = true;
+				break;
+				}
+			}
+
+		if (! trackInMajor) update_data.track = null;
+
+		var shouldReload = (update_data.track != this.state.currentTrack ||
+			update_data.major != this.nonstateData.old_major);
+
 		this.requests.push(data.calendar.saveSettings(this.props.calendar_ids[0],
-			update_data));
+			update_data, () => {
+				if (shouldReload) this.loadAllData();
+				}));
+
 		this.setState({
 			calendarSettingsModalOpen: false,
 			currentMajor: update_data.major,
@@ -278,7 +335,10 @@ class Dashboard extends React.Component {
 						<div className="12u">
 						<select name="selected-major" value={this.state.currentMajor}
 								ref={(e) => this.elems.major_input = e}
-								onChange={(e) => this.setState({currentMajor: e.target.value})}>
+								onChange={(e) => {
+									this.nonstateData.old_major = this.state.currentMajor;
+									this.setState({currentMajor: e.target.value});
+									}}>
 								{this.props.majors.map((e) =>
 									<option value={e.id} key={Math.random()}>
 										{e.name}
@@ -292,7 +352,7 @@ class Dashboard extends React.Component {
 						<select name="selected-track" defaultValue={this.state.currentTrack}
 								ref={(e) => this.elems.track_input = e}>
 								<option value="null">None</option>
-								{this.props.tracks.filter((e) => e.major_id == this.state.currentMajor).map((e) =>
+								{this.props.tracks[this.state.currentMajor].map((e) =>
 									<option value={e.id} key={Math.random()}>{e.name}</option>)}
 							</select>
 						</div>

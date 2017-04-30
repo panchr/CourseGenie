@@ -104,7 +104,6 @@ class DashboardView(LoginRequiredMixin, TemplateView):
 		context['certificates'] = json.dumps(list(Certificate.objects.all().values(
 			'short_name', 'name', 'id')))
 
-
 		return context
 
 	def get(self, request):
