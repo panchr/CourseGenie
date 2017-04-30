@@ -29,7 +29,9 @@ var CourseDisplay = require('core/components/CourseDisplay.jsx'),
 function main() {
 	var DashboardComp = DragDropContext(HTML5Backend)(Dashboard);
 	ReactDOM.render(
-		<DashboardComp calendar_ids={dashboard_data.user_calendars} />,
+		<DashboardComp calendar_ids={dashboard_data.user_calendars}
+		majors={dashboard_data.majors} tracks={dashboard_data.tracks}
+		certificates={dashboard_data.certificates} />,
 		document.getElementById('dashboard'));
 	}
 
@@ -51,6 +53,9 @@ class Dashboard extends React.Component {
 				track: new List(),
 				certificates: new List(),
 				}),
+			calendarSettingsModalOpen: false,
+			currentMajor: null,
+			currentTrack: null,
 			};
 
 		this.elems = {};
@@ -64,7 +69,9 @@ class Dashboard extends React.Component {
 			(data) => {
 				var data = fromJS(data);
 				this.setState({semesters: data.get('semesters'),
-					sandbox: data.get('sandbox')});
+					sandbox: data.get('sandbox'), currentMajor: data.get('major'),
+					currentTrack: data.get('track'),
+					});
 			}));
 		this.requests.push(data.calendar.getProgress(this.props.calendar_ids[0],
 			(data) => {
@@ -216,6 +223,20 @@ class Dashboard extends React.Component {
 		this.requests.push(data.calendar.setSingleProgress(id, patch_data));
 		}
 
+	saveCalendarSettings() {
+		var update_data = {
+			major: this.elems.major_input.value,
+			track: this.elems.track_input.value == 'null' ? null: this.elems.track_input.value,
+			};
+		this.requests.push(data.calendar.saveSettings(this.props.calendar_ids[0],
+			update_data));
+		this.setState({
+			calendarSettingsModalOpen: false,
+			currentMajor: update_data.major,
+			currentTrack: update_data.track,
+			});
+		}
+
 	render() {
 		return (<div className="container">
 				<ErrorAlert msg={this.state.errorMsg} />
@@ -247,6 +268,37 @@ class Dashboard extends React.Component {
 						</div>
 					</div>
 				</Modal>
+
+				<Modal open={this.state.calendarSettingsModalOpen} buttonText='Save'
+					onButtonClick={() => this.saveCalendarSettings()}
+					onClose={() => this.setState({calendarSettingsModalOpen: false})}>
+					<div className="row">
+						<h1>Concentration Settings</h1>
+						<div className="12u"><h2>Major</h2></div>
+						<div className="12u">
+						<select name="selected-major" value={this.state.currentMajor}
+								ref={(e) => this.elems.major_input = e}
+								onChange={(e) => this.setState({currentMajor: e.target.value})}>
+								{this.props.majors.map((e) =>
+									<option value={e.id} key={Math.random()}>
+										{e.name}
+									</option>)}
+							</select>
+						</div>
+					</div>
+					<div className="row">
+						<div className="12u"><h2>Track</h2></div>
+						<div className="12u">
+						<select name="selected-track" defaultValue={this.state.currentTrack}
+								ref={(e) => this.elems.track_input = e}>
+								<option value="null">None</option>
+								{this.props.tracks.filter((e) => e.major_id == this.state.currentMajor).map((e) =>
+									<option value={e.id} key={Math.random()}>{e.name}</option>)}
+							</select>
+						</div>
+					</div>
+				</Modal>
+
 				<div className='messages-list'>
 					<MessageList messages={this.state.messages.toJS()}
 						onDismiss={(i) => this.setState({messages: this.state.messages.delete(i)})} />
@@ -260,8 +312,19 @@ class Dashboard extends React.Component {
 									onCourseRemove={(c, i) => this.removeFromSandbox(i, c)}
 									courses={this.state.sandbox.toJS()} />},
 							{name: 'Progress', content: 
-								<ProgressView progress={this.state.progress.toJS()}
-									onProgressChange={this.progressChange} />},
+								<div className='row'>
+								<div className="12u">
+									<button className='button-add btn force-center'
+										onClick={() => this.setState({calendarSettingsModalOpen: true})}
+										style={{marginTop: '1em'}}>
+											Concentration Settings
+										</button>
+								</div>
+								<div className="12u">
+									<ProgressView progress={this.state.progress.toJS()}
+									onProgressChange={this.progressChange} />
+								</div>
+								</div>},
 							]} />
 					</div>
 

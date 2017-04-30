@@ -47,6 +47,13 @@ module.exports = {
 				.fail(shared.errorHandler);
 			},
 
+		saveSettings: function(id, data, callback=()=>null) {
+			return jQuery.ajax(dashboard_data.calendar.url(id),
+				{method: 'PATCH', data: data})
+				.done((data) => callback(data))
+				.fail(shared.errorHandler);
+			},
+
 		addToSemester: function(semester_id, course, callback) {
 			setup_ajax_csrf();
 			return jQuery.post(dashboard_data.calendar.semesterCourseUrl(semester_id,

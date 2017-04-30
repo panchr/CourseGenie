@@ -22,6 +22,9 @@
 		<script>
 			var dashboard_data = {
 				user_calendars: JSON.parse('{{ user_calendars|safe }}'),
+				majors: JSON.parse('{{ majors|safe }}'),
+				tracks: JSON.parse('{{ tracks|safe }}'),
+				certs: JSON.parse('{{ certificates|safe }}'),
 				preference_id: {{ preference_id }},
 				calendar: {
 					url: function(id) {

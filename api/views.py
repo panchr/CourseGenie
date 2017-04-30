@@ -62,6 +62,16 @@ class CalendarViewSet(viewsets.ModelViewSet):
     queryset = Calendar.objects.all()
     serializer_class = CalendarSerializer
 
+    def update(self, request, pk=None, *args, **kwargs):
+        obj = self.get_object()
+        genie.clear_cached_recommendations(obj.profile_id, obj.pk)
+        return super(CalendarViewSet, self).update(request, pk, *args, **kwargs)
+
+    def partial_update(self, request, pk=None, *args, **kwargs):
+        obj = self.get_object()
+        genie.clear_cached_recommendations(obj.profile_id, obj.pk)
+        return super(CalendarViewSet, self).partial_update(request, pk, *args, **kwargs)
+
     @detail_route(methods=['post', 'delete'], url_path='sandbox')
     def modify_sandbox(self, request, pk=None):
         calendar = self.get_object()
@@ -84,7 +94,7 @@ class CalendarViewSet(viewsets.ModelViewSet):
 
             calendar.sandbox.remove(course)
 
-        genie.clear_cached_recommendations(calendar.profile_id)
+        genie.clear_cached_recommendations(calendar.profile_id, calendar.pk)
         return Response({'success': True})
 
 class RecordViewSet(viewsets.ModelViewSet):

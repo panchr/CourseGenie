@@ -97,6 +97,13 @@ class DashboardView(LoginRequiredMixin, TemplateView):
 		user_calendars = list(Calendar.objects.filter(profile=user.profile.id).values_list('id', flat=True))
 		context['user_calendars'] = json.dumps(user_calendars)
 		context['preference_id'] = user.profile.preference.id
+		context['majors'] = json.dumps(list(Major.objects.all().values(
+			'short_name', 'name', 'id')))
+		context['tracks'] = json.dumps(list(Track.objects.all().values(
+			'short_name', 'name', 'id', 'major_id')))
+		context['certificates'] = json.dumps(list(Certificate.objects.all().values(
+			'short_name', 'name', 'id')))
+
 
 		return context
 
