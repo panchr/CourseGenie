@@ -10,6 +10,8 @@ import re
 import random
 
 from django.db import transaction
+from django.db.models import Count
+from django.core.cache import cache
 
 from core.models import *
 
@@ -96,21 +98,22 @@ def create_calendar(profile, degree, major, certificates):
 		calendar.certificates.add(certificate)
 
 # calculate all progresses corresponding to a calendar
+@transaction.atomic
 def calculate_progress(calendar):
 	profile = calendar.profile
 	list_courses = []
 
 	Progress.objects.filter(calendar=calendar).delete() # delete old ones, start from scratch
 
-	for record in Record.objects.filter(profile=calendar.profile).prefetch_related('course'):
-		list_courses.append(record.course)
+	list_courses.extend(
+		Record.objects.filter(profile=calendar.profile)
+			.values_list('course_id', flat=True)
+		)
 
-	for semester in Semester.objects.filter(calendar=calendar).prefetch_related('courses'):
-		for c in semester.courses.all():
-			list_courses.append(c)
-	
-	for c in list_courses:
-		print c
+	list_courses.extend(
+		Semester.objects.filter(calendar=calendar)
+			.values_list('courses', flat=True)
+		)
 
 	# degree requirements
 	calculate_single_progress(calendar, calendar.degree, list_courses)
@@ -135,14 +138,23 @@ def calculate_single_progress(calendar, category, list_courses):
 	other_than = [] # list of lists of nestedreq IDs that should no longer be considered
 	c = 0 # count of number of choices
 	nested_reqs = None
-	list_progresses = []
-	cat_requirements = category.requirements.all()
+	progresses = {}
+	progress_courses = {}
+	cat_requirements = list(category.requirements.all())
+
+	req_courses = {r: set(r.courses.values_list('pk', flat=True)) for r in cat_requirements}
+	nreq_courses = {r:
+		{nr: set(nr.courses.values_list('pk', flat=True)) for nr in r.nested_reqs.all()}
+		for r in cat_requirements}
+	
 	for requirement in cat_requirements:
 		number_remaining.append(requirement.number)
-		c += requirement.courses.count()
-		nested_reqs = requirement.nested_reqs.all()
-		for nreq in nested_reqs:
-			c += nreq.courses.count()
+		c += len(req_courses[requirement])
+		# this is slower due to caching:
+		# c += requirement.nested_reqs.aggregate(number=Count('courses')).get('number', 0)
+		nested_reqs = nreq_courses[requirement]
+		for nreq, cs in nested_reqs.items():
+			c += len(cs)
 		if requirement.t == 'distribution-areas':
 			c = 800 # small hack... need this to be less than 880 of distribution-additional
 		#print requirement.name + " has " + str(c) # prints how many courses qualify under a requirement
@@ -151,8 +163,11 @@ def calculate_single_progress(calendar, category, list_courses):
 		c = 0
 
 		# create default progresses for all requirements, with number_taken = 0, completed = False
-		list_progresses.append(Progress(calendar=calendar, requirement=requirement))
-	Progress.objects.bulk_create(list_progresses)
+		p = Progress(calendar=calendar, requirement=requirement)
+		progresses[requirement] = p
+		progress_courses[requirement] = set()
+
+	Progress.objects.bulk_create(progresses.values())
 
 	for course in list_courses:
 		#print course.department + str(course.number) # prints the course
@@ -160,12 +175,16 @@ def calculate_single_progress(calendar, category, list_courses):
 		i = 0
 
 		for requirement in cat_requirements:
-			if course in requirement.courses.all():
+			if course in req_courses[requirement]:
+			#if course in requirement.courses.all().values_list('pk', flat=True):
 				matched[i] = requirement
 
-			nested_reqs = NestedReq.objects.filter(requirement=requirement).exclude(id__in=other_than[i])
-			for nreq in nested_reqs:
-				if course in nreq.courses.all():
+			# nested_reqs = NestedReq.objects.filter(requirement=requirement).exclude(id__in=other_than[i])
+			for nreq, nreq_cs in nreq_courses[requirement].items():
+				#if course in map(lambda x: x.pk, nreq.courses.all()):
+				if nreq.pk in other_than[i]:
+					continue
+				if course in nreq_cs:
 					small_list = [nreq, requirement]
 					matched[i] = small_list
 			i += 1
@@ -187,12 +206,11 @@ def calculate_single_progress(calendar, category, list_courses):
 					other_than.append(nreq.id)
 				if req != None: # doesn't make sense that req would still be None though
 					#print req
-					progress = Progress.objects.get(calendar=calendar, requirement=req)	
+					progress = progresses[req]
 					progress.number_taken += 1
-					progress.courses_taken.add(course)
-					if progress.number_taken >= req.number and progress.completed == False:
+					progress_courses[req].add(course)
+					if progress.number_taken >= req.number and not progress.completed:
 						progress.completed = True
-					progress.save()
 					number_remaining[index] -= 1
 
 		else: # course satisfied multiple requirements
@@ -214,19 +232,22 @@ def calculate_single_progress(calendar, category, list_courses):
 				nreq = matched[min_key][0]
 				req = matched[min_key][1]
 				other_than.append(nreq.id)			
-			progress = Progress.objects.get(calendar=calendar, requirement=req)
+			progress = progresses[req]
 			progress.number_taken += 1
-			progress.courses_taken.add(course)
+			progress_courses[req].add(course)
 			if progress.number_taken >= req.number and progress.completed == False:
 				progress.completed = True
-			progress.save()
 			number_remaining[min_key] -= 1
+
+	for r, p in progresses.items():
+		p.courses_taken.add(*progress_courses[r])
+		p.save()
 
 # the brains of the project!!!
 # wow so much brains :o (all due to Rushy)
 def _add_nested_courses(reqs):
 	courses_list = {r: set(r.courses.all()) for r in reqs}
-	for r in courses_list:
+	for r in reqs:
 		for nested in NestedReq.objects.filter(requirement=r):
 			courses_list[r] |= set(nested.courses.all())
 	return courses_list
@@ -249,6 +270,10 @@ def _update_entry(filters, entry, requirements, req_courses, course, delta, fmt,
 			entry['reason_list'].append(short.format(req.name))
 
 def recommend(calendar):
+	cached_recs = get_cached_recommendation(calendar)
+	if cached_recs is not None:
+		return cached_recs
+
 	profile = calendar.profile
 	major = calendar.major
 	degree = calendar.degree
@@ -257,12 +282,12 @@ def recommend(calendar):
 	calculate_progress(calendar)
 	user_progresses = Progress.objects.filter(calendar=calendar)
 
-	progresses = user_progresses.filter(completed=True).prefetch_related('requirement')
+	progresses = user_progresses.filter(completed=True).select_related('requirement')
 	satisfied_reqs = []
 	for progress in progresses:
 		satisfied_reqs.append(progress.requirement)
 
-	zero_progresses = user_progresses.filter(number_taken=0).prefetch_related('requirement')
+	zero_progresses = user_progresses.filter(number_taken=0).select_related('requirement')
 	empty_reqs = []
 	for progress in zero_progresses:
 		empty_reqs.append(progress.requirement)
@@ -298,11 +323,11 @@ def recommend(calendar):
 		other_majors[maj][1] = maj_req_courses
 
 	# filter out courses they've taken already
-	filter_out = set(map(lambda r: r.course, profile.records.all().prefetch_related('course')))
+	filter_out = set(profile.records.all().values_list('course_id', flat=True))
+	# filter_out = set(map(lambda r: r.course, profile.records.all().select_related('course')))
 
 	# filter out courses already in calendar
-	for semester in calendar.semesters.all().prefetch_related('courses'):
-		filter_out |= set(semester.courses.all())
+	filter_out |= set(calendar.semesters.all().values_list('courses', flat=True))
 
 	# filter out courses in sandbox
 	filter_out |= set(calendar.sandbox.all())
@@ -317,7 +342,7 @@ def recommend(calendar):
 		pass
 	else:
 		# filter out black listed courses
-		filter_out |= set(preference.bl_courses.all())
+		filter_out |= set(preference.bl_courses.all().values_list('pk', flat=True))
 		wl_depts_short = set(preference.wl_depts.all().values_list('short_name', flat=True))
 		wl_areas = set(preference.wl_areas.all().values_list('short_name', flat=True))
 		bl_depts_short = set(preference.bl_depts.all().values_list('short_name', flat=True))
@@ -335,7 +360,7 @@ def recommend(calendar):
 	#	}
 	# ]
 	for course in Course.objects.all():
-		if course not in filter_out and course.pk not in list_suggestions_reg and course.pk not in list_suggestions_dist:
+		if course.pk not in filter_out and course.pk not in list_suggestions_reg and course.pk not in list_suggestions_dist:
 			department = course.department
 			area = course.area
 
@@ -425,8 +450,18 @@ def recommend(calendar):
 	if marker == 1:
 		sorted_total.extend(sorted_reg[3*actual:])
 
-	return sorted_total[:TOP_COUNT]
+	result = sorted_total[:TOP_COUNT]
+	set_cached_recommendation(calendar, result)
+	return result
 
+def _form_cache_key(calendar):
+	return '%d-%d' % (calendar.profile_id, calendar.pk)
 
+def get_cached_recommendation(calendar):
+	return cache.get(_form_cache_key(calendar))
 
+def set_cached_recommendation(calendar, recs):
+	return cache.set(_form_cache_key(calendar), recs, timeout=15*60)
 
+def clear_cached_recommendations(profile_id):
+	return cache.delete_pattern('%d-*' % profile_id)

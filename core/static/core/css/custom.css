@@ -152,3 +152,31 @@
     top: 50%;
 	transform: translateX(-50%) translateY(-50%);
 	}
+
+.hovering-tabs {
+	position: fixed;
+	left: 0;
+	bottom: 0;
+	z-index: 999;
+	}
+
+.hovering-tabs .tab {
+	border: 1px solid #888787;
+	padding: 1em;
+	background-color: white;
+	opacity: 0.85;
+	}
+
+.hovering-tabs .tab.active {
+	opacity: 1;
+	background-color: rgb(232, 241, 255);
+	color: #009688;
+	}
+
+.hovering-tabs .content {
+	border-right: 1px solid #888787;
+	background-color: white;
+	opacity: 1;
+	height: 45vh;
+	overflow-y: scroll;
+	}

@@ -10,6 +10,11 @@ services:
       file: default.yml
       service: db
 
+  cache:
+    extends:
+      file: default.yml
+      service: cache
+
   # Primary web server
   web:
     extends:
@@ -24,9 +29,11 @@ services:
     environment:
       - ENV=production
       - PORT=80
-      - DJANGO_HOST=transcriptapi.tigerapps.org
       - CLOUDFLARE=1
+      - DJANGO_HOST=coursegenie.co
     links:
       - db
+      - cache
     depends_on:
       - db
+      - cache

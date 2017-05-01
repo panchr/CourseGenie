@@ -7,6 +7,20 @@ FROM debian:8.7
 
 RUN apt-get update
 
+ARG APP_DIR
+ARG PYTHON_VERSION
+ARG NODE_VERSION
+
+ARG STATIC_ROOT
+ARG STATIC_URL
+ARG PORT
+
+ENV APP_DIR "$APP_DIR"
+ENV PORT "$PORT"
+ENV NODE_VERSION "$NODE_VERSION"
+ENV STATIC_ROOT "$STATIC_ROOT"
+ENV STATIC_URL "$STATIC_URL"
+
 ### Python ###
 ENV PYTHONUNBUFFERED 1
 RUN apt-get install -y git make python-dev build-essential libssl-dev \
@@ -20,15 +34,12 @@ RUN if [ ! -e "$PYENV_ROOT" ]; then mkdir "$PYENV_ROOT"; fi
 WORKDIR "$PYENV_ROOT"
 RUN git clone git://github.com/yyuu/pyenv.git "$PYENV_ROOT"
 
-ARG PYTHON_VERSION
 RUN pyenv install "$PYTHON_VERSION"
 RUN pyenv global "$PYTHON_VERSION"
 RUN pyenv rehash
 
 ### Node ###
-ARG NODE_VERSION
 ENV NVM_DIR "/nvm"
-ENV NODE_VERSION "$NODE_VERSION"
 COPY docker/install-node.sh install-node.sh
 RUN /bin/bash install-node.sh
 
@@ -36,7 +47,6 @@ ENV NODE_PATH "$NVM_DIR/versions/node/$NODE_VERSION/lib/node_modules"
 ENV PATH      "$NVM_DIR/versions/node/$NODE_VERSION/bin:$PATH"
 
 ### Project Deployment ###
-ARG APP_DIR
 RUN if [ ! -e "$APP_DIR" ]; then mkdir "$APP_DIR"; fi
 WORKDIR "$APP_DIR"
 COPY requirements.txt "$APP_DIR/requirements.txt"
@@ -49,5 +59,10 @@ RUN npm install
 COPY . "$APP_DIR/"
 
 # Port to expose
-ARG PORT
 EXPOSE $PORT
+
+# Application-specific build steps
+WORKDIR "$APP_DIR"
+RUN gulp external
+RUN gulp bundle -a core
+RUN gulp collect
