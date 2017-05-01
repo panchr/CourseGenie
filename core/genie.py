@@ -333,6 +333,9 @@ def recommend(calendar):
 	# filter out courses already in calendar
 	filter_out |= set(calendar.semesters.all().values_list('courses', flat=True))
 
+	# filter out courses in sandbox
+	filter_out |= set(calendar.sandbox.all())
+
 	wl_depts_short = set()
 	wl_areas = set()
 	bl_depts_short = set()
