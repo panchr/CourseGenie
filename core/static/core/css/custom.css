@@ -146,11 +146,13 @@
 	width: 100%;
 }
 
+/*
 .container {
 	margin-left: 2.5%;
 	margin-right: 2.5%;
 	width: 95%;
 }
+*/
 
 .course-blank {
 	width: 100%;
@@ -163,10 +165,12 @@
 	margin: 0.5em 0.9em 0 0;
 }
 
+/*
 .row {
 	width: initial;
 	display: flex;
 }
+*/
 
 .icon-pad {
 	padding-left: 1.8em;
