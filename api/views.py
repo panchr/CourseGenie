@@ -10,6 +10,10 @@ from core.models import *
 from core.errors import *
 from core import genie
 
+from api.permissions import CalendarAccess
+from api.permissions import PreferenceAccess
+from api.permissions import SemesterAccess
+
 COURSE_RE = re.compile(r'^(?P<dept>[A-Z]{3}) (?P<num>\d{3})(?P<letter>[A-Z]?)$')
 
 # things that should not be changed
@@ -61,6 +65,8 @@ class ProfileViewSet(viewsets.ModelViewSet):
 class CalendarViewSet(viewsets.ModelViewSet):
     queryset = Calendar.objects.all()
     serializer_class = CalendarSerializer
+    permission_classes = (permissions.IsAuthenticated,
+                      CalendarAccess,)
 
 class RecordViewSet(viewsets.ModelViewSet):
     queryset = Record.objects.all()
@@ -69,6 +75,8 @@ class RecordViewSet(viewsets.ModelViewSet):
 class PreferenceViewSet(viewsets.ModelViewSet):
     queryset = Preference.objects.all()
     serializer_class = PreferenceSerializer
+    permission_classes = (permissions.IsAuthenticated,
+                      PreferenceAccess,)
 
     @detail_route(methods=['post', 'delete'], url_path='bl-course')
     def modify_course(self, request, pk=None):
@@ -188,6 +196,8 @@ class PreferenceViewSet(viewsets.ModelViewSet):
 class SemesterViewSet(viewsets.ModelViewSet):
     queryset = Semester.objects.all()
     serializer_class = SemesterSerializer
+    permission_classes = (permissions.IsAuthenticated,
+                      SemesterAccess,)
 
     @detail_route(methods=['post', 'delete'], url_path='course')
     def modify_course(self, request, pk=None):
