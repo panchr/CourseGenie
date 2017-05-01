@@ -1,5 +1,6 @@
 .title {
-	padding-bottom: 1em;
+	padding-bottom: 0.7em;
+	padding-top: 0.7em;
 	}
 
 .topbtm-pad {
@@ -122,16 +123,14 @@
 
 	.dash-head {
 		position: relative;
-		padding: 2em 0 0 0;
-		margin-left: -3em;
+		padding: 1.1em 0 0 0;
+		margin-left: 0;
 		margin-bottom: -0.5em;
 		background: #fff;
-		background-size: cover;
-		color: #7C9CD0;
 		}
 
 	.dash-head header h2 {
-		font-size: 2em;
+		font-size: 2.7em;
 		font-weight: 100;
 		text-align: left;
 		color: #7C9CD0;
