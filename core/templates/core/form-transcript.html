@@ -5,24 +5,28 @@
 {% block body %}
 	<body class="left-sidebar">
 		<!-- Main -->
-		<div class="page-header">
+		<div class="dash-head">
 			<div class="container">
-				<section>
-					<header>
-					<h2 class="title">Past Courses</h2>
-					<div class="row 50%">
-						<div class="12u">
-							<span>Upload your transcript and/or enter your courses below.</span>
-							<br/><br/>
-							<a href="{{ transcript_service_url }}" class="button">Upload Transcript</a>
-						</div>
-					</div>
-					</header>
-				</section>
+				<header><h2 class="title">
+				<div class="row">
+						<div class="9u">Past Courses</div>
+							<div class="3u">
+								<div class="icon-pad"><a href="{% url 'core:transcript' %}"><span class="icon2 fa-archive"></span></a>
+						<a href="{% url 'core:preferences' %}"><span class="icon2 fa-cog"></span></a>
+					<a href="{% url 'core:dashboard' %}"><span class="icon2 fa-desktop"></span></a></div></div>
+				</div>
+			</h2></header>
 			</div>
 		</div>
-
 		<hr/>
+		<div class="row 50%">
+			<div class="center 12u">
+			<h1>Either upload your courses via transcript or enter them manually</h1></div>
+			<div class="title"></div>
+			<div class="12u">
+				<div class="center-parent" style="width:20%">
+						<a href="{{ transcript_service_url }}" class="button">Upload Transcript</a></div>
+					</div></div>
 		<div id="course-form">
 
 		<script>

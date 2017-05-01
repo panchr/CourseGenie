@@ -143,7 +143,6 @@ class CourseForm extends React.Component {
 							value={window._csrf_token}/>
 						<div className="row">
 							<div className="12u">
-								<h2>Courses Entered</h2>
 								<ListInput ref={(e) => this.elems.courses_list = e} t={(c) => {
 									var split = c.split(" ");
 									return <CourseDisplay department={split[0]} number={split[1]} />;
@@ -168,7 +167,7 @@ class CourseForm extends React.Component {
 						</div>
 					</section>
 					<hr/>
-					<div className="row 50%">
+					<div className="row">
 						<div className="6u"><h1>First Name</h1></div>
 						<div className="6u$"><h1>Last Name</h1></div>
 						<div className="6u">
@@ -180,7 +179,7 @@ class CourseForm extends React.Component {
 								ref={(e) => this.elems.last_name_input = e} />
 						</div>
 					</div>
-					<div className="row 50%">
+					<div className="row">
 						<div className="6u$">
 							<h1>Graduation Year</h1>
 						</div>
@@ -191,7 +190,7 @@ class CourseForm extends React.Component {
 								ref={(e) => this.elems.year_input = e} />
 						</div>
 					</div>
-					<div className="row 50%" style={hiddenIfSubmitted}>
+					<div className="row" style={hiddenIfSubmitted}>
 						<div className="12u$">
 							<h1>Major (can be changed later)</h1>
 						</div>
