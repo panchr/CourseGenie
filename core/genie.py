@@ -103,7 +103,7 @@ def calculate_progress(calendar):
 	profile = calendar.profile
 	list_courses = []
 
-	Progress.objects.filter(calendar=calendar).delete() # delete old ones, start from scratch
+	Progress.objects.filter(calendar=calendar, user_completed=False).delete() # delete old ones, start from scratch
 
 	list_courses.extend(
 		Record.objects.filter(profile=calendar.profile)
@@ -138,8 +138,7 @@ def calculate_single_progress(calendar, category, list_courses):
 	other_than = [] # list of lists of nestedreq IDs that should no longer be considered
 	c = 0 # count of number of choices
 	nested_reqs = None
-	progresses = {}
-	progress_courses = {}
+	progresses = {p.requirement: p for p in Progress.objects.filter(calendar=calendar, user_completed=True).select_related('requirement')}
 	cat_requirements = list(category.requirements.all())
 
 	req_courses = {r: set(r.courses.values_list('pk', flat=True)) for r in cat_requirements}
@@ -163,11 +162,13 @@ def calculate_single_progress(calendar, category, list_courses):
 		c = 0
 
 		# create default progresses for all requirements, with number_taken = 0, completed = False
-		p = Progress(calendar=calendar, requirement=requirement)
-		progresses[requirement] = p
-		progress_courses[requirement] = set()
+		if requirement not in progresses:
+			p = Progress(calendar=calendar, requirement=requirement)
+			progresses[requirement] = p
 
-	Progress.objects.bulk_create(progresses.values())
+	progress_courses = {r: set() for r in progresses.keys()}
+	Progress.objects.bulk_create(filter(lambda p: p.pk is None,
+		progresses.values()))
 
 	for course in list_courses:
 		#print course.department + str(course.number) # prints the course
@@ -207,11 +208,12 @@ def calculate_single_progress(calendar, category, list_courses):
 				if req != None: # doesn't make sense that req would still be None though
 					#print req
 					progress = progresses[req]
-					progress.number_taken += 1
-					progress_courses[req].add(course)
-					if progress.number_taken >= req.number and not progress.completed:
-						progress.completed = True
-					number_remaining[index] -= 1
+					if not (progress.completed or progress.user_completed):
+						progress.number_taken += 1
+						progress_courses[req].add(course)
+						if progress.number_taken >= req.number and not progress.completed:
+							progress.completed = True
+						number_remaining[index] -= 1
 
 		else: # course satisfied multiple requirements
 			diff = []
@@ -231,13 +233,15 @@ def calculate_single_progress(calendar, category, list_courses):
 			if isinstance(matched[min_key], list):
 				nreq = matched[min_key][0]
 				req = matched[min_key][1]
-				other_than.append(nreq.id)			
+				other_than.append(nreq.id)		
+
 			progress = progresses[req]
-			progress.number_taken += 1
-			progress_courses[req].add(course)
-			if progress.number_taken >= req.number and progress.completed == False:
-				progress.completed = True
-			number_remaining[min_key] -= 1
+			if not (progress.completed or progress.user_completed):
+				progress.number_taken += 1
+				progress_courses[req].add(course)
+				if progress.number_taken >= req.number and progress.completed == False:
+					progress.completed = True
+				number_remaining[min_key] -= 1
 
 	for r, p in progresses.items():
 		p.courses_taken.add(*progress_courses[r])
@@ -402,10 +406,10 @@ def recommend(calendar):
 
 			# for each certificate, add points if satisfy unsatisfied certificate requirements
 			for cert in certificates:
-				_update_entry([], entry, certificates[cert][0], certificates[cert][1][req],
+				_update_entry([], entry, certificates[cert][0], certificates[cert][1],
 				 	course, RANK_C,
-					'{} requirement of your %s certificate,\n' % certificate.short_name, is_dist,
-					'%s {}' % certificate.short_name)
+					'{} requirement of your %s certificate,\n' % cert.short_name, is_dist,
+					'%s {}' % cert.short_name)
 
 			# add points if satisfy flexibility (requirements of other majors themselves, excluding their tracks)
 			for maj in other_majors:
@@ -463,5 +467,8 @@ def get_cached_recommendation(calendar):
 def set_cached_recommendation(calendar, recs):
 	return cache.set(_form_cache_key(calendar), recs, timeout=15*60)
 
-def clear_cached_recommendations(profile_id):
-	return cache.delete_pattern('%d-*' % profile_id)
+def clear_cached_recommendations(profile_id, calendar_id=None):
+	if calendar_id is not None:
+		return cache.delete('%d-%d' % (profile_id, calendar_id))
+	else:
+		return cache.delete_pattern('%d-*' % profile_id)

@@ -139,6 +139,7 @@ majors:
         - MAE 433
         - MAE 321
     - type: MAE 324 or MSE 301
+      name: MAE 324 or MSE 301
       number: 1
       score: 1
       courses:

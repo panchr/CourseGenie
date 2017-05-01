@@ -64,6 +64,8 @@ class SemesterSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class BasicRequirementSerializer(serializers.ModelSerializer):
+    parent_t = serializers.CharField(source='content_type.model')
+
     class Meta:
         model = Requirement
         # fields = '__all__'

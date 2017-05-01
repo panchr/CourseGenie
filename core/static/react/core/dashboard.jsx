@@ -23,13 +23,29 @@ var CourseDisplay = require('core/components/CourseDisplay.jsx'),
 	Modal = require('core/components/Modal.jsx'),
 	ExpandingTabs = require('core/components/ExpandingTabs.jsx'),
 	Sandbox = require('core/components/Sandbox.jsx'),
-	Progresses = require('core/components/Progresses.jsx'),
+	ProgressView = require('core/components/ProgressView.jsx'),
 	data = require('core/data.jsx');
 
 function main() {
 	var DashboardComp = DragDropContext(HTML5Backend)(Dashboard);
+	
+	// null value so it doesn't crash on initial load
+	var tracksByMajor = {};
+	tracksByMajor[null] = new Array();
+	for (var i=0; i < dashboard_data.majors.length; i++) {
+		tracksByMajor[dashboard_data.majors[i].id] = new Array();
+		}
+
+	for (var i=0; i < dashboard_data.tracks.length; i++) {
+		var t = dashboard_data.tracks[i];
+		tracksByMajor[t.major_id].push(t);
+		}
+
 	ReactDOM.render(
-		<DashboardComp calendar_ids={dashboard_data.user_calendars} />,
+		<DashboardComp calendar_ids={dashboard_data.user_calendars}
+		majors={dashboard_data.majors} tracks={tracksByMajor}
+		certificates={dashboard_data.certificates}
+		minRecommendations={10} />,
 		document.getElementById('dashboard'));
 	}
 
@@ -45,23 +61,96 @@ class Dashboard extends React.Component {
 			selectedSemester: new Object(),
 			selectedSemester_index: null,
 			sandbox: new List(),
-			progresses: new List(),
+			progress: new Map({
+				degree: new List(),
+				major: new List(),
+				track: new List(),
+				certificates: new List(),
+				}),
+			calendarSettingsModalOpen: false,
+			currentMajor: null,
+			currentTrack: null,
+			currentCertificates: new List(),
 			};
 
 		this.elems = {};
+		this.nonstateData = {};
 		this.requests = new Array();
+		this.progressChange = this.progressChange.bind(this);
 		}
 
 	componentWillMount() {
 		data.installErrorHandler((msg) => this.setState({errorMsg: msg}));
+		this.loadAllData();
+		}
+
+	componentWillUnmount() {
+		this.requests.map((r) => r.abort());
+		}
+
+	loadAllData() {
 		this.requests.push(data.calendar.getData(this.props.calendar_ids[0],
 			(data) => {
 				var data = fromJS(data);
 				this.setState({semesters: data.get('semesters'),
-					sandbox: data.get('sandbox')});
+					sandbox: data.get('sandbox'), currentMajor: data.get('major'),
+					currentTrack: data.get('track'),
+					currentCertificates: data.get('certificates'),
+					}, () => this.loadRecommendations(() => this.loadProgress()));
 			}));
+		}
+
+	loadRecommendations(callback=() => null) {
 		this.requests.push(data.recommendations.get(this.props.calendar_ids[0],
-			(data) => this.setState({recommendations: new List(data)})));
+			(data) => {
+				this.setState({recommendations: new List(data)});
+				callback();
+			}));
+		}
+
+	loadProgress() {
+		this.requests.push(data.calendar.getProgress(this.props.calendar_ids[0],
+			(data) => {
+				var progressData = {
+					degree: new Array(),
+					major: new Array(),
+					track: new Array(),
+					certificates: new Object(),
+					};
+
+				for (var i=0; i < data.length; i++) {
+					var p = data[i],
+						parent_type = p.requirement.parent_t;
+
+					// Filter out irrelevant progresses (i.e. ones left over from
+					// user marking them complete manually).
+					if ((parent_type == 'major' && p.parent.id != this.state.currentMajor)
+						|| (parent_type == 'track' && p.parent.id != this.state.currentTrack)
+						|| (parent_type == 'certificate' && this.state.currentCertificates.indexOf(p.parent.id) == -1)) continue;
+
+					if (parent_type == 'certificate') {
+						if (progressData.certificates[p.parent.id] == undefined)
+							progressData.certificates[p.parent.id] = new Array();
+						progressData.certificates[p.parent.id].push(p);
+						}
+					else progressData[p.requirement.parent_t].push(p);
+					}
+
+				// Bubble incomplete requirements to top
+				function bubbleIncomplete(rs) {
+					return rs.filter((x) => ! (x.completed || x.user_completed))
+						.concat(rs.filter(x => x.completed || x.user_completed));
+					}
+
+				progressData.degree = bubbleIncomplete(progressData.degree);
+				progressData.major = bubbleIncomplete(progressData.major);
+				progressData.track = bubbleIncomplete(progressData.track);
+
+				progressData.certificates = Object.keys(progressData.certificates).sort().map(
+					(i) => bubbleIncomplete(progressData.certificates[i]));
+
+				this.setState({progress: fromJS(progressData)});
+				}));
 		}
 
 	addMessage(m) {
@@ -74,9 +163,11 @@ class Dashboard extends React.Component {
 		}
 
 	removeSuggestion(index) {
-		// NOTE: may need to refetch list of recommendations when this list is
-		// nearly empty.
-		this.setState({recommendations: this.state.recommendations.delete(index)});
+		var newRecs = this.state.recommendations.delete(index);
+		this.setState({recommendations: newRecs});
+		if (newRecs.size < this.props.minRecommendations) {
+			this.loadRecommendations();
+			}
 		}
 
 	addCourse(index, course) {
@@ -89,9 +180,6 @@ class Dashboard extends React.Component {
 	addCourseToDisplay(index, course) {
 		var sems = this.state.semesters,
 			current = sems.get(index);
-
-		console.log(this.state.recommendations.get(0));
-		console.log(course);
 
 		this.setState({
 			semesters: sems.set(index,
@@ -147,8 +235,63 @@ class Dashboard extends React.Component {
 			this.props.calendar_ids[0], course));
 		}
 
-	componentWillUnmount() {
-		this.requests.map((r) => r.abort());
+	progressChange(t, innerIndex, index, id) {
+		var toUpdate = this.state.progress.get(t);
+
+		if (t == 'certificates') toUpdate = toUpdate.get(innerIndex);
+
+		var p = toUpdate.get(index),
+			new_completed = ! (p.get('user_completed') || p.get('completed'));
+
+		var updated = null;
+		if (new_completed)
+			updated = toUpdate.delete(index).push(p.set('user_completed', true));
+		else
+			updated = toUpdate.delete(index).insert(0,
+				p.set('user_completed', false).set('completed', false));
+
+		var fullUpdated = null;
+		if (t == 'certificates') fullUpdated = this.state.progress.set(t, this.state.progress.get(t).set(innerIndex, updated));
+		else fullUpdated = this.state.progress.set(t, updated);
+
+		var patch_data = {user_completed: new_completed};
+		if (! new_completed) patch_data.completed = false;
+
+		this.setState({progress: fullUpdated});
+		this.requests.push(data.calendar.setSingleProgress(id, patch_data));
+		}
+
+	saveCalendarSettings() {
+		var update_data = {
+			major: this.elems.major_input.value,
+			track: this.elems.track_input.value == 'null' ? null: this.elems.track_input.value,
+			};
+
+		// Remove track if not found in the current major.
+		var trackInMajor = false;
+		for (var i=0; i < this.props.tracks[update_data.major].length; i++) {
+			var t = this.props.tracks[update_data.major][i];
+			if (t.id == update_data.track) {
+				trackInMajor = true;
+				break;
+				}
+			}
+
+		if (! trackInMajor) update_data.track = null;
+
+		var shouldReload = (update_data.track != this.state.currentTrack ||
+			update_data.major != this.nonstateData.old_major);
+
+		this.requests.push(data.calendar.saveSettings(this.props.calendar_ids[0],
+			update_data, () => {
+				if (shouldReload) this.loadAllData();
+				}));
+
+		this.setState({
+			calendarSettingsModalOpen: false,
+			currentMajor: update_data.major,
+			currentTrack: update_data.track,
+			});
 		}
 
 	render() {
@@ -182,6 +325,40 @@ class Dashboard extends React.Component {
 						</div>
 					</div>
 				</Modal>
+
+				<Modal open={this.state.calendarSettingsModalOpen} buttonText='Save'
+					onButtonClick={() => this.saveCalendarSettings()}
+					onClose={() => this.setState({calendarSettingsModalOpen: false})}>
+					<div className="row">
+						<h1>Concentration Settings</h1>
+						<div className="12u"><h2>Major</h2></div>
+						<div className="12u">
+						<select name="selected-major" value={this.state.currentMajor}
+								ref={(e) => this.elems.major_input = e}
+								onChange={(e) => {
+									this.nonstateData.old_major = this.state.currentMajor;
+									this.setState({currentMajor: e.target.value});
+									}}>
+								{this.props.majors.map((e) =>
+									<option value={e.id} key={Math.random()}>
+										{e.name}
+									</option>)}
+							</select>
+						</div>
+					</div>
+					<div className="row">
+						<div className="12u"><h2>Track</h2></div>
+						<div className="12u">
+						<select name="selected-track" defaultValue={this.state.currentTrack}
+								ref={(e) => this.elems.track_input = e}>
+								<option value="null">None</option>
+								{this.props.tracks[this.state.currentMajor].map((e) =>
+									<option value={e.id} key={Math.random()}>{e.name}</option>)}
+							</select>
+						</div>
+					</div>
+				</Modal>
+
 				<div className='messages-list'>
 					<MessageList messages={this.state.messages.toJS()}
 						onDismiss={(i) => this.setState({messages: this.state.messages.delete(i)})} />
@@ -195,10 +372,19 @@ class Dashboard extends React.Component {
 									onCourseRemove={(c, i) => this.removeFromSandbox(i, c)}
 									courses={this.state.sandbox.toJS()} />},
 							{name: 'Progress', content: 
-								<Progresses onCourseAdd={(c) => this.addToSandbox(c)}
-									onCourseRemove={(c, i) => this.removeFromSandbox(i, c)}
-									courses={this.state.sandbox.toJS()} 
-								/>},
+								<div className='row'>
+								<div className="12u">
+									<button className='button-add btn force-center'
+										onClick={() => this.setState({calendarSettingsModalOpen: true})}
+										style={{marginTop: '1em'}}>
+											Concentration Settings
+										</button>
+								</div>
+								<div className="12u">
+									<ProgressView progress={this.state.progress.toJS()}
+									onProgressChange={this.progressChange} />
+								</div>
+								</div>},
 							]} />
 					</div>
 
@@ -217,7 +403,7 @@ class Dashboard extends React.Component {
 								} data={this.state.semesters} />
 						</div>
 					</div>
-					<div className="5u">
+					<div className="5u" id="float">
 						<h3>Recommendations</h3>
 						<div style={{maxHeight: '80vh', overflowY: 'scroll'}}>
 							<ListView t={(e, i) => {

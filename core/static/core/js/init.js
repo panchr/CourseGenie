@@ -17,7 +17,7 @@ function cssPath(p) {
 			'wide':		{ range: '-1680', href: cssPath('style-wide.css'), containers: 1200 },
 			'normal':	{ range: '-1280', href: cssPath('style-normal.css'), containers: 1000 },
 			'narrow':	{ range: '-1080', href: cssPath('style-narrow.css'), containers: '95%', grid: { gutters: 20 } },
-			'narrower':	{ range: '-960', href: cssPath('style-narrower'), containers: '95%!', grid: { collapse: true } },
+			'narrower':	{ range: '-960', href: cssPath('style-narrower.css'), containers: '95%!', grid: { collapse: true } },
 			'mobile':	{ range: '-736', href: cssPath('style-mobile.css'), containers: '90%!', viewport: { scalable: false } }
 		},
 		plugins: {

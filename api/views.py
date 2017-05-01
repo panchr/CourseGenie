@@ -68,6 +68,16 @@ class CalendarViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,
                       CalendarAccess,)
 
+    def update(self, request, pk=None, *args, **kwargs):
+        obj = self.get_object()
+        genie.clear_cached_recommendations(obj.profile_id, obj.pk)
+        return super(CalendarViewSet, self).update(request, pk, *args, **kwargs)
+
+    def partial_update(self, request, pk=None, *args, **kwargs):
+        obj = self.get_object()
+        genie.clear_cached_recommendations(obj.profile_id, obj.pk)
+        return super(CalendarViewSet, self).partial_update(request, pk, *args, **kwargs)
+
     @detail_route(methods=['post', 'delete'], url_path='sandbox')
     def modify_sandbox(self, request, pk=None):
         calendar = self.get_object()
@@ -90,7 +100,7 @@ class CalendarViewSet(viewsets.ModelViewSet):
 
             calendar.sandbox.remove(course)
 
-        genie.clear_cached_recommendations(calendar.profile_id)
+        genie.clear_cached_recommendations(calendar.profile_id, calendar.pk)
         return Response({'success': True})
 
 class RecordViewSet(viewsets.ModelViewSet):
@@ -273,6 +283,18 @@ class ProgressViewSet(viewsets.ModelViewSet):
     filter_fields = ('calendar_id',)
     queryset = Progress.objects.all()
     serializer_class = ProgressSerializer
+
+    def update(self, request, pk=None, *args, **kwargs):
+        obj = self.get_object()
+        genie.clear_cached_recommendations(obj.calendar.profile_id,
+            obj.calendar_id)
+        return super(ProgressViewSet, self).update(request, pk, *args, **kwargs)
+
+    def partial_update(self, request, pk=None, *args, **kwargs):
+        obj = self.get_object()
+        genie.clear_cached_recommendations(obj.calendar.profile_id,
+            obj.calendar_id)
+        return super(ProgressViewSet, self).partial_update(request, pk, *args, **kwargs)
 
 # calculated on the stop
 class RecommendationViewSet(viewsets.ViewSet):

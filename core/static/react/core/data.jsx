@@ -47,6 +47,13 @@ module.exports = {
 				.fail(shared.errorHandler);
 			},
 
+		saveSettings: function(id, data, callback=()=>null) {
+			return jQuery.ajax(dashboard_data.calendar.url(id),
+				{method: 'PATCH', data: data})
+				.done((data) => callback(data))
+				.fail(shared.errorHandler);
+			},
+
 		addToSemester: function(semester_id, course, callback) {
 			setup_ajax_csrf();
 			return jQuery.post(dashboard_data.calendar.semesterCourseUrl(semester_id,
@@ -89,8 +96,15 @@ module.exports = {
 
 		getProgress: function(id, callback=(e) => null) {
 			setup_ajax_csrf();
-			return jQuery.ajax(dashboard_data.calendar.progressUrl(id,
-				course.course_id))
+			return jQuery.get(dashboard_data.calendar.progressUrl(id))
+				.done((data) => callback(data))	
+				.fail(shared.errorHandler);		
+			},
+
+		setSingleProgress: function(id, data, callback=(e) => null) {
+			setup_ajax_csrf();
+			return jQuery.ajax(dashboard_data.calendar.singleProgressUrl(id),
+				{method: 'PATCH', data: data})
 				.done((data) => callback(data))	
 				.fail(shared.errorHandler);		
 			}
@@ -193,29 +207,5 @@ module.exports = {
 				.done(callback)
 				.fail(shared.errorHandler);
 			},	
-		},
-
-	requirements: {
-		degree: function(callback) {
-			var data = [
-				{name: 'Physics', t: 'physics', number: 2, notes: '', object_id: 1,
-				courses: [
-					{name: 'General Physics I', course_id: '1005', number: 103,
-					letter: '', department: 'PHY', 'area': 'QR'},
-					{name: 'General Physics II', course_id: '1003',
-					number: 104, letter: '', department: 'PHY', 'area': 'QR'}
-					]},
-				{'name': 'Computing', t: 'cs', number: 1, notes: '', object_id: 1,
-				courses: [
-					{name: 'Algorithms and Data Structures', course_id: '1011',
-					number: 226, department: 'COS', letter: '', area: ''},
-					{name: 'Introduction to Programming Systems', course_id: '1010',
-					number: 217, department: 'COS', letter: '', area: ''},
-					{name: 'Introduction to Computer Science', course_id: '1012',
-					number: 126, department: 'COS', letter: '', area: 'QR'},
-					]}
-				];
-			return callback(data);
-			},
 		},
 	};

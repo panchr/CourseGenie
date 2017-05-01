@@ -112,7 +112,7 @@
 
 	header
 	{
-		margin-bottom: 3em;
+		margin-bottom: 0;
 	}
 
 		header h2
@@ -778,6 +778,24 @@
 			-webkit-font-smoothing:antialiased;
 			-moz-osx-font-smoothing:grayscale;
 		}
+
+		.icon2
+		{
+			text-decoration: none;
+		}
+
+			.icon2:before
+			{
+				display: inline-block;
+				font-family: FontAwesome;
+				font-size: 0.7em;
+				text-decoration: none;
+				font-style: normal;
+				font-weight: normal;
+				line-height: 1;
+				-webkit-font-smoothing:antialiased;
+				-moz-osx-font-smoothing:grayscale;
+			}
 
 /*********************************************************************************/
 /* Header                                                                        */

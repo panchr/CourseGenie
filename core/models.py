@@ -196,6 +196,9 @@ class Progress(models.Model):
 	courses_taken = models.ManyToManyField(Course)
 	number_taken = models.PositiveSmallIntegerField(default=0)
 	completed = models.BooleanField(default=False)
+
+	# whether or not the user has marked this as completed
+	user_completed = models.BooleanField(default=False)
 	requirement = models.ForeignKey(Requirement, related_name='progress')
 
 	class Meta:

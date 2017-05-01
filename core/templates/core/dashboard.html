@@ -7,14 +7,14 @@
 		<!-- Main -->
 		<div class="dash-head">
 			<div class="container">
-				<section>
-					<header>
-						<h2 class="title">Dashboard</h2>
-						<a href="{% url 'core:transcript' %}">Past Courses</a>
-						<a href="{% url 'core:preferences' %}">Preferences</a>
-					</header>
-				</section>
-			</div>
+				<header><h2 class="title">
+				<div class="row">
+						<div class="10u">Dashboard</div>
+							<div class="2u">
+								<div class="icon-pad"><a href="{% url 'core:transcript' %}"><span class="icon2 fa-user"></span></a>
+						<a href="{% url 'core:preferences' %}"><span class="icon2 fa-cog"></span></a></div></div>
+				</div>
+			</h2></header>
 		</div>
 		<hr/>
 		<div class="title"></div>
@@ -22,6 +22,9 @@
 		<script>
 			var dashboard_data = {
 				user_calendars: JSON.parse('{{ user_calendars|safe }}'),
+				majors: JSON.parse('{{ majors|safe }}'),
+				tracks: JSON.parse('{{ tracks|safe }}'),
+				certs: JSON.parse('{{ certificates|safe }}'),
 				preference_id: {{ preference_id }},
 				calendar: {
 					url: function(id) {
@@ -40,6 +43,16 @@
 					sandboxUrl: function(id, course_id) {
 						var base = "{% url 'api:calendar-sandbox' pk=889 %}";
 						return base.replace('889', id) + '?course_id=' + course_id;
+						},
+
+					progressUrl: function(id) {
+						var base = "{% url 'api:progress-list' %}";
+						return base + '?calendar_id=' + id;
+						},
+
+					singleProgressUrl: function(id) {
+						var base = "{% url 'api:progress-detail' pk=889 %}";
+						return base.replace('889', id);
 						}
 					},
 				recommendations: {
