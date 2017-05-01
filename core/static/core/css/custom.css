@@ -20,8 +20,18 @@
 	padding-left: 0;
 	}
 
+.no-children-top-padding * {
+	padding-top: 0;
+	}
+
 .center {
 	text-align: center;
+	}
+
+.force-center {
+	margin-left: auto;
+	margin-right: auto;
+	display: block;
 	}
 
 .center-parent {
@@ -61,12 +71,12 @@
 	}
 
 .alert {
-	padding: 15px;
+  padding: 15px;
   margin-bottom: 20px;
   border: 1px solid transparent;
   border-radius: 4px;
   padding-bottom: 0;
-	}
+  }
 
 .danger {
   color: #a94442;
@@ -83,9 +93,18 @@
 	cursor: hand;
 	}
 
-	.vert-line {
+.vert-line {
   border-right: thin solid #ddd;
 }
+
+.course-color:hover {
+	background-color: rgb(222, 251, 222);
+	transition: color .2s;
+	}
+
+.course-plus {
+	color: green;
+	}
 
 .page-header {
 	position: relative;
@@ -123,3 +142,66 @@
 	padding-left: 1.8em;
 	letter-spacing: 0.1em;
 }
+
+.modal {
+	z-index: 998;
+	position: fixed;
+	background: white;
+	border: black 1px solid;
+	border-radius: 0.5em;
+	padding: 1em;
+	min-width: 25vh;
+	min-height: 15vw;
+	}
+
+.modal:focus {
+	outline: none;
+	}
+
+.fixed-center {
+	left: 50%;
+  top: 50%;
+	transform: translateX(-50%) translateY(-50%);
+	}
+
+.hovering-tabs {
+	position: fixed;
+	left: 0;
+	bottom: 0;
+	z-index: 997;
+	}
+
+.hovering-tabs .tab {
+	border: 1px solid #888787;
+	padding: 1em;
+	background-color: white;
+	opacity: 0.85;
+	}
+
+.hovering-tabs .tab.active {
+	opacity: 1;
+	background-color: rgb(232, 241, 255);
+	color: #009688;
+	}
+
+.hovering-tabs .content {
+	border-right: 1px solid #888787;
+	background-color: white;
+	opacity: 1;
+	height: 45vh;
+	overflow-y: scroll;
+	}
+
+.icon-hover:hover {
+	color: green;
+	transition: color .2s;
+	}
+
+.icon-hover.success {
+	color: green;
+	}
+
+.icon-hover.success:hover {
+	color: black;
+	transition: color .2s;
+	}

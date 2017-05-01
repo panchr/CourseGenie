@@ -23,10 +23,17 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'sf#(b=^nfm$8@1fiqi2qvmp&ot-5(zat=+twv8$50d^29cayp#'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('ENV', 'development') == 'development'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost']
+if 'DJANGO_HOST' in os.environ:
+    ALLOWED_HOSTS.append(os.environ['DJANGO_HOST'])
 
+if 'CLOUDFLARE' in os.environ:
+    # CloudFlare forwarding enabled
+    USE_X_FORWARDED_HOST = True
+    USE_X_FORWARDED_PORT = True
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # Application definition
 
@@ -41,22 +48,16 @@ INSTALLED_APPS = [
     # Installed Applications
     'django_cas_ng',
     'rest_framework',
+    'cacheops',
 
     # Custom applications
     'core',
     'api',
 ]
 
-REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': [
-        #'rest_framework.permissions.IsAdminUser',
-        'rest_framework.permissions.AllowAny',
-    ],
-    'PAGE_SIZE': 10
-}
-
 MIDDLEWARE_CLASSES = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -102,6 +103,36 @@ DATABASES = {
     'default': dj_database_url.config(conn_max_age=600)
 }
 
+# Cache Configuration
+REDIS_URL = os.environ.get('REDIS_URL', '')
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': '%s/cache' % REDIS_URL,
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+            },
+        },
+    }
+
+CACHEOPS_REDIS = '%s/cacheops' % REDIS_URL
+CACHEOPS_DEFAULTS = {'timeout': 60*15}
+CACHEOPS = {
+    # local_get allows the caching to occur in-memory on the Python side, which
+    # is still faster than hitting the Redis cache. Should *only* happen for
+    # data that never changes (i.e. loaded requirement data).
+    'core.Degree': {'ops': 'all', 'local_get': True},
+    'core.Major': {'ops': 'all', 'local_get': True},
+    'core.Certificate': {'ops': 'all', 'local_get': True},
+    'core.Track': {'ops': 'all', 'local_get': True},
+    'core.Course': {'ops': 'all', 'local_get': True},
+    'core.CrossListing': {'ops': 'all', 'local_get': True},
+    'core.Requirement': {'ops': 'all', 'local_get': True},
+    'core.NestedReq': {'ops': 'all', 'local_get': True},
+    }
+CACHEOPS_DEGRADE_ON_FAILURE = True
+
 # Password validation
 # https://docs.djangoproject.com/en/1.10/ref/settings/#auth-password-validators
 
@@ -138,7 +169,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
-STATIC_URL = '/static/'
+STATIC_URL = os.environ.get('STATIC_URL', '/static/')
+STATIC_ROOT = os.path.join(BASE_DIR, os.environ.get('STATIC_ROOT', '_static'))
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
@@ -147,3 +179,7 @@ STATICFILES_FINDERS = (
 # Installed Application Configuration
 CAS_SERVER_URL = os.environ.get('CAS_URL')
 TRANSCRIPT_API_URL = os.environ.get('TRANSCRIPT_API_URL')
+
+REST_FRAMEWORK = {
+    'DEFAULT_FILTER_BACKENDS': ('rest_framework.filters.DjangoFilterBackend',),
+    }

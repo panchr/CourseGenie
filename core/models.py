@@ -15,7 +15,6 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.core.validators import MaxValueValidator, MinValueValidator
 
-
 class Degree(models.Model):
 	name = models.CharField(max_length=255, unique=True)
 	short_name = models.CharField(max_length=15, unique=True)
@@ -197,6 +196,9 @@ class Progress(models.Model):
 	courses_taken = models.ManyToManyField(Course)
 	number_taken = models.PositiveSmallIntegerField(default=0)
 	completed = models.BooleanField(default=False)
+
+	# whether or not the user has marked this as completed
+	user_completed = models.BooleanField(default=False)
 	requirement = models.ForeignKey(Requirement, related_name='progress')
 
 	class Meta:

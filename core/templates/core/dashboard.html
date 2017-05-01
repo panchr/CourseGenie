@@ -22,6 +22,9 @@
 		<script>
 			var dashboard_data = {
 				user_calendars: JSON.parse('{{ user_calendars|safe }}'),
+				majors: JSON.parse('{{ majors|safe }}'),
+				tracks: JSON.parse('{{ tracks|safe }}'),
+				certs: JSON.parse('{{ certificates|safe }}'),
 				preference_id: {{ preference_id }},
 				calendar: {
 					url: function(id) {
@@ -31,6 +34,25 @@
 					semesterCourseUrl: function(semester_id, course_id) {
 						var base = "{% url 'api:semester-course' pk=889 %}";
 						return base.replace('889', semester_id) + '?course_id=' + course_id;
+						},
+					semesterShortCourseUrl: function(semester_id, short_name) {
+						var base = "{% url 'api:semester-course' pk=889 %}";
+						return base.replace('889', semester_id) + '?short_name=' + short_name;
+						},
+
+					sandboxUrl: function(id, course_id) {
+						var base = "{% url 'api:calendar-sandbox' pk=889 %}";
+						return base.replace('889', id) + '?course_id=' + course_id;
+						},
+
+					progressUrl: function(id) {
+						var base = "{% url 'api:progress-list' %}";
+						return base + '?calendar_id=' + id;
+						},
+
+					singleProgressUrl: function(id) {
+						var base = "{% url 'api:progress-detail' pk=889 %}";
+						return base.replace('889', id);
 						}
 					},
 				recommendations: {
