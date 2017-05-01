@@ -7,7 +7,6 @@
 
 import json
 import re
-import random
 
 from django.db import transaction
 from django.db.models import Count
@@ -281,12 +280,16 @@ def recommend(calendar):
 	profile = calendar.profile
 	major = calendar.major
 	degree = calendar.degree
-	random.seed(profile.user_id)
 
 	calculate_progress(calendar)
 	user_progresses = Progress.objects.filter(calendar=calendar)
 
 	progresses = user_progresses.filter(completed=True).select_related('requirement')
+	satisfied_reqs = []
+	for progress in progresses:
+		satisfied_reqs.append(progress.requirement)
+
+	progresses = user_progresses.filter(user_completed=True).select_related('requirement')
 	satisfied_reqs = []
 	for progress in progresses:
 		satisfied_reqs.append(progress.requirement)

@@ -11,7 +11,7 @@ class CalendarAccess(permissions.BasePermission):
 class SemesterAccess(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         # Write permissions are only allowed to the owner of the snippet.
-        return obj.calendar.profile.user == request.calendar.user
+        return obj.calendar.profile.user == request.user
 
 class PreferenceAccess(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
@@ -21,4 +21,4 @@ class PreferenceAccess(permissions.BasePermission):
 class ProgressAccess(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         # Write permissions are only allowed to the owner of the snippet.
-        return obj.calendar.profile.user == request.calendar.user
+        return obj.calendar.profile.user == request.user

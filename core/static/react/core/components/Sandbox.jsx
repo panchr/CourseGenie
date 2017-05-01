@@ -27,7 +27,7 @@ function Sandbox(props) {
 				</div>
 			</div>
 			</div>;
-			}} cols={4} minRows={1} data={props.courses}
+			}} cols={4} minRows={2} data={props.courses}
 			blankElement={() =>
 				<div className='course-blank'>
 				<Icon i='ios-plus-empty' className='large-icon course-plus' />
