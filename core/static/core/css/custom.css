@@ -1,5 +1,6 @@
 .title {
-	padding-bottom: 1em;
+	padding-bottom: 0.7em;
+	padding-top: 0.7em;
 	}
 
 .topbtm-pad {
@@ -96,6 +97,10 @@
   border-right: thin solid #ddd;
 }
 
+.course {
+	margin: 0 3% 3% 0;
+}
+
 .course-color:hover {
 	background-color: rgb(222, 251, 222);
 	transition: color .2s;
@@ -122,8 +127,8 @@
 
 	.dash-head {
 		position: relative;
-		padding: 2em 0 0 0;
-		margin-left: -3em;
+		padding: 1.1em 0 0 0;
+		margin-left: 0;
 		margin-bottom: -0.5em;
 		background: #fff;
 		background-size: cover;
@@ -131,11 +136,47 @@
 		}
 
 	.dash-head header h2 {
-		font-size: 2em;
+		font-size: 2.7em;
 		font-weight: 100;
 		text-align: left;
 		color: #7C9CD0;
 		}
+
+.recs {
+	width: 100%;
+}
+
+.container {
+	margin-left: 2.5%;
+	margin-right: 2.5%;
+	width: 95%;
+}
+
+.course-blank {
+	width: 100%;
+	margin: 0.5em 0.9em 0 0;
+}
+
+.course-list {
+	display: block;
+	width: 100%;
+	margin: 0.5em 0.9em 0 0;
+}
+
+.row {
+	width: initial;
+	display: flex;
+}
+
+.icon-pad {
+	padding-left: 1.8em;
+	letter-spacing: 0.1em;
+}
+
+#float {
+	top: 0;
+    position: sticky;
+}
 
 .modal {
 	z-index: 998;

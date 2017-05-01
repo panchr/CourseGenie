@@ -403,7 +403,7 @@ class Dashboard extends React.Component {
 								} data={this.state.semesters} />
 						</div>
 					</div>
-					<div className="5u">
+					<div className="5u" id="float">
 						<h3>Recommendations</h3>
 						<div style={{maxHeight: '80vh', overflowY: 'scroll'}}>
 							<ListView t={(e, i) => {
