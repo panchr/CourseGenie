@@ -6,13 +6,10 @@ from rest_framework.exceptions import NotFound, NotAcceptable
 from rest_framework.response import Response
 
 from api.serializers import *
+from api import permissions
 from core.models import *
 from core.errors import *
 from core import genie
-
-from api.permissions import CalendarAccess
-from api.permissions import PreferenceAccess
-from api.permissions import SemesterAccess
 
 COURSE_RE = re.compile(r'^(?P<dept>[A-Z]{3}) (?P<num>\d{3})(?P<letter>[A-Z]?)$')
 
@@ -61,12 +58,14 @@ class NestedReqViewSet(viewsets.ReadOnlyModelViewSet):
 class ProfileViewSet(viewsets.ModelViewSet):
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
+    permission_classes = (permissions.IsAuthenticated,
+                      permissions.ProgressAccess,)
 
 class CalendarViewSet(viewsets.ModelViewSet):
     queryset = Calendar.objects.all()
     serializer_class = CalendarSerializer
     permission_classes = (permissions.IsAuthenticated,
-                      CalendarAccess,)
+                      permissions.CalendarAccess,)
 
     def update(self, request, pk=None, *args, **kwargs):
         obj = self.get_object()
@@ -111,7 +110,7 @@ class PreferenceViewSet(viewsets.ModelViewSet):
     queryset = Preference.objects.all()
     serializer_class = PreferenceSerializer
     permission_classes = (permissions.IsAuthenticated,
-                      PreferenceAccess,)
+                      permissions.PreferenceAccess,)
 
     @detail_route(methods=['post', 'delete'], url_path='bl-course')
     def modify_course(self, request, pk=None):
@@ -235,7 +234,7 @@ class SemesterViewSet(viewsets.ModelViewSet):
     queryset = Semester.objects.all()
     serializer_class = SemesterSerializer
     permission_classes = (permissions.IsAuthenticated,
-                      SemesterAccess,)
+                      permissions.SemesterAccess,)
 
     @detail_route(methods=['post', 'delete'], url_path='course')
     def modify_course(self, request, pk=None):
@@ -297,6 +296,7 @@ class ProgressViewSet(viewsets.ModelViewSet):
         return super(ProgressViewSet, self).partial_update(request, pk, *args, **kwargs)
 
 # calculated on the stop
+# need to add permissions
 class RecommendationViewSet(viewsets.ViewSet):
     def list(self, request):
         calendar_id = request.query_params['calendar']
