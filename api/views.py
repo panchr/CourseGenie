@@ -2,7 +2,7 @@ import re
 
 from rest_framework import viewsets
 from rest_framework.decorators import detail_route
-from rest_framework.exceptions import NotFound, NotAcceptable
+from rest_framework.exceptions import NotFound, NotAcceptable, PermissionDenied
 from rest_framework.response import Response
 
 from api.serializers import *
@@ -298,6 +298,8 @@ class RecommendationViewSet(viewsets.ViewSet):
     def list(self, request):
         calendar_id = request.query_params['calendar']
         calendar = Calendar.objects.get(pk=calendar_id)
+        if calendar.profile.user != request.user:
+            raise PermissionDenied("cannot access these recommendations")
         output_list = genie.recommend(calendar)
         serializer = RecommendationSerializer(instance=output_list, many=True)
         return Response(serializer.data)
