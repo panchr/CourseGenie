@@ -128,7 +128,9 @@ class CourseForm extends React.Component {
 
 	render() {
 		var hiddenIfSubmitted = {};
+		var hiddenIfNotSubmitted = {};
 		if (this.props.data.submitted) hiddenIfSubmitted.display = 'none';
+		if (!this.props.data.submitted) hiddenIfNotSubmitted.display = 'none';
 
 		return (<div>
 				<ErrorAlert msg={this.state.errorMsg} />
@@ -203,9 +205,15 @@ class CourseForm extends React.Component {
 						</div>
 					</div>
 					</section>
-						<div className="row 50%">
+						<div className="row 50%" style={hiddenIfSubmitted}>
 							<div className="12u center">
 								<input type="submit" className="button btn" value="Get Started"/>
+								<div className='topbtm-pad'></div>
+							</div>
+						</div>
+						<div className="row 50%" style={hiddenIfNotSubmitted}>
+							<div className="12u center">
+								<input type="submit" className="button btn" value="Submit"/>
 								<div className='topbtm-pad'></div>
 							</div>
 						</div>
