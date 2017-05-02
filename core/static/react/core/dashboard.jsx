@@ -22,6 +22,7 @@ var CourseDisplay = require('core/components/CourseDisplay.jsx'),
 	MessageList = require('core/components/MessageList.jsx'),
 	ErrorAlert = require('core/components/ErrorAlert.jsx'),
 	Icon = require('core/components/Icon.jsx'),
+	RotatingIcon = require('core/components/RotatingIcon.jsx'),
 	Modal = require('core/components/Modal.jsx'),
 	ExpandingTabs = require('core/components/ExpandingTabs.jsx'),
 	Sandbox = require('core/components/Sandbox.jsx'),
@@ -76,6 +77,7 @@ class Dashboard extends React.Component {
 			currentMajor: null,
 			currentTrack: null,
 			currentCertificates: new List(),
+			loadingData: false,
 			};
 
 		this.elems = {};
@@ -108,6 +110,7 @@ class Dashboard extends React.Component {
 		}
 
 	loadAllData() {
+		this.setState({loading: true});
 		this.requests.push(data.calendar.getData(this.state.currentCalendar,
 			(data) => {
 				var data = fromJS(data);
@@ -115,7 +118,10 @@ class Dashboard extends React.Component {
 					sandbox: data.get('sandbox'), currentMajor: data.get('major'),
 					currentTrack: data.get('track'),
 					currentCertificates: data.get('certificates'),
-					}, () => this.loadRecommendations(() => this.loadProgress()));
+					}, () => this.loadRecommendations(() => {
+						this.loadProgress();
+						this.setState({loading: false});
+						}));
 			}));
 		}
 
@@ -467,7 +473,12 @@ class Dashboard extends React.Component {
 						</div>
 					</div>
 					<div className="5u" id="float">
-						<h3>Recommendations</h3>
+						<h3>
+							Recommendations &nbsp;
+							<RotatingIcon rotating={this.state.loading}
+									i='ios-loop-strong' onClick={() => this.loadAllData()}
+									style={{float: 'right'}} className='btn' />
+						</h3>
 						<div className='scrollable-container no-horizontal-scroll'>
 							<ListView t={(e, i) => {
 								return <div className='recs'>
