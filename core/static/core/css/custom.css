@@ -8,6 +8,12 @@
 	padding-bottom: 0.5em;
 }
 
+@media (max-width: 960px) {
+	.hidemobile {
+		display: none !important;
+	}
+}
+
 .list-view .list-item {
 	display: block;
 	}
