@@ -32,11 +32,13 @@ class ListInput extends React.Component {
 	addElement() {
 		var data = this.props.getInput();
 		if (data == undefined || data == null) return;
-		this.setState({data: this.state.data.push(data)});
+		this.setState({data: this.state.data.push(data)},
+			() => this.props.onAdd(data));
 		}
 
 	removeElement(index) {
-		this.props.onDelete(this.state.data.get(index));
+		var removed_data = this.state.data.get(index);
+		this.props.onDelete(removed_data, index)
 		this.setState({data: this.state.data.remove(index)});
 		}
 
@@ -79,12 +81,14 @@ ListInput.propTypes = {
 	cols: React.PropTypes.number,
 	blankText: React.PropTypes.string,
 	onDelete: React.PropTypes.func,
+	onAdd: React.PropTypes.func,
 	};
 
 ListInput.defaultProps = {
 	blankText: '',
 	cols: 1,
 	onDelete: () => {},
+	onAdd: () => {},
 	};
 
 module.exports = ListInput;

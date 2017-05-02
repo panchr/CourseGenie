@@ -123,7 +123,7 @@ class CalendarSerializer(serializers.ModelSerializer):
     # degree = DegreeSerializer(read_only=True)
     # major = MajorSerializer(read_only=True)
     # track = TrackSerializer(read_only=True)
-    # certificates = CertificateSerializer(many=True, read_only=True)
+    certificates = BasicCertificateSerializer(many=True, read_only=True)
     sandbox = CourseSerializer(many=True, read_only=True)
     semesters = SemesterSerializer(many=True, read_only=True)
 

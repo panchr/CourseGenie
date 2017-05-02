@@ -72,6 +72,31 @@ class CalendarViewSet(viewsets.ModelViewSet):
         genie.clear_cached_recommendations(obj.profile_id, obj.pk)
         return super(CalendarViewSet, self).partial_update(request, pk, *args, **kwargs)
 
+    @detail_route(methods=['post', 'delete'], url_path='certificates')
+    def modify_certificates(self, request, pk=None):
+        calendar = self.get_object()
+        certificate_id = request.query_params['cert_id']
+
+        try:
+            certificate = Certificate.objects.get(id=certificate_id)
+        except Certificate.DoesNotExist:
+            raise NotFound('certificate %s not found' % certificate_id)
+
+        if request.method == 'POST':
+            # check if already there, and if so, raise 409
+            if calendar.certificates.filter(id=certificate.id).exists():
+                raise ContentError('certificate %s already selected' % certificate_id)
+
+            calendar.certificates.add(certificate)
+        elif request.method == 'DELETE':
+            if not calendar.certificates.filter(id=certificate.id).exists():
+                raise ContentError('certificate %s is not in this calendar' % course_id)
+
+            calendar.certificates.remove(certificate)
+
+        genie.clear_cached_recommendations(calendar.profile_id, calendar.pk)
+        return Response({'success': True})       
+
     @detail_route(methods=['post', 'delete'], url_path='sandbox')
     def modify_sandbox(self, request, pk=None):
         calendar = self.get_object()

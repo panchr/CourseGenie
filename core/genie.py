@@ -9,6 +9,7 @@ import json
 import re
 import random
 
+from django.utils import timezone
 from django.db import transaction
 from django.db.models import Count
 from django.core.cache import cache
@@ -457,6 +458,30 @@ def recommend(calendar):
 	result = sorted_total[:TOP_COUNT]
 	set_cached_recommendation(calendar, result)
 	return result
+
+def generate_semesters(calendar):
+	grad_year = calendar.profile.year
+
+	semesters = []
+
+	now = timezone.now()
+	if grad_year > now.year + 4:
+		grad_year = now.year + 4
+	if now.month in {1, 9, 10, 11, 12}: # SF SF ... S
+		for y in range(now.year+1, grad_year):
+			semesters.append(Semester(calendar=calendar, year=y, term=Semester.TERM_SPRING))
+			semesters.append(Semester(calendar=calendar, year=y, term=Semester.TERM_FALL))
+		semesters.append(Semester(calendar=calendar, year=grad_year, term=Semester.TERM_SPRING))
+
+	else: # Spring or summer, F SF SF ... S
+		semesters.append(Semester(calendar=calendar, year=now.year, term=Semester.TERM_FALL))
+		for y in range(now.year+1, grad_year):
+			semesters.append(Semester(calendar=calendar, year=y, term=Semester.TERM_SPRING))
+			semesters.append(Semester(calendar=calendar, year=y, term=Semester.TERM_FALL))
+		semesters.append(Semester(calendar=calendar,
+			year=grad_year, term=Semester.TERM_SPRING))
+
+	Semester.objects.bulk_create(semesters)
 
 def _form_cache_key(calendar):
 	return '%d-%d' % (calendar.profile_id, calendar.pk)

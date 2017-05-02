@@ -177,6 +177,7 @@ class Record(models.Model):
 
 class Calendar(models.Model):
 	profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='calendars')
+	name = models.CharField(max_length=255, default='')
 	degree = models.ForeignKey(Degree)
 	major = models.ForeignKey(Major)
 	track = models.ForeignKey(Track, blank=True, null=True) # optional 

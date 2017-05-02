@@ -20,11 +20,15 @@
 		<div class="title"></div>
 		<div id="dashboard"></div>
 		<script>
+			function load_django(s) {
+				return JSON.parse(atob(s));
+				}
+
 			var dashboard_data = {
-				user_calendars: JSON.parse('{{ user_calendars|safe }}'),
-				majors: JSON.parse('{{ majors|safe }}'),
-				tracks: JSON.parse('{{ tracks|safe }}'),
-				certs: JSON.parse('{{ certificates|safe }}'),
+				user_calendars: load_django('{{ user_calendars }}'),
+				majors: load_django('{{ majors|safe }}'),
+				tracks: load_django('{{ tracks|safe }}'),
+				certificates: load_django('{{ certificates|safe }}'),
 				preference_id: {{ preference_id }},
 				calendar: {
 					url: function(id) {
@@ -53,7 +57,12 @@
 					singleProgressUrl: function(id) {
 						var base = "{% url 'api:progress-detail' pk=889 %}";
 						return base.replace('889', id);
-						}
+						},
+
+					certificateUrl: function(id, cert_id) {
+						var base = "{% url 'api:calendar-certificates' pk=889 %}";
+						return base.replace('889', id) + '?cert_id=' + cert_id;
+						},
 					},
 				recommendations: {
 					url: function(id) {

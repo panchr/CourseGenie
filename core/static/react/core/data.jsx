@@ -107,7 +107,22 @@ module.exports = {
 				{method: 'PATCH', data: data})
 				.done((data) => callback(data))	
 				.fail(shared.errorHandler);		
-			}
+			},
+
+		addCertificate: function(id, cert_id, callback=(e) => null) {
+			setup_ajax_csrf();
+			return jQuery.post(dashboard_data.calendar.certificateUrl(id, cert_id))
+				.done((data) => callback(data))
+				.fail(shared.errorHandler);
+			},
+
+		removeCertificate: function(id, cert_id, callback=(e) => null) {
+			setup_ajax_csrf();
+			return jQuery.ajax(dashboard_data.calendar.certificateUrl(id, cert_id),
+				{method: 'DELETE'})
+				.done((data) => callback(data))
+				.fail(shared.errorHandler);
+			},
 		},
 
 	recommendations: {

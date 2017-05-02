@@ -6,7 +6,8 @@
 */
 
 var React = require('react'),
-	ReactDOM = require('react-dom');
+	ReactDOM = require('react-dom'),
+	jQuery = require('jquery');
 
 import HTML5Backend from 'react-dnd-html5-backend';
 import { DragDropContext } from 'react-dnd';
@@ -17,6 +18,7 @@ var CourseDisplay = require('core/components/CourseDisplay.jsx'),
   SemesterDisplay = require('core/components/SemesterDisplay.jsx'),
 	ListView = require('core/components/ListView.jsx'),
 	GridView = require('core/components/GridView.jsx'),
+	ListInput = require('core/components/ListInput.jsx'),
 	MessageList = require('core/components/MessageList.jsx'),
 	ErrorAlert = require('core/components/ErrorAlert.jsx'),
 	Icon = require('core/components/Icon.jsx'),
@@ -42,10 +44,13 @@ function main() {
 		}
 
 	ReactDOM.render(
-		<DashboardComp calendar_ids={dashboard_data.user_calendars}
-		majors={dashboard_data.majors} tracks={tracksByMajor}
-		certificates={dashboard_data.certificates}
-		minRecommendations={10} />,
+		<DashboardComp
+			calendars={dashboard_data.user_calendars}
+			majors={dashboard_data.majors} tracks={tracksByMajor}
+			certificates={dashboard_data.certificates}
+			minRecommendations={10}
+			defaultCalendar={dashboard_data.user_calendars[0].id}
+			/>,
 		document.getElementById('dashboard'));
 	}
 
@@ -67,6 +72,7 @@ class Dashboard extends React.Component {
 				track: new List(),
 				certificates: new List(),
 				}),
+			currentCalendar: props.defaultCalendar,
 			calendarSettingsModalOpen: false,
 			currentMajor: null,
 			currentTrack: null,
@@ -77,6 +83,9 @@ class Dashboard extends React.Component {
 		this.nonstateData = {};
 		this.requests = new Array();
 		this.progressChange = this.progressChange.bind(this);
+		this.setCalendar = this.setCalendar.bind(this);
+
+		this._cached_data = {};
 		}
 
 	componentWillMount() {
@@ -88,8 +97,19 @@ class Dashboard extends React.Component {
 		this.requests.map((r) => r.abort());
 		}
 
+	setCalendar(calendar_id) {
+		// deep clone: cache current state before switching to avoid refetching.
+		this._cached_data[this.state.currentCalendar] = jQuery.extend(true, {}, this.state);
+		this.setState({currentCalendar: calendar_id}, () => {
+			if (calendar_id in this._cached_data) {
+				this.setState(this._cached_data[calendar_id]);
+				}
+			else this.loadAllData();
+			});
+		}
+
 	loadAllData() {
-		this.requests.push(data.calendar.getData(this.props.calendar_ids[0],
+		this.requests.push(data.calendar.getData(this.state.currentCalendar,
 			(data) => {
 				var data = fromJS(data);
 				this.setState({semesters: data.get('semesters'),
@@ -101,7 +121,7 @@ class Dashboard extends React.Component {
 		}
 
 	loadRecommendations(callback=() => null) {
-		this.requests.push(data.recommendations.get(this.props.calendar_ids[0],
+		this.requests.push(data.recommendations.get(this.state.currentCalendar,
 			(data) => {
 				this.setState({recommendations: new List(data)});
 				callback();
@@ -109,7 +129,7 @@ class Dashboard extends React.Component {
 		}
 
 	loadProgress() {
-		this.requests.push(data.calendar.getProgress(this.props.calendar_ids[0],
+		this.requests.push(data.calendar.getProgress(this.state.currentCalendar,
 			(data) => {
 				var progressData = {
 					degree: new Array(),
@@ -117,6 +137,9 @@ class Dashboard extends React.Component {
 					track: new Array(),
 					certificates: new Object(),
 					};
+
+				var currentCertificateIds = this.state.currentCertificates.map(
+					(x) => x.get('id'));
 
 				for (var i=0; i < data.length; i++) {
 					var p = data[i],
@@ -126,7 +149,7 @@ class Dashboard extends React.Component {
 					// user marking them complete manually).
 					if ((parent_type == 'major' && p.parent.id != this.state.currentMajor)
 						|| (parent_type == 'track' && p.parent.id != this.state.currentTrack)
-						|| (parent_type == 'certificate' && this.state.currentCertificates.indexOf(p.parent.id) == -1)) continue;
+						|| (parent_type == 'certificate' && currentCertificateIds.indexOf(p.parent.id) == -1)) continue;
 
 					if (parent_type == 'certificate') {
 						if (progressData.certificates[p.parent.id] == undefined)
@@ -223,7 +246,7 @@ class Dashboard extends React.Component {
 		}
 
 	addToSandbox(course) {
-		this.requests.push(data.calendar.addToSandbox(this.props.calendar_ids[0],
+		this.requests.push(data.calendar.addToSandbox(this.state.currentCalendar,
 			course, () => {
 			this.setState({sandbox: this.state.sandbox.push(course)});
 			}));
@@ -232,7 +255,7 @@ class Dashboard extends React.Component {
 	removeFromSandbox(i, course) {
 		this.setState({sandbox: this.state.sandbox.remove(i)});
 		this.requests.push(data.calendar.removeFromSandbox(
-			this.props.calendar_ids[0], course));
+			this.state.currentCalendar, course));
 		}
 
 	progressChange(t, innerIndex, index, id) {
@@ -279,13 +302,11 @@ class Dashboard extends React.Component {
 
 		if (! trackInMajor) update_data.track = null;
 
-		var shouldReload = (update_data.track != this.state.currentTrack ||
-			update_data.major != this.nonstateData.old_major);
+		// var shouldReload = (update_data.track != this.state.currentTrack ||
+		// 	update_data.major != this.nonstateData.old_major);
 
-		this.requests.push(data.calendar.saveSettings(this.props.calendar_ids[0],
-			update_data, () => {
-				if (shouldReload) this.loadAllData();
-				}));
+		this.requests.push(data.calendar.saveSettings(this.state.currentCalendar,
+			update_data, () => this.loadAllData()));
 
 		this.setState({
 			calendarSettingsModalOpen: false,
@@ -331,6 +352,8 @@ class Dashboard extends React.Component {
 					onClose={() => this.setState({calendarSettingsModalOpen: false})}>
 					<div className="row">
 						<h1>Concentration Settings</h1>
+					</div>
+					<div className="row">
 						<div className="12u"><h2>Major</h2></div>
 						<div className="12u">
 						<select name="selected-major" value={this.state.currentMajor}
@@ -349,7 +372,7 @@ class Dashboard extends React.Component {
 					<div className="row">
 						<div className="12u"><h2>Track</h2></div>
 						<div className="12u">
-						<select name="selected-track" defaultValue={this.state.currentTrack}
+							<select name="selected-track" defaultValue={this.state.currentTrack}
 								ref={(e) => this.elems.track_input = e}>
 								<option value="null">None</option>
 								{this.props.tracks[this.state.currentMajor].map((e) =>
@@ -357,11 +380,41 @@ class Dashboard extends React.Component {
 							</select>
 						</div>
 					</div>
+					<div className="row">
+						<div className="12u"><h2>Certificate(s)</h2></div>
+						<div className="12u">
+						<ListInput t={(e) => <span>{e.name}</span>}
+							data={this.state.currentCertificates.toJS()}
+							blankText='None yet!'
+							getInput={() => this.props.certificates[this.elems.certificate_input.value]} cols={2}
+							onAdd={(e) => {
+								data.calendar.addCertificate(this.state.currentCalendar, e.id);
+								}}
+							onDelete={(e, i) => {
+								data.calendar.removeCertificate(this.state.
+								currentCalendar, e.id)
+								}}>
+								<select name="selected-certificate"
+									ref={(e) => this.elems.certificate_input = e}>
+									{this.props.certificates.map((e, i) =>
+										<option value={i} key={Math.random()}>
+											{e.name}
+										</option>)}
+								</select>
+						</ListInput>
+						</div>
+					</div>
 				</Modal>
 
 				<div className='messages-list'>
 					<MessageList messages={this.state.messages.toJS()}
 						onDismiss={(i) => this.setState({messages: this.state.messages.delete(i)})} />
+				</div>
+
+				<div className="row">
+					{this.props.calendars.map((e) => {
+						return <h1 onClick={() => this.setCalendar(e.id)}>{e.name}</h1>;
+						})}
 				</div>
 
 				<div className="row">
