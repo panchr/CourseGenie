@@ -180,11 +180,11 @@ class CourseForm extends React.Component {
 						<div className="6u$"><h1>Last Name</h1></div>
 						<div className="6u">
 							<input type="text" defaultValue={this.state.user.first_name}
-							ref={(e) => this.elems.first_name_input = e} />
+							ref={(e) => this.elems.first_name_input = e} maxLength="25" />
 						</div>
 						<div className="6u">
 							<input type="text" defaultValue={this.state.user.last_name}
-								ref={(e) => this.elems.last_name_input = e} />
+								ref={(e) => this.elems.last_name_input = e} maxLength="25" />
 						</div>
 					</div>
 					<div className="row 50%">

@@ -287,3 +287,23 @@
 		transform: rotate(360deg);
 	}
 }
+
+.dropdown {
+    display: inline-block;
+    z-index: 1000;
+}
+
+.dropdown__content {
+		z-index: 1000;
+    display: none;
+    position: absolute;
+    background-color: white;
+}
+
+.dropdown--active .dropdown__content {
+    display: block;
+}
+
+.dropdown-item {
+	padding: 0.5em;
+	}

@@ -5,9 +5,13 @@
 * Description: Render dashboard page.
 */
 
-var React = require('react'),
+const React = require('react'),
 	ReactDOM = require('react-dom'),
 	jQuery = require('jquery');
+
+// var Dropdown = require('react-simple-dropdown');
+
+import Dropdown, { DropdownTrigger, DropdownContent } from 'react-simple-dropdown';
 
 import HTML5Backend from 'react-dnd-html5-backend';
 import { DragDropContext } from 'react-dnd';
@@ -322,6 +326,91 @@ class Dashboard extends React.Component {
 
 	render() {
 		return (<div className="container">
+				<div className="row">
+					<div className="12u">
+						<Dropdown>
+							<DropdownTrigger className='btn'>Calendars <Icon i='ios-arrow-down' /></DropdownTrigger>
+							<DropdownContent>
+								<ul>
+								{this.props.calendars.map((e) => {
+									return <li key={Math.random()} className='btn dropdown-item'>
+										<h1 onClick={() => this.setCalendar(e.id)}>{e.name}</h1>
+									</li>;
+								})}
+								</ul>
+							</DropdownContent>
+						</Dropdown>
+					</div>		
+				</div>
+
+				<div className="row">
+					<div className='7u hovering-tabs'>
+						<ExpandingTabs tabs={[
+							{name: 'Sandbox', content:
+								<Sandbox onCourseAdd={(c) => this.addToSandbox(c)}
+									onCourseRemove={(c, i) => this.removeFromSandbox(i, c)}
+									courses={this.state.sandbox.toJS()} />},
+							{name: 'Progress', content: 
+								<div className='row'>
+								<div className="12u">
+									<button className='button-add btn force-center'
+										onClick={() => this.setState({calendarSettingsModalOpen: true})}
+										style={{marginTop: '1em'}}>
+											Concentration Settings
+										</button>
+								</div>
+								<div className="12u">
+									<ProgressView progress={this.state.progress.toJS()}
+									onProgressChange={this.progressChange} />
+								</div>
+								</div>},
+							]} />
+					</div>
+
+					<div className="7u">
+						<div className='scrollable-container no-horizontal-scroll'>
+							<ListView t={(e, i) =>
+								<SemesterDisplay {...e.toJS()} maxSize={6}
+									onError={(err) => this.setState({messages: this.state.messages.push(err)})}
+									onCourseAdd={(c) => this.addCourse(i, c)}
+									onCourseRemove={(c, j) => this.removeCourse(i, j, c)}
+									onPlusClick={() => {
+										if (! this.state.courseInputModalOpen)
+											this.setState({courseInputModalOpen: true, selectedSemester: e.toJS(),
+												selectedSemester_index: i});
+										}} />
+								} data={this.state.semesters} />
+						</div>
+					</div>
+					<div className="5u" id="float">
+						<h3>
+							Recommendations &nbsp;
+							<RotatingIcon rotating={this.state.loading}
+									i='ios-loop-strong' onClick={() => this.loadAllData()}
+									style={{float: 'right', color: '#009688'}} className='btn' />
+						</h3>
+						<div className='scrollable-container no-horizontal-scroll'>
+							<ListView t={(e, i) => {
+								return <div className='recs'>
+									<div className="row">
+									<div className='10u'>
+										<RecommendationDisplay {...e}
+											onDragEnd={() => this.removeSuggestion(i)} />
+									</div>
+									<div className='2u'>
+										<Icon i='ios-close-empty'
+											className='btn large-icon' style={{color: 'LightSlateGray'}}
+											onClick={() => this.dismissSuggestion(e.course.course_id, i)}
+										/>
+									</div>
+									</div>
+								</div>;
+								}} data={this.state.recommendations} />
+						</div>
+					</div>
+			</div>
+
+			{/* Hovering/Positioned Content */}
 				<Modal open={this.state.courseInputModalOpen} buttonText='Add'
 					onButtonClick={() => {
 						this.addDirectCourse(this.state.selectedSemester_index);
@@ -426,79 +515,6 @@ class Dashboard extends React.Component {
 					<MessageList messages={this.state.messages.toJS()}
 						onDismiss={(i) => this.setState({messages: this.state.messages.delete(i)})} />
 				</div>
-
-				<div className="row">
-					{this.props.calendars.map((e) => {
-						return <h1 onClick={() => this.setCalendar(e.id)}>{e.name}</h1>;
-						})}
-				</div>
-
-				<div className="row">
-					<div className='7u hovering-tabs'>
-						<ExpandingTabs tabs={[
-							{name: 'Sandbox', content:
-								<Sandbox onCourseAdd={(c) => this.addToSandbox(c)}
-									onCourseRemove={(c, i) => this.removeFromSandbox(i, c)}
-									courses={this.state.sandbox.toJS()} />},
-							{name: 'Progress', content: 
-								<div className='row'>
-								<div className="12u">
-									<button className='button-add btn force-center'
-										onClick={() => this.setState({calendarSettingsModalOpen: true})}
-										style={{marginTop: '1em'}}>
-											Concentration Settings
-										</button>
-								</div>
-								<div className="12u">
-									<ProgressView progress={this.state.progress.toJS()}
-									onProgressChange={this.progressChange} />
-								</div>
-								</div>},
-							]} />
-					</div>
-
-					<div className="7u">
-						<div className='scrollable-container no-horizontal-scroll'>
-							<ListView t={(e, i) =>
-								<SemesterDisplay {...e.toJS()} maxSize={6}
-									onError={(err) => this.setState({messages: this.state.messages.push(err)})}
-									onCourseAdd={(c) => this.addCourse(i, c)}
-									onCourseRemove={(c, j) => this.removeCourse(i, j, c)}
-									onPlusClick={() => {
-										if (! this.state.courseInputModalOpen)
-											this.setState({courseInputModalOpen: true, selectedSemester: e.toJS(),
-												selectedSemester_index: i});
-										}} />
-								} data={this.state.semesters} />
-						</div>
-					</div>
-					<div className="5u" id="float">
-						<h3>
-							Recommendations &nbsp;
-							<RotatingIcon rotating={this.state.loading}
-									i='ios-loop-strong' onClick={() => this.loadAllData()}
-									style={{float: 'right'}} className='btn' />
-						</h3>
-						<div className='scrollable-container no-horizontal-scroll'>
-							<ListView t={(e, i) => {
-								return <div className='recs'>
-									<div className="row">
-									<div className='10u'>
-										<RecommendationDisplay {...e}
-											onDragEnd={() => this.removeSuggestion(i)} />
-									</div>
-									<div className='2u'>
-										<Icon i='ios-close-empty'
-											className='btn large-icon' style={{color: 'LightSlateGray'}}
-											onClick={() => this.dismissSuggestion(e.course.course_id, i)}
-										/>
-									</div>
-									</div>
-								</div>;
-								}} data={this.state.recommendations} />
-						</div>
-					</div>
-			</div>
 		</div>);
 		}
 	}

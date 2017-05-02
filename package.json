@@ -10,7 +10,8 @@
     "react": "^0.14.8",
     "react-dnd": "^2.3.0",
     "react-dnd-html5-backend": "^2.3.0",
-    "react-dom": "^0.14.8"
+    "react-dom": "^0.14.8",
+    "react-simple-dropdown": "^3.0.0"
   },
   "devDependencies": {
     "babel-plugin-transform-class-properties": "^6.18.0",
