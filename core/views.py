@@ -75,6 +75,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
 		user = self.request.user
 		user_calendars = list(Calendar.objects.filter(profile=user.profile.id).values('id', 'name'))
 		context['user_calendars'] = to_js(user_calendars)
+		context['profile_id'] = user.profile.id
 		context['preference_id'] = user.profile.preference.id
 		context['majors'] = to_js(list(Major.objects.all().values(
 			'short_name', 'name', 'id')))

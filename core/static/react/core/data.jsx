@@ -47,6 +47,12 @@ module.exports = {
 				.fail(shared.errorHandler);
 			},
 
+		create: function(data, callback=() => null) {
+			return jQuery.post(dashboard_data.calendar.createUrl, data)
+				.done((data) => callback(data))
+				.fail(shared.errorHandler);
+			},
+
 		saveSettings: function(id, data, callback=()=>null) {
 			return jQuery.ajax(dashboard_data.calendar.url(id),
 				{method: 'PATCH', data: data})

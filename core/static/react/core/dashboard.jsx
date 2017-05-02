@@ -51,10 +51,11 @@ function main() {
 	ReactDOM.render(
 		<DashboardComp
 			calendars={dashboard_data.user_calendars}
+			defaultCalendar={dashboard_data.user_calendars[0].id}
 			majors={dashboard_data.majors} tracks={tracksByMajor}
 			certificates={dashboard_data.certificates}
+			profile={dashboard_data.profile_id}
 			minRecommendations={10}
-			defaultCalendar={dashboard_data.user_calendars[0].id}
 			/>,
 		document.getElementById('dashboard'));
 	}
@@ -66,7 +67,6 @@ class Dashboard extends React.Component {
 			semesters: new List(),
 			recommendations: new List(),
 			messages: new List(),
-			courseInputModalOpen: false,
 			selectedSemester: new Object(),
 			selectedSemester_index: null,
 			sandbox: new List(),
@@ -76,8 +76,12 @@ class Dashboard extends React.Component {
 				track: new List(),
 				certificates: new List(),
 				}),
-			currentCalendar: props.defaultCalendar,
+			calendars: fromJS(props.calendars),
 			calendarSettingsModalOpen: false,
+			courseInputModalOpen: false,
+			calendarAddModalOpen: false,
+			addCalMajor: null,
+			currentCalendar: props.defaultCalendar,
 			currentMajor: null,
 			currentTrack: null,
 			currentCertificates: new List(),
@@ -85,12 +89,11 @@ class Dashboard extends React.Component {
 			};
 
 		this.elems = {};
-		this.nonstateData = {};
 		this.requests = new Array();
 		this.progressChange = this.progressChange.bind(this);
 		this.setCalendar = this.setCalendar.bind(this);
 
-		this._cached_data = {};
+		this._cached_calendars = {};
 		}
 
 	componentWillMount() {
@@ -104,10 +107,10 @@ class Dashboard extends React.Component {
 
 	setCalendar(calendar_id) {
 		// deep clone: cache current state before switching to avoid refetching.
-		this._cached_data[this.state.currentCalendar] = jQuery.extend(true, {}, this.state);
+		this._cached_calendars[this.state.currentCalendar] = jQuery.extend(true, {}, this.state);
 		this.setState({currentCalendar: calendar_id}, () => {
-			if (calendar_id in this._cached_data) {
-				this.setState(this._cached_data[calendar_id]);
+			if (calendar_id in this._cached_calendars) {
+				this.setState(this._cached_calendars[calendar_id]);
 				}
 			else this.loadAllData();
 			});
@@ -311,9 +314,6 @@ class Dashboard extends React.Component {
 
 		if (! trackInMajor) update_data.track = null;
 
-		// var shouldReload = (update_data.track != this.state.currentTrack ||
-		// 	update_data.major != this.nonstateData.old_major);
-
 		this.requests.push(data.calendar.saveSettings(this.state.currentCalendar,
 			update_data, () => this.loadAllData()));
 
@@ -324,6 +324,37 @@ class Dashboard extends React.Component {
 			});
 		}
 
+	addNewCalendar() {
+		const name = this.elems.calendar_name_input.value,
+			major = this.elems.add_cal_major.value,
+			track = this.elems.add_cal_track.value;
+
+		var post_data = {
+			degree: 1,
+			name: name,
+			major: major,
+			track: track,
+			profile_id: this.props.profile,
+			};
+
+		// Remove track if not found in the current major.
+		var trackInMajor = false;
+		for (var i=0; i < this.props.tracks[post_data.major].length; i++) {
+			var t = this.props.tracks[post_data.major][i];
+			if (t.id == post_data.track) {
+				trackInMajor = true;
+				break;
+				}
+			}
+
+		if (! trackInMajor) post_data.track = null;
+		
+		this.requests.push(data.calendar.create(post_data, (cal) => {
+			this.setState({calendars: this.state.calendars.insert(0, new Map(cal))});
+			this.setCalendar(cal.id);
+			}));
+		}
+
 	render() {
 		return (<div className="container">
 				<div className="row">
@@ -331,10 +362,17 @@ class Dashboard extends React.Component {
 						<Dropdown>
 							<DropdownTrigger className='btn'>Calendars <Icon i='ios-arrow-down' /></DropdownTrigger>
 							<DropdownContent>
+								<h1 className='dropdown-item btn'
+									onClick={() => this.setState({calendarAddModalOpen: true})}>
+									New Calendar &nbsp; <Icon i='ios-plus-outline'
+										style={{color: 'green'}} />
+								</h1>
 								<ul>
-								{this.props.calendars.map((e) => {
+								{this.state.calendars.map((e) => {
 									return <li key={Math.random()} className='btn dropdown-item'>
-										<h1 onClick={() => this.setCalendar(e.id)}>{e.name}</h1>
+										<h1 onClick={() => this.setCalendar(e.get('id'))}>
+											{e.get('name')}
+										</h1>
 									</li>;
 								})}
 								</ul>
@@ -440,6 +478,58 @@ class Dashboard extends React.Component {
 					</div>
 				</Modal>
 
+				<Modal open={this.state.calendarAddModalOpen} buttonText='Add'
+					onButtonClick={() => {
+						this.addNewCalendar();
+						this.setState({calendarAddModalOpen: false});
+						}}
+					onClose={() => this.setState({calendarAddModalOpen: false})}>
+					<h1>Add Calendar</h1>
+					<div className='row'>
+						<div className='12u'>
+							<span>Name</span>
+						</div>
+					</div>
+					<div className='row no-children-top-padding'>
+						<div className="12u">
+							<input placeholder="e.g. Calendar" type="text" className="text"
+							ref={(e) => this.elems.calendar_name_input = e} maxLength="50" />
+						</div>
+					</div>
+
+					<div className="row">
+						<div className="12">
+							<div className="row">
+								<div className="12u"><h2>Major</h2></div>
+								<div className="12u center">
+									<select name="add-selected-major"
+										value={this.state.addCalMajor}
+										onChange={(e) => this.setState({addCalMajor: e.target.value})}
+										ref={(e) => this.elems.add_cal_major = e}>
+										{this.props.majors.map((e) =>
+											<option value={e.id} key={Math.random()}>
+												{e.name}
+											</option>)}
+									</select>
+								</div>
+							</div>
+							<div className="row">
+								<div className="12u"><h2>Track</h2></div>
+							</div>
+							<div className="row">
+								<div className="12u center">
+									<select name="add-selected-track" defaultValue={this.state.currentTrack}
+										ref={(e) => this.elems.add_cal_track = e}>
+										<option value="null">None</option>
+										{this.props.tracks[this.state.addCalMajor].map((e) =>
+											<option value={e.id} key={Math.random()}>{e.name}</option>)}
+									</select>
+								</div>
+							</div>
+						</div>
+					</div>
+				</Modal>
+
 				<Modal open={this.state.calendarSettingsModalOpen} buttonText='Save'
 					onButtonClick={() => this.saveCalendarSettings()}
 					onClose={() => this.setState({calendarSettingsModalOpen: false})}
@@ -450,23 +540,20 @@ class Dashboard extends React.Component {
 
 					<div className="row">
 						<div className="6u">
-						<div className="row">
-							<div className="12u"><h2>Major</h2></div>
-							<div className="12u center">
-								<select name="selected-major" value={this.state.currentMajor}
-									ref={(e) => this.elems.major_input = e}
-									onChange={(e) => {
-										this.nonstateData.old_major = this.state.currentMajor;
-										this.setState({currentMajor: e.target.value});
-										}}>
-									{this.props.majors.map((e) =>
-										<option value={e.id} key={Math.random()}>
-											{e.name}
-										</option>)}
-								</select>
+							<div className="row">
+								<div className="12u"><h2>Major</h2></div>
+								<div className="12u center">
+									<select name="selected-major" value={this.state.currentMajor}
+										ref={(e) => this.elems.major_input = e}
+										onChange={(e) => this.setState({currentMajor: e.target.value})}>
+										{this.props.majors.map((e) =>
+											<option value={e.id} key={Math.random()}>
+												{e.name}
+											</option>)}
+									</select>
+								</div>
 							</div>
-						</div>
-						<div className="row">
+							<div className="row">
 								<div className="12u"><h2>Track</h2></div>
 							</div>
 							<div className="row">
@@ -477,7 +564,7 @@ class Dashboard extends React.Component {
 										{this.props.tracks[this.state.currentMajor].map((e) =>
 											<option value={e.id} key={Math.random()}>{e.name}</option>)}
 									</select>
-							</div>
+								</div>
 							</div>
 						</div>
 						<div className="6u">

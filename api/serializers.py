@@ -120,6 +120,8 @@ class ProfileSerializer(serializers.ModelSerializer):
 
 class CalendarSerializer(serializers.ModelSerializer):
     profile = ProfileSerializer(read_only=True)
+    profile_id = serializers.PrimaryKeyRelatedField(source='profile',
+        queryset=Profile.objects.all(), write_only=True)
     # degree = DegreeSerializer(read_only=True)
     # major = MajorSerializer(read_only=True)
     # track = TrackSerializer(read_only=True)

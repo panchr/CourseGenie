@@ -72,6 +72,10 @@ class CalendarViewSet(viewsets.ModelViewSet):
         genie.clear_cached_recommendations(obj.profile_id, obj.pk)
         return super(CalendarViewSet, self).partial_update(request, pk, *args, **kwargs)
 
+    def perform_create(self, serializer):
+        cal = serializer.save()
+        genie.generate_semesters(cal)
+
     @detail_route(methods=['post', 'delete'], url_path='certificates')
     def modify_certificates(self, request, pk=None):
         calendar = self.get_object()
