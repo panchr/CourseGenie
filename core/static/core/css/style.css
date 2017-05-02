@@ -623,12 +623,11 @@
 			font-size: 85% !important;
 			line-height: 1.5em;
 			padding: 0.7em 0.2em 0.7em 1.2em;
-			margin: 0.5em 0.9em 0.2em 0;
 			color: #7C9CD0;
 			text-decoration: none;
 			font-weight: 300;
 			text-align: left;
-			min-width: 100%;
+			width: 97%;
 		}
 
 		.course-list
@@ -642,7 +641,6 @@
 			border-radius: 5px;
 			line-height: 1.5em;
 			padding: 0.7em 0.2em 0.7em 1.2em;
-			margin: 0.5em 0.9em -2em 0;
 			color: #afafaf;
 			text-decoration: none;
 			font-weight: 300;
@@ -661,7 +659,6 @@
 			border-radius: 5px;
 			line-height: 1.5em;
 			padding-top: 2.8em;
-			margin: 0.5em 0.9em -2em 0;
 			color: #57d157;
 			text-decoration: none;
 			font-weight: 300;

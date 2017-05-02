@@ -28,7 +28,7 @@ var CourseDisplay = require('core/components/CourseDisplay.jsx'),
 
 function main() {
 	var DashboardComp = DragDropContext(HTML5Backend)(Dashboard);
-	
+
 	// null value so it doesn't crash on initial load
 	var tracksByMajor = {};
 	tracksByMajor[null] = new Array();
@@ -371,7 +371,7 @@ class Dashboard extends React.Component {
 								<Sandbox onCourseAdd={(c) => this.addToSandbox(c)}
 									onCourseRemove={(c, i) => this.removeFromSandbox(i, c)}
 									courses={this.state.sandbox.toJS()} />},
-							{name: 'Progress', content: 
+							{name: 'Progress', content:
 								<div className='row'>
 								<div className="12u">
 									<button className='button-add btn force-center'
@@ -388,8 +388,8 @@ class Dashboard extends React.Component {
 							]} />
 					</div>
 
-					<div className="7u">
-						<div style={{maxHeight: '80vh', overflowY: 'scroll'}}>
+					<div className="7u no-left-padding">
+						<div className="grid-pad" style={{maxHeight: '80vh', overflowY: 'scroll'}}>
 							<ListView t={(e, i) =>
 								<SemesterDisplay {...e.toJS()} maxSize={6}
 									onError={(err) => this.setState({messages: this.state.messages.push(err)})}

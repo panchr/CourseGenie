@@ -8,6 +8,10 @@
 	padding-bottom: 0.5em;
 }
 
+.grid-pad {
+	padding-left: 2.5em;
+}
+
 @media (max-width: 960px) {
 	.hidemobile {
 		display: none !important;
@@ -16,6 +20,10 @@
 
 .list-view .list-item {
 	display: block;
+	}
+
+	.grid-item {
+		padding-left: 0 !important;
 	}
 
 .large-icon {
