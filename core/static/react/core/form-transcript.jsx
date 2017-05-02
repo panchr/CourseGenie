@@ -147,7 +147,9 @@ class CourseForm extends React.Component {
 								<ListInput ref={(e) => this.elems.courses_list = e} t={(c) => {
 									var split = c.split(" ");
 									return <CourseDisplay department={split[0]} number={split[1]} />;
-									}} getInput={this.getCourse} data={this.state.courses} cols={2} blankText='None yet!' >
+									}} getInput={this.getCourse} data={this.state.courses} cols={2} blankText='None yet!'
+									onAdd={(e) => this.setState({courses: this.state.courses.push(e)})}
+									onDelete={(e, i) => this.setState({courses: this.state.courses.remove(i)})}>
 									<div className="6u">
 										<h1>Department</h1>
 									</div>
