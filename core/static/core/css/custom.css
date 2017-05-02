@@ -24,6 +24,15 @@
 	padding-top: 0;
 	}
 
+.no-horizontal-scroll {
+	overflow-x: hidden;
+	}
+
+.scrollable-container {
+	overflow-y: scroll;
+	max-height: 80vh;
+	}
+
 .center {
 	text-align: center;
 	}

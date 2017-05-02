@@ -442,7 +442,7 @@ class Dashboard extends React.Component {
 					</div>
 
 					<div className="7u">
-						<div style={{maxHeight: '80vh', overflowY: 'scroll'}}>
+						<div className='scrollable-container no-horizontal-scroll'>
 							<ListView t={(e, i) =>
 								<SemesterDisplay {...e.toJS()} maxSize={6}
 									onError={(err) => this.setState({messages: this.state.messages.push(err)})}
@@ -458,7 +458,7 @@ class Dashboard extends React.Component {
 					</div>
 					<div className="5u" id="float">
 						<h3>Recommendations</h3>
-						<div style={{maxHeight: '80vh', overflowY: 'scroll'}}>
+						<div className='scrollable-container no-horizontal-scroll'>
 							<ListView t={(e, i) => {
 								return <div className='recs'>
 									<div className="row">
