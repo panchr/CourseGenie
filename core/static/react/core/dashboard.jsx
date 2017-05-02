@@ -31,6 +31,7 @@ var CourseDisplay = require('core/components/CourseDisplay.jsx'),
 	ExpandingTabs = require('core/components/ExpandingTabs.jsx'),
 	Sandbox = require('core/components/Sandbox.jsx'),
 	ProgressView = require('core/components/ProgressView.jsx'),
+	CalendarSettings = require('core/components/CalendarSettings.jsx'),
 	data = require('core/data.jsx');
 
 function main() {
@@ -80,8 +81,9 @@ class Dashboard extends React.Component {
 			calendarSettingsModalOpen: false,
 			courseInputModalOpen: false,
 			calendarAddModalOpen: false,
-			addCalMajor: null,
 			currentCalendar: props.defaultCalendar,
+			currentCalendarName: '',
+			currentCalendarIndex: 0,
 			currentMajor: null,
 			currentTrack: null,
 			currentCertificates: new List(),
@@ -122,9 +124,11 @@ class Dashboard extends React.Component {
 			(data) => {
 				var data = fromJS(data);
 				this.setState({semesters: data.get('semesters'),
-					sandbox: data.get('sandbox'), currentMajor: data.get('major'),
+					sandbox: data.get('sandbox'),
+					currentMajor: data.get('major'),
 					currentTrack: data.get('track'),
 					currentCertificates: data.get('certificates'),
+					currentCalendarName: data.get('name'),
 					}, () => this.loadRecommendations(() => {
 						this.loadProgress();
 						this.setState({loading: false});
@@ -296,61 +300,30 @@ class Dashboard extends React.Component {
 		this.requests.push(data.calendar.setSingleProgress(id, patch_data));
 		}
 
-	saveCalendarSettings() {
-		var update_data = {
-			major: this.elems.major_input.value,
-			track: this.elems.track_input.value == 'null' ? null: this.elems.track_input.value,
-			};
-
-		// Remove track if not found in the current major.
-		var trackInMajor = false;
-		for (var i=0; i < this.props.tracks[update_data.major].length; i++) {
-			var t = this.props.tracks[update_data.major][i];
-			if (t.id == update_data.track) {
-				trackInMajor = true;
-				break;
-				}
-			}
-
-		if (! trackInMajor) update_data.track = null;
-
+	saveCalendarSettings(update_data) {
 		this.requests.push(data.calendar.saveSettings(this.state.currentCalendar,
 			update_data, () => this.loadAllData()));
 
 		this.setState({
 			calendarSettingsModalOpen: false,
-			currentMajor: update_data.major,
-			currentTrack: update_data.track,
+			currentMajor: Number(update_data.major),
+			currentTrack: Number(update_data.track),
+			currentCalendarName: update_data.name,
+			calendars: this.state.calendars.set(this.state.currentCalendarIndex, 
+				this.state.calendars.get(this.state.currentCalendarIndex).set('name', update_data.name))
 			});
 		}
 
-	addNewCalendar() {
-		const name = this.elems.calendar_name_input.value,
-			major = this.elems.add_cal_major.value,
-			track = this.elems.add_cal_track.value;
+	addNewCalendar(post_data) {
+		post_data.degree = 1;
+		post_data.profile_id = this.props.profile;
 
-		var post_data = {
-			degree: 1,
-			name: name,
-			major: major,
-			track: track,
-			profile_id: this.props.profile,
-			};
-
-		// Remove track if not found in the current major.
-		var trackInMajor = false;
-		for (var i=0; i < this.props.tracks[post_data.major].length; i++) {
-			var t = this.props.tracks[post_data.major][i];
-			if (t.id == post_data.track) {
-				trackInMajor = true;
-				break;
-				}
-			}
-
-		if (! trackInMajor) post_data.track = null;
-		
 		this.requests.push(data.calendar.create(post_data, (cal) => {
-			this.setState({calendars: this.state.calendars.insert(0, new Map(cal))});
+			this.setState({
+				calendars: this.state.calendars.insert(0, new Map(cal)),
+				currentCalendarName: post_data.name,
+				currentCalendarIndex: 0,
+				});
 			this.setCalendar(cal.id);
 			}));
 		}
@@ -368,9 +341,12 @@ class Dashboard extends React.Component {
 										style={{color: 'green'}} />
 								</h1>
 								<ul>
-								{this.state.calendars.map((e) => {
+								{this.state.calendars.map((e, i) => {
 									return <li key={Math.random()} className='btn dropdown-item'>
-										<h1 onClick={() => this.setCalendar(e.get('id'))}>
+										<h1 onClick={() => {
+											this.setCalendar(e.get('id'));
+											this.setState({currentCalendarIndex: i});
+											}}>
 											{e.get('name')}
 										</h1>
 									</li>;
@@ -478,125 +454,34 @@ class Dashboard extends React.Component {
 					</div>
 				</Modal>
 
-				<Modal open={this.state.calendarAddModalOpen} buttonText='Add'
-					onButtonClick={() => {
-						this.addNewCalendar();
+				<CalendarSettings addMode open={this.state.calendarAddModalOpen}
+					onSave={(data) => {
+						this.addNewCalendar(data);
 						this.setState({calendarAddModalOpen: false});
 						}}
-					onClose={() => this.setState({calendarAddModalOpen: false})}>
-					<h1>Add Calendar</h1>
-					<div className='row'>
-						<div className='12u'>
-							<span>Name</span>
-						</div>
-					</div>
-					<div className='row no-children-top-padding'>
-						<div className="12u">
-							<input placeholder="e.g. Calendar" type="text" className="text"
-							ref={(e) => this.elems.calendar_name_input = e} maxLength="50" />
-						</div>
-					</div>
+					onClose={() => this.setState({calendarAddModalOpen: false})}
+					header='Add Calendar' majors={this.props.majors}
+					tracks={this.props.tracks} certificates={this.props.certificates}
+					currentMajor={this.state.currentMajor}
+					currentTrack={this.state.currentTrack}
+					currentCertificates={this.state.currentCertificates.toJS()}
+					/>
 
-					<div className="row">
-						<div className="12">
-							<div className="row">
-								<div className="12u"><h2>Major</h2></div>
-								<div className="12u center">
-									<select name="add-selected-major"
-										value={this.state.addCalMajor}
-										onChange={(e) => this.setState({addCalMajor: e.target.value})}
-										ref={(e) => this.elems.add_cal_major = e}>
-										{this.props.majors.map((e) =>
-											<option value={e.id} key={Math.random()}>
-												{e.name}
-											</option>)}
-									</select>
-								</div>
-							</div>
-							<div className="row">
-								<div className="12u"><h2>Track</h2></div>
-							</div>
-							<div className="row">
-								<div className="12u center">
-									<select name="add-selected-track" defaultValue={this.state.currentTrack}
-										ref={(e) => this.elems.add_cal_track = e}>
-										<option value="null">None</option>
-										{this.props.tracks[this.state.addCalMajor].map((e) =>
-											<option value={e.id} key={Math.random()}>{e.name}</option>)}
-									</select>
-								</div>
-							</div>
-						</div>
-					</div>
-				</Modal>
-
-				<Modal open={this.state.calendarSettingsModalOpen} buttonText='Save'
-					onButtonClick={() => this.saveCalendarSettings()}
+				<CalendarSettings open={this.state.calendarSettingsModalOpen}
+					onSave={(data) => {
+						this.saveCalendarSettings(data);
+						this.setState({calendarSettingsModalOpen: false});
+						}}
 					onClose={() => this.setState({calendarSettingsModalOpen: false})}
-					className='expanding center-parent'>
-					<div className="row">
-						<div className="12u"><h1>Concentration Settings</h1></div>
-					</div>
-
-					<div className="row">
-						<div className="6u">
-							<div className="row">
-								<div className="12u"><h2>Major</h2></div>
-								<div className="12u center">
-									<select name="selected-major" value={this.state.currentMajor}
-										ref={(e) => this.elems.major_input = e}
-										onChange={(e) => this.setState({currentMajor: e.target.value})}>
-										{this.props.majors.map((e) =>
-											<option value={e.id} key={Math.random()}>
-												{e.name}
-											</option>)}
-									</select>
-								</div>
-							</div>
-							<div className="row">
-								<div className="12u"><h2>Track</h2></div>
-							</div>
-							<div className="row">
-								<div className="12u center">
-									<select name="selected-track" defaultValue={this.state.currentTrack}
-										ref={(e) => this.elems.track_input = e}>
-										<option value="null">None</option>
-										{this.props.tracks[this.state.currentMajor].map((e) =>
-											<option value={e.id} key={Math.random()}>{e.name}</option>)}
-									</select>
-								</div>
-							</div>
-						</div>
-						<div className="6u">
-							<div className="row">
-								<div className="12u"><h2>Certificate(s)</h2></div>
-							</div>
-							<div className="row">
-								<div className="12u center">
-								<ListInput t={(e) => <span>{e.name}</span>}
-									data={this.state.currentCertificates.toJS()}
-									blankText='None yet!'
-									getInput={() => this.props.certificates[this.elems.certificate_input.value]} cols={2}
-									onAdd={(e) => {
-										data.calendar.addCertificate(this.state.currentCalendar, e.id);
-										}}
-									onDelete={(e, i) => {
-										data.calendar.removeCertificate(this.state.
-										currentCalendar, e.id)
-										}}>
-										<select name="selected-certificate"
-											ref={(e) => this.elems.certificate_input = e}>
-											{this.props.certificates.map((e, i) =>
-												<option value={i} key={Math.random()}>
-													{e.name}
-												</option>)}
-										</select>
-								</ListInput>
-								</div>
-							</div>
-						</div>
-					</div>
-				</Modal>
+					onCertificateAdd={(e) => data.calendar.addCertificate(this.state.currentCalendar, e.id)}
+					onCertificateRemove={(e, i) => data.calendar.removeCertificate(this.state.currentCalendar, e.id)}
+					header='Add Calendar' majors={this.props.majors}
+					tracks={this.props.tracks} certificates={this.props.certificates}
+					currentName={this.state.currentCalendarName}
+					currentMajor={this.state.currentMajor}
+					currentTrack={this.state.currentTrack}
+					currentCertificates={this.state.currentCertificates.toJS()}
+					/>
 
 				<div className='messages-list'>
 					<MessageList messages={this.state.messages.toJS()}

@@ -198,8 +198,8 @@
 	border: #3b6ab5 1px solid;
 	border-radius: 0.5em;
 	padding: 1em;
-	min-width: 25vh;
-	min-height: 15vw;
+	min-width: 25vw;
+	min-height: 15vh;
 	box-shadow: 0em 0em 1em 0.25em #afbdd4;
 	}
 
@@ -290,11 +290,11 @@
 
 .dropdown {
     display: inline-block;
-    z-index: 1000;
+    z-index: 997;
 }
 
 .dropdown__content {
-		z-index: 1000;
+		z-index: 997;
     display: none;
     position: absolute;
     background-color: white;
