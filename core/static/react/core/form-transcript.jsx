@@ -16,7 +16,8 @@ var CourseDisplay = require('core/components/CourseDisplay.jsx'),
 	GridView = require('core/components/GridView.jsx'),
 	ErrorAlert = require('core/components/ErrorAlert.jsx'),
 	Icon = require('core/components/Icon.jsx'),
-	ListInput = require('core/components/ListInput.jsx');
+	ListInput = require('core/components/ListInput.jsx'),
+	MessageList = require('core/components/MessageList.jsx');
 
 function main() {
 	var queryParameters = queryString.parse(window.location.search);
@@ -49,8 +50,7 @@ class CourseForm extends React.Component {
 			courses: new List(props.data.existing_courses),
 			user: props.data.user,
 			graduation_year: props.data.graduation_year,
-			errorMsg: '',
-			requestErrorMsg: '',
+			messages: new List(),
 			};
 
 		this.elems = {};
@@ -74,7 +74,7 @@ class CourseForm extends React.Component {
 				.fail(() => {
 					// need generic request error handling
 					// - see Quizzera's utils.handleAPIError
-					this.setState({requestErrorMsg: 'transcript request failed - blame Kathy'});
+					this.addMessage({message: 'Please re-submit transcript.', t: 'error'});
 					});
 			}
 		}
@@ -83,24 +83,26 @@ class CourseForm extends React.Component {
 		if (this.transcriptRequest) this.transcriptRequest.abort();
 		}
 
+	addMessage(m) {
+		this.setState({messages: this.state.messages.push(m)});
+		}
+
 	getCourse(c) {
 		var department = this.elems.department_input.value,
 			number = this.elems.number_input.value,
 			c = (department + " " + number).toUpperCase();
 
-		this.setState({errorMsg: ''});
-
 		if (department == '' || number == '') {
-			this.setState({errorMsg: 'Cannot input a blank course'});
+			this.addMessage({message: 'Cannot input a blank course', t: 'error'});
 			}
 		else if (this.state.courses.indexOf(c) != -1) {
-			this.setState({errorMsg: c + ' is already added!'});
+			this.addMessage({message: c + ' is already added!', t: 'error'});
 			}
 		else if (! /^\w{3}$/.test(department)) {
-			this.setState({errorMsg: 'The department must be 3 letters.'});
+			this.addMessage({message: 'The department must be 3 letters.', t: 'error'});
 			}
 		else if (! /^\d{3}[a-zA-Z]?$/.test(number)) {
-			this.setState({errorMsg: 'The course number must be a number, optionally followed by a letter.'});
+			this.addMessage({message: 'The course number must be a number, optionally followed by a letter.', t: 'error'});
 			}
 		else {
 			return c;
@@ -120,7 +122,7 @@ class CourseForm extends React.Component {
 
 		if (data.user.first_name == '' || data.user.last_name == '') {
 			event.preventDefault(); // prevent form submission
-			this.setState({errorMsg: 'A first and last name must be provided!'});
+			this.addMessage({message: 'A first and last name must be provided!', t: 'error'});
 			}
 
 		this.elems.data_out.value = JSON.stringify(data);
@@ -131,9 +133,12 @@ class CourseForm extends React.Component {
 		if (this.props.data.submitted) hiddenIfSubmitted.display = 'none';
 
 		return (<div>
-				<ErrorAlert msg={this.state.errorMsg} />
-				<ErrorAlert msg={this.state.requestErrorMsg} />
 				<div className="container">
+					<div className='messages-list'>
+						<MessageList messages={this.state.messages.toJS()}
+							onDismiss={(i) => this.setState({messages: this.state.messages.delete(i)})} />
+					</div>
+
 					<form method="post" action={this.props.action}
 						onSubmit={this.submitForm}>
 						<section><section>

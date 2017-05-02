@@ -60,7 +60,6 @@ class Dashboard extends React.Component {
 		this.state = {
 			semesters: new List(),
 			recommendations: new List(),
-			errorMsg: '',
 			messages: new List(),
 			courseInputModalOpen: false,
 			selectedSemester: new Object(),
@@ -89,7 +88,7 @@ class Dashboard extends React.Component {
 		}
 
 	componentWillMount() {
-		data.installErrorHandler((msg) => this.setState({errorMsg: msg}));
+		data.installErrorHandler((msg) => this.addMessage({message: msg, t: 'error'}));
 		this.loadAllData();
 		}
 
@@ -317,7 +316,6 @@ class Dashboard extends React.Component {
 
 	render() {
 		return (<div className="container">
-				<ErrorAlert msg={this.state.errorMsg} />
 				<Modal open={this.state.courseInputModalOpen} buttonText='Add'
 					onButtonClick={() => {
 						this.addDirectCourse(this.state.selectedSemester_index);
