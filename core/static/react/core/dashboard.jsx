@@ -347,59 +347,71 @@ class Dashboard extends React.Component {
 
 				<Modal open={this.state.calendarSettingsModalOpen} buttonText='Save'
 					onButtonClick={() => this.saveCalendarSettings()}
-					onClose={() => this.setState({calendarSettingsModalOpen: false})}>
+					onClose={() => this.setState({calendarSettingsModalOpen: false})}
+					className='expanding center-parent'>
 					<div className="row">
-						<h1>Concentration Settings</h1>
+						<div className="12u"><h1>Concentration Settings</h1></div>
 					</div>
+
 					<div className="row">
-						<div className="12u"><h2>Major</h2></div>
-						<div className="12u">
-						<select name="selected-major" value={this.state.currentMajor}
-								ref={(e) => this.elems.major_input = e}
-								onChange={(e) => {
-									this.nonstateData.old_major = this.state.currentMajor;
-									this.setState({currentMajor: e.target.value});
-									}}>
-								{this.props.majors.map((e) =>
-									<option value={e.id} key={Math.random()}>
-										{e.name}
-									</option>)}
-							</select>
-						</div>
-					</div>
-					<div className="row">
-						<div className="12u"><h2>Track</h2></div>
-						<div className="12u">
-							<select name="selected-track" defaultValue={this.state.currentTrack}
-								ref={(e) => this.elems.track_input = e}>
-								<option value="null">None</option>
-								{this.props.tracks[this.state.currentMajor].map((e) =>
-									<option value={e.id} key={Math.random()}>{e.name}</option>)}
-							</select>
-						</div>
-					</div>
-					<div className="row">
-						<div className="12u"><h2>Certificate(s)</h2></div>
-						<div className="12u">
-						<ListInput t={(e) => <span>{e.name}</span>}
-							data={this.state.currentCertificates.toJS()}
-							blankText='None yet!'
-							getInput={() => this.props.certificates[this.elems.certificate_input.value]} cols={2}
-							onAdd={(e) => {
-								data.calendar.addCertificate(this.state.currentCalendar, e.id);
-								}}
-							onDelete={(e, i) => {
-								data.calendar.removeCertificate(this.state.
-								currentCalendar, e.id)
-								}}>
-								<select name="selected-certificate"
-									ref={(e) => this.elems.certificate_input = e}>
-									{this.props.certificates.map((e, i) =>
-										<option value={i} key={Math.random()}>
+						<div className="6u">
+						<div className="row">
+							<div className="12u"><h2>Major</h2></div>
+							<div className="12u center">
+								<select name="selected-major" value={this.state.currentMajor}
+									ref={(e) => this.elems.major_input = e}
+									onChange={(e) => {
+										this.nonstateData.old_major = this.state.currentMajor;
+										this.setState({currentMajor: e.target.value});
+										}}>
+									{this.props.majors.map((e) =>
+										<option value={e.id} key={Math.random()}>
 											{e.name}
 										</option>)}
 								</select>
-						</ListInput>
+							</div>
+						</div>
+						<div className="row">
+								<div className="12u"><h2>Track</h2></div>
+							</div>
+							<div className="row">
+								<div className="12u center">
+									<select name="selected-track" defaultValue={this.state.currentTrack}
+										ref={(e) => this.elems.track_input = e}>
+										<option value="null">None</option>
+										{this.props.tracks[this.state.currentMajor].map((e) =>
+											<option value={e.id} key={Math.random()}>{e.name}</option>)}
+									</select>
+							</div>
+							</div>
+						</div>
+						<div className="6u">
+							<div className="row">
+								<div className="12u"><h2>Certificate(s)</h2></div>
+							</div>
+							<div className="row">
+								<div className="12u center">
+								<ListInput t={(e) => <span>{e.name}</span>}
+									data={this.state.currentCertificates.toJS()}
+									blankText='None yet!'
+									getInput={() => this.props.certificates[this.elems.certificate_input.value]} cols={2}
+									onAdd={(e) => {
+										data.calendar.addCertificate(this.state.currentCalendar, e.id);
+										}}
+									onDelete={(e, i) => {
+										data.calendar.removeCertificate(this.state.
+										currentCalendar, e.id)
+										}}>
+										<select name="selected-certificate"
+											ref={(e) => this.elems.certificate_input = e}>
+											{this.props.certificates.map((e, i) =>
+												<option value={i} key={Math.random()}>
+													{e.name}
+												</option>)}
+										</select>
+								</ListInput>
+								</div>
+							</div>
 						</div>
 					</div>
 				</Modal>

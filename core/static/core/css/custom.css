@@ -203,6 +203,10 @@
 	box-shadow: 0em 0em 1em 0.25em #afbdd4;
 	}
 
+.modal.expanding {
+	width: inherit;
+	}
+
 .modal:focus {
 	outline: none;
 	}

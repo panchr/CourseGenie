@@ -23,8 +23,11 @@ class Modal extends React.Component {
 
 	render() {
 		this.mainElement = null;
+		var className = 'modal fixed-center';
+		if (this.props.className) className += ' ' + this.props.className;
+
 		if (this.props.open) {
-			return <div className='modal fixed-center' tabIndex=""
+			return <div className={className} tabIndex=""
 				//onBlur={this.props.onClose}
 				ref={(e) => this.mainElement = e}>
 				<Icon i='ios-close-empty'
