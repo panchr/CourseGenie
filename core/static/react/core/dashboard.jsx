@@ -52,8 +52,9 @@ function main() {
 	ReactDOM.render(
 		<DashboardComp
 			calendars={dashboard_data.user_calendars}
-			defaultCalendar={dashboard_data.user_calendars[0].id}
-			majors={dashboard_data.majors} tracks={tracksByMajor}
+			defaultCalendar={0}
+			majors={dashboard_data.majors}
+			tracks={tracksByMajor}
 			certificates={dashboard_data.certificates}
 			profile={dashboard_data.profile_id}
 			minRecommendations={10}
@@ -82,8 +83,6 @@ class Dashboard extends React.Component {
 			courseInputModalOpen: false,
 			calendarAddModalOpen: false,
 			currentCalendar: props.defaultCalendar,
-			currentCalendarName: '',
-			currentCalendarIndex: 0,
 			currentMajor: null,
 			currentTrack: null,
 			currentCertificates: new List(),
@@ -107,11 +106,21 @@ class Dashboard extends React.Component {
 		this.requests.map((r) => r.abort());
 		}
 
-	setCalendar(calendar_id) {
+	calendarId(index) {
+		if (index == null || index == undefined) index = this.state.currentCalendar;
+		return this.state.calendars.get(index).get('id');
+		}
+
+	setCalendar(index, cache=true) {
 		// deep clone: cache current state before switching to avoid refetching.
-		this._cached_calendars[this.state.currentCalendar] = jQuery.extend(true, {}, this.state);
-		this.setState({currentCalendar: calendar_id}, () => {
-			if (calendar_id in this._cached_calendars) {
+		const old_cal_id = this.calendarId();
+
+		if (cache) {
+			this._cached_calendars[old_cal_id] = jQuery.extend(true, {}, this.state);
+			}
+		this.setState({currentCalendar: index}, () => {
+			let calendar_id = this.calendarId(index);
+			if (calendar_id in this._cached_calendars && cache) {
 				this.setState(this._cached_calendars[calendar_id]);
 				}
 			else this.loadAllData();
@@ -120,7 +129,7 @@ class Dashboard extends React.Component {
 
 	loadAllData() {
 		this.setState({loading: true});
-		this.requests.push(data.calendar.getData(this.state.currentCalendar,
+		this.requests.push(data.calendar.getData(this.calendarId(),
 			(data) => {
 				var data = fromJS(data);
 				this.setState({semesters: data.get('semesters'),
@@ -128,7 +137,6 @@ class Dashboard extends React.Component {
 					currentMajor: data.get('major'),
 					currentTrack: data.get('track'),
 					currentCertificates: data.get('certificates'),
-					currentCalendarName: data.get('name'),
 					}, () => this.loadRecommendations(() => {
 						this.loadProgress();
 						this.setState({loading: false});
@@ -137,7 +145,7 @@ class Dashboard extends React.Component {
 		}
 
 	loadRecommendations(callback=() => null) {
-		this.requests.push(data.recommendations.get(this.state.currentCalendar,
+		this.requests.push(data.recommendations.get(this.calendarId(),
 			(data) => {
 				this.setState({recommendations: new List(data)});
 				callback();
@@ -145,7 +153,7 @@ class Dashboard extends React.Component {
 		}
 
 	loadProgress() {
-		this.requests.push(data.calendar.getProgress(this.state.currentCalendar,
+		this.requests.push(data.calendar.getProgress(this.calendarId(),
 			(data) => {
 				var progressData = {
 					degree: new Array(),
@@ -262,7 +270,7 @@ class Dashboard extends React.Component {
 		}
 
 	addToSandbox(course) {
-		this.requests.push(data.calendar.addToSandbox(this.state.currentCalendar,
+		this.requests.push(data.calendar.addToSandbox(this.calendarId(),
 			course, () => {
 			this.setState({sandbox: this.state.sandbox.push(course)});
 			}));
@@ -271,7 +279,7 @@ class Dashboard extends React.Component {
 	removeFromSandbox(i, course) {
 		this.setState({sandbox: this.state.sandbox.remove(i)});
 		this.requests.push(data.calendar.removeFromSandbox(
-			this.state.currentCalendar, course));
+			this.calendarId(), course));
 		}
 
 	progressChange(t, innerIndex, index, id) {
@@ -301,16 +309,16 @@ class Dashboard extends React.Component {
 		}
 
 	saveCalendarSettings(update_data) {
-		this.requests.push(data.calendar.saveSettings(this.state.currentCalendar,
+		this.requests.push(data.calendar.saveSettings(this.calendarId(),
 			update_data, () => this.loadAllData()));
 
 		this.setState({
 			calendarSettingsModalOpen: false,
 			currentMajor: Number(update_data.major),
 			currentTrack: Number(update_data.track),
-			currentCalendarName: update_data.name,
-			calendars: this.state.calendars.set(this.state.currentCalendarIndex, 
-				this.state.calendars.get(this.state.currentCalendarIndex).set('name', update_data.name))
+			calendars: this.state.calendars.set(this.state.currentCalendar, 
+				this.state.calendars.get(this.state.currentCalendar)
+					.set('name', update_data.name))
 			});
 		}
 
@@ -319,12 +327,9 @@ class Dashboard extends React.Component {
 		post_data.profile_id = this.props.profile;
 
 		this.requests.push(data.calendar.create(post_data, (cal) => {
-			this.setState({
-				calendars: this.state.calendars.insert(0, new Map(cal)),
-				currentCalendarName: post_data.name,
-				currentCalendarIndex: 0,
-				});
-			this.setCalendar(cal.id);
+			this.setState({calendars: this.state.calendars.insert(0, new Map(cal))},
+				() => this.setCalendar(0, false));
+			// avoid caching data here because of race condition
 			}));
 		}
 
@@ -343,10 +348,7 @@ class Dashboard extends React.Component {
 								<ul>
 								{this.state.calendars.map((e, i) => {
 									return <li key={Math.random()} className='btn dropdown-item'>
-										<h1 onClick={() => {
-											this.setCalendar(e.get('id'));
-											this.setState({currentCalendarIndex: i});
-											}}>
+										<h1 onClick={() => this.setCalendar(i)}>
 											{e.get('name')}
 										</h1>
 									</li>;
@@ -473,11 +475,11 @@ class Dashboard extends React.Component {
 						this.setState({calendarSettingsModalOpen: false});
 						}}
 					onClose={() => this.setState({calendarSettingsModalOpen: false})}
-					onCertificateAdd={(e) => data.calendar.addCertificate(this.state.currentCalendar, e.id)}
-					onCertificateRemove={(e, i) => data.calendar.removeCertificate(this.state.currentCalendar, e.id)}
+					onCertificateAdd={(e) => data.calendar.addCertificate(this.calendarId(), e.id)}
+					onCertificateRemove={(e, i) => data.calendar.removeCertificate(this.calendarId(), e.id)}
 					header='Add Calendar' majors={this.props.majors}
 					tracks={this.props.tracks} certificates={this.props.certificates}
-					currentName={this.state.currentCalendarName}
+					currentName={this.state.calendars.get(this.state.currentCalendar).get('name')}
 					currentMajor={this.state.currentMajor}
 					currentTrack={this.state.currentTrack}
 					currentCertificates={this.state.currentCertificates.toJS()}

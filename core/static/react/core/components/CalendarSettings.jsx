@@ -154,7 +154,12 @@ CalendarSettings.propTypes = {
 	currentMajor: React.PropTypes.number,
 	currentTrack: React.PropTypes.number,
 	currentName: React.PropTypes.string,
-	currentCertificates: React.PropTypes.arrayOf(React.PropTypes.number).isRequired,
+	currentCertificates: React.PropTypes.arrayOf(
+		React.PropTypes.shape({
+			id: React.PropTypes.number,
+			name: React.PropTypes.string,
+			})
+		).isRequired,
 	onSave: React.PropTypes.func,
 	onClose: React.PropTypes.func,
 	onCertificateAdd: React.PropTypes.func,
