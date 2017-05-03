@@ -18,6 +18,9 @@ from core import genie
 class IndexView(TemplateView):
 	template_name = 'core/index.html'
 
+class QuestionView(LoginRequiredMixin, TemplateView):
+	template_name = 'core/questions.html'
+
 class TranscriptView(LoginRequiredMixin, TemplateView):
 	template_name = 'core/form-transcript.html'
 
@@ -66,20 +69,20 @@ class TranscriptView(LoginRequiredMixin, TemplateView):
 					sem1 = Semester.objects.create(calendar=calendar,
 						year=y, term=Semester.TERM_SPRING)
 					sem2 = Semester.objects.create(calendar=calendar,
-						year=y, term=Semester.TERM_FALL)	
+						year=y, term=Semester.TERM_FALL)
 				sem1 = Semester.objects.create(calendar=calendar,
-					year=grad_year, term=Semester.TERM_SPRING)							
+					year=grad_year, term=Semester.TERM_SPRING)
 
 			else: # Spring or summer, F SF SF ... S
 				sem2 = Semester.objects.create(calendar=calendar,
-					year=now.year, term=Semester.TERM_FALL)	
+					year=now.year, term=Semester.TERM_FALL)
 				for y in range(now.year+1, grad_year):
 					sem1 = Semester.objects.create(calendar=calendar,
 						year=y, term=Semester.TERM_SPRING)
 					sem2 = Semester.objects.create(calendar=calendar,
-						year=y, term=Semester.TERM_FALL)	
+						year=y, term=Semester.TERM_FALL)
 				sem1 = Semester.objects.create(calendar=calendar,
-					year=grad_year, term=Semester.TERM_SPRING)				
+					year=grad_year, term=Semester.TERM_SPRING)
 
 		user.profile.submitted = True
 		user.save()

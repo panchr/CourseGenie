@@ -50,7 +50,14 @@
 	font-size: 110%;
 	color: #888787;
 }
-	h4,h5,h6
+	h4 {
+		font-weight: 300;
+		text-align: left;
+		font-size: 125%;
+		color: #7C9CD0;
+	}
+
+	h5,h6
 	{
 		font-weight: 300;
 		color: #333131;
