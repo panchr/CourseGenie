@@ -16,10 +16,12 @@ var CourseDisplay = require('core/components/CourseDisplay.jsx'),
 function Sandbox(props) {
 	return props.connectDropTarget(<div>
 		<div className='topbtm-pad'></div>
+		<br/>
+		<div className='grid-pad'>
 		<GridView t={(c, i) => {
-			return <div>
+			return <div className='course-list'>
 					<div className='row'>
-				<div className='11u'><CourseDisplay {...c} /></div>
+				<div className='11u'><CourseDisplay {...c} extended={true}/></div>
 				<div className='1u no-left-padding'>
 					<Icon i='ios-close-empty'
 						className='btn' style={{color: 'LightSlateGray'}}
@@ -27,11 +29,11 @@ function Sandbox(props) {
 				</div>
 			</div>
 			</div>;
-			}} cols={4} minRows={2} data={props.courses}
+		}} cols={3} minRows={2} data={props.courses}
 			blankElement={() =>
 				<div className='course-blank'>
 				<Icon i='ios-plus-empty' className='large-icon course-plus' />
-				</div>} />
+				</div>} /></div>
 		<div className='topbtm-pad'></div>
 		<div className='topbtm-pad'></div>
 	</div>);

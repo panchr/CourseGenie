@@ -36,8 +36,7 @@ function SemesterDisplay(props) {
 				<div className='course-blank btn course-color' onClick={props.onPlusClick}>
 				<Icon i='ios-plus-empty' className='large-icon course-plus' />
 				</div>} />
-			<div className='topbtm-pad'></div>
-			<div className='topbtm-pad'></div>
+			<br/>
 	</div>);
 	}
 

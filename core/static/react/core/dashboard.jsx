@@ -322,7 +322,7 @@ class Dashboard extends React.Component {
 			calendarSettingsModalOpen: false,
 			currentMajor: Number(update_data.major),
 			currentTrack: Number(update_data.track),
-			calendars: this.state.calendars.set(this.state.currentCalendar, 
+			calendars: this.state.calendars.set(this.state.currentCalendar,
 				this.state.calendars.get(this.state.currentCalendar)
 					.set('name', update_data.name))
 			});
@@ -362,15 +362,15 @@ class Dashboard extends React.Component {
 						<Dropdown>
 							<DropdownTrigger className='btn'>Calendars <Icon i='ios-arrow-down' /></DropdownTrigger>
 							<DropdownContent>
-								<h1 className='dropdown-item btn'
+								<h2 className='dropdown-item btn'
 									onClick={() => this.setState({calendarAddModalOpen: true})}>
-									New Calendar &nbsp; <Icon i='ios-plus-outline'
+									New Calendar <Icon i='ios-plus-empty'
 										style={{color: 'green'}} />
-								</h1>
+								</h2>
 								<ul>
 								{this.state.calendars.map((e, i) => {
 									return <li key={Math.random()} className='btn dropdown-item'>
-										<h1>
+										<h2>
 											<span onClick={() => this.setCalendar(i)}
 												className={classNames({'active-calendar': i == this.state.currentCalendar})}>
 											{e.get('name')}
@@ -379,15 +379,15 @@ class Dashboard extends React.Component {
 											{this.state.calendars.size == 1? null:
 												// can't delete last calendar
 												<span onClick={() => this.setState({confirmationModalOpen: true, toDeleteCalendar: i})}>
-												<Icon i='ios-close-outline' style={{color: 'red'}} />
+												<Icon i='ios-close-empty' style={{color: 'LightSlateGray'}} />
 													</span>}
-										</h1>
+										</h2>
 									</li>;
 								})}
 								</ul>
 							</DropdownContent>
 						</Dropdown>
-					</div>		
+					</div>
 				</div>
 
 				<div className="row">
