@@ -19,6 +19,7 @@ function SemesterDisplay(props) {
 	return props.connectDropTarget(<div>
 		<div className='topbtm-pad'>
 		<h2>{props.term_display} {props.year}</h2></div>
+		<br/>
 		<GridView t={(c, i) => {
 			return <div className='course-list'>
 					<div className='row'>

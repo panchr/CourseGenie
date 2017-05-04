@@ -30,7 +30,7 @@
 	h1
 	{
 		font-weight: 300;
-		margin-bottom: -1em;
+		margin-bottom: -5em;
 		padding-left: 0.3em;
 		color: #7C9CD0;
 	}
@@ -47,10 +47,17 @@
 {
 	font-weight: 300;
 	text-align: left;
-	font-size: 125%;
+	font-size: 110%;
 	color: #888787;
 }
-	h4,h5,h6
+	h4 {
+		font-weight: 300;
+		text-align: left;
+		font-size: 125%;
+		color: #7C9CD0;
+	}
+
+	h5,h6
 	{
 		font-weight: 300;
 		color: #333131;
@@ -623,12 +630,11 @@
 			font-size: 85% !important;
 			line-height: 1.5em;
 			padding: 0.7em 0.2em 0.7em 1.2em;
-			margin: 0.5em 0.9em 0.2em 0;
 			color: #7C9CD0;
 			text-decoration: none;
 			font-weight: 300;
 			text-align: left;
-			min-width: 100%;
+			width: 97%;
 		}
 
 		.course-list
@@ -637,12 +643,11 @@
 			display: inline-block;
 			background: none;
 			border: 2px solid #D8D8D8;
-			height: 8em;
-			width: 12.2em;
+			height: 9em;
+			width: 12.5em;
 			border-radius: 5px;
 			line-height: 1.5em;
 			padding: 0.7em 0.2em 0.7em 1.2em;
-			margin: 0.5em 0.9em -2em 0;
 			color: #afafaf;
 			text-decoration: none;
 			font-weight: 300;
@@ -656,12 +661,11 @@
 			background: none;
 			border: 2px solid #57d157;
 			border-style: dashed;
-			height: 8em;
-			width: 12.2em;
+			height: 9em;
+			width: 12.5em;
 			border-radius: 5px;
 			line-height: 1.5em;
-			padding-top: 2.8em;
-			margin: 0.5em 0.9em -2em 0;
+			padding-top: 3.3em;
 			color: #57d157;
 			text-decoration: none;
 			font-weight: 300;

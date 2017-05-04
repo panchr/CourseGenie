@@ -130,7 +130,9 @@ class CourseForm extends React.Component {
 
 	render() {
 		var hiddenIfSubmitted = {};
+		var hiddenIfNotSubmitted = {};
 		if (this.props.data.submitted) hiddenIfSubmitted.display = 'none';
+		if (!this.props.data.submitted) hiddenIfNotSubmitted.display = 'none';
 
 		return (<div>
 				<div className="container">
@@ -148,11 +150,10 @@ class CourseForm extends React.Component {
 							value={window._csrf_token}/>
 						<div className="row">
 							<div className="12u">
-								<h2>Courses Entered</h2>
 								<ListInput ref={(e) => this.elems.courses_list = e} t={(c) => {
 									var split = c.split(" ");
 									return <CourseDisplay department={split[0]} number={split[1]} />;
-									}} getInput={this.getCourse} data={this.state.courses} cols={2} blankText='None yet!'
+									}} getInput={this.getCourse} data={this.state.courses} cols={4} blankText='None yet!'
 									onAdd={(e) => this.setState({courses: this.state.courses.push(e)})}
 									onDelete={(e, i) => this.setState({courses: this.state.courses.remove(i)})}>
 									<div className="6u">
@@ -175,7 +176,7 @@ class CourseForm extends React.Component {
 						</div>
 					</section>
 					<hr/>
-					<div className="row 50%">
+					<div className="row">
 						<div className="6u"><h1>First Name</h1></div>
 						<div className="6u$"><h1>Last Name</h1></div>
 						<div className="6u">
@@ -187,7 +188,7 @@ class CourseForm extends React.Component {
 								ref={(e) => this.elems.last_name_input = e} maxLength="25" />
 						</div>
 					</div>
-					<div className="row 50%">
+					<div className="row">
 						<div className="6u$">
 							<h1>Graduation Year</h1>
 						</div>
@@ -198,7 +199,7 @@ class CourseForm extends React.Component {
 								ref={(e) => this.elems.year_input = e} />
 						</div>
 					</div>
-					<div className="row 50%" style={hiddenIfSubmitted}>
+					<div className="row" style={hiddenIfSubmitted}>
 						<div className="12u$">
 							<h1>Major (can be changed later)</h1>
 						</div>
@@ -211,9 +212,15 @@ class CourseForm extends React.Component {
 						</div>
 					</div>
 					</section>
-						<div className="row 50%">
+						<div className="row 50%" style={hiddenIfSubmitted}>
 							<div className="12u center">
 								<input type="submit" className="button btn" value="Get Started"/>
+								<div className='topbtm-pad'></div>
+							</div>
+						</div>
+						<div className="row 50%" style={hiddenIfNotSubmitted}>
+							<div className="12u center">
+								<input type="submit" className="button btn" value="Submit"/>
 								<div className='topbtm-pad'></div>
 							</div>
 						</div>

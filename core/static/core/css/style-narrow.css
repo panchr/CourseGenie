@@ -17,13 +17,13 @@
 	{
 		width: 90%;
 	}
-	
+
 	/* Lists */
-	
+
 		ul.featured
 		{
 		}
-	
+
 			ul.featured li
 			{
 				width: 30%;
@@ -34,7 +34,7 @@
 		{
 			text-align: center;
 		}
-	
+
 			ul.lists li
 			{
 				margin-bottom: 2em;
@@ -44,12 +44,12 @@
 		ul.default
 		{
 		}
-		
+
 			ul.default li
 			{
 				margin-bottom: 0em !important;
 			}
-	
+
 	ul.staff
 	{
 	}
@@ -58,7 +58,7 @@
 		{
 			margin: 0 0.50em;
 		}
-		
+
 		ul.staff img
 		{
 		}
@@ -70,7 +70,7 @@
 	#logo
 	{
 	}
-	
+
 		#logo a
 		{
 			padding-left: 0.70em;

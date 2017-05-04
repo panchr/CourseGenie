@@ -19,6 +19,9 @@ from core import genie
 class IndexView(TemplateView):
 	template_name = 'core/index.html'
 
+class QuestionView(LoginRequiredMixin, TemplateView):
+	template_name = 'core/questions.html'
+
 class TranscriptView(LoginRequiredMixin, TemplateView):
 	template_name = 'core/form-transcript.html'
 
