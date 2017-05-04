@@ -7,7 +7,8 @@
 
 const React = require('react'),
 	ReactDOM = require('react-dom'),
-	jQuery = require('jquery');
+	jQuery = require('jquery'),
+	classNames = require('classnames');
 
 // var Dropdown = require('react-simple-dropdown');
 
@@ -370,7 +371,10 @@ class Dashboard extends React.Component {
 								{this.state.calendars.map((e, i) => {
 									return <li key={Math.random()} className='btn dropdown-item'>
 										<h1>
-											<span onClick={() => this.setCalendar(i)}>{e.get('name')}</span>
+											<span onClick={() => this.setCalendar(i)}
+												className={classNames({'active-calendar': i == this.state.currentCalendar})}>
+											{e.get('name')}
+											</span>
 											&nbsp;
 											{this.state.calendars.size == 1? null:
 												// can't delete last calendar
