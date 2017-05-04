@@ -298,6 +298,10 @@
     display: none;
     position: absolute;
     background-color: white;
+    border: 1px black solid;
+    border-bottom-left-radius: 0.25em;
+    border-bottom-right-radius: 0.25em;
+    border-top: 0;
 }
 
 .dropdown--active .dropdown__content {
