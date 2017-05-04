@@ -429,7 +429,7 @@ class Dashboard extends React.Component {
 								} data={this.state.semesters} />
 						</div>
 					</div>
-					<div className="5u" id="float">
+					<div className="5u move-up" id="float">
 						<h3>
 							Recommendations &nbsp;
 							<RotatingIcon rotating={this.state.loading}

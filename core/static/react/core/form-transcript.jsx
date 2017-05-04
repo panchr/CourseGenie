@@ -220,7 +220,7 @@ class CourseForm extends React.Component {
 						</div>
 						<div className="row 50%" style={hiddenIfNotSubmitted}>
 							<div className="12u center">
-								<input type="submit" className="button btn" value="Submit"/>
+								<input type="submit" className="button btn" value="Save"/>
 								<div className='topbtm-pad'></div>
 							</div>
 						</div>
