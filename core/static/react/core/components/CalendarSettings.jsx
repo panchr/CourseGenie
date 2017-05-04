@@ -62,7 +62,7 @@ class CalendarSettings extends React.Component {
 		var certificateStyle = {};
 		if (this.props.addMode) certificateStyle.display = 'none';
 
-		return 	<Modal open={this.props.open}
+		return <Modal open={this.props.open}
 			buttonText={this.props.addMode? 'Add': 'Save'}
 			onButtonClick={() => this.onSave()}
 			onClose={() => this.props.onClose()}

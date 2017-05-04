@@ -53,6 +53,12 @@ module.exports = {
 				.fail(shared.errorHandler);
 			},
 
+		delete: function(id, callback=() => null) {
+			return jQuery.ajax(dashboard_data.calendar.url(id), {method: 'DELETE'})
+				.done((data) => callback(data))
+				.fail(shared.errorHandler);
+			},
+
 		saveSettings: function(id, data, callback=()=>null) {
 			return jQuery.ajax(dashboard_data.calendar.url(id),
 				{method: 'PATCH', data: data})

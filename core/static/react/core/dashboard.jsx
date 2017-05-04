@@ -82,6 +82,8 @@ class Dashboard extends React.Component {
 			calendarSettingsModalOpen: false,
 			courseInputModalOpen: false,
 			calendarAddModalOpen: false,
+			confirmationModalOpen: false,
+			toDeleteCalendar: null,
 			currentCalendar: props.defaultCalendar,
 			currentMajor: null,
 			currentTrack: null,
@@ -116,7 +118,10 @@ class Dashboard extends React.Component {
 		const old_cal_id = this.calendarId();
 
 		if (cache) {
-			this._cached_calendars[old_cal_id] = jQuery.extend(true, {}, this.state);
+			var cached_data = jQuery.extend(true, {}, this.state);
+			delete cached_data.calendars;
+			delete cached_data.currentCalendar;
+			this._cached_calendars[old_cal_id] = cached_data;
 			}
 		this.setState({currentCalendar: index}, () => {
 			let calendar_id = this.calendarId(index);
@@ -333,6 +338,22 @@ class Dashboard extends React.Component {
 			}));
 		}
 
+	deleteCalendar() {
+		const index = this.state.toDeleteCalendar;
+		if (index == null) return;
+
+		const id = this.state.calendars.get(index).get('id');
+
+		this.setState({
+			calendars: this.state.calendars.delete(index),
+			toDeleteCalendar: null,
+			confirmationModalOpen: false,
+			});
+		if (index == this.state.currentCalendar) this.setCalendar(0, false);
+
+		this.requests.push(data.calendar.delete(id));
+		}
+
 	render() {
 		return (<div className="container">
 				<div className="row">
@@ -348,8 +369,14 @@ class Dashboard extends React.Component {
 								<ul>
 								{this.state.calendars.map((e, i) => {
 									return <li key={Math.random()} className='btn dropdown-item'>
-										<h1 onClick={() => this.setCalendar(i)}>
-											{e.get('name')}
+										<h1>
+											<span onClick={() => this.setCalendar(i)}>{e.get('name')}</span>
+											&nbsp;
+											{this.state.calendars.size == 1? null:
+												// can't delete last calendar
+												<span onClick={() => this.setState({confirmationModalOpen: true, toDeleteCalendar: i})}>
+												<Icon i='ios-close-outline' style={{color: 'red'}} />
+													</span>}
 										</h1>
 									</li>;
 								})}
@@ -372,7 +399,7 @@ class Dashboard extends React.Component {
 									<button className='button-add btn force-center'
 										onClick={() => this.setState({calendarSettingsModalOpen: true})}
 										style={{marginTop: '1em'}}>
-											Concentration Settings
+											Calendar Settings
 										</button>
 								</div>
 								<div className="12u">
@@ -456,6 +483,24 @@ class Dashboard extends React.Component {
 					</div>
 				</Modal>
 
+				<Modal open={this.state.confirmationModalOpen} button={false}
+					onClose={() => this.setState({confirmationModalOpen: false})}>
+					<h2>Do you really want to delete this calendar?</h2>
+					<h3 className='center'>{this.state.toDeleteCalendar != null ? this.state.calendars.get(this.state.toDeleteCalendar).get('name'): null}</h3>
+					<div className='row'>
+						<div className="6u">
+							<span className="button-add btn"
+								onClick={() => this.deleteCalendar()}>
+								Delete</span>
+						</div>
+						<div className="6u">
+							<span className="button-add btn"
+								onClick={() => this.setState({confirmationModalOpen: false})}>
+								Cancel</span>
+						</div>
+					</div>
+				</Modal>
+
 				<CalendarSettings addMode open={this.state.calendarAddModalOpen}
 					onSave={(data) => {
 						this.addNewCalendar(data);
@@ -477,7 +522,7 @@ class Dashboard extends React.Component {
 					onClose={() => this.setState({calendarSettingsModalOpen: false})}
 					onCertificateAdd={(e) => data.calendar.addCertificate(this.calendarId(), e.id)}
 					onCertificateRemove={(e, i) => data.calendar.removeCertificate(this.calendarId(), e.id)}
-					header='Add Calendar' majors={this.props.majors}
+					header='Edit Calendar' majors={this.props.majors}
 					tracks={this.props.tracks} certificates={this.props.certificates}
 					currentName={this.state.calendars.get(this.state.currentCalendar).get('name')}
 					currentMajor={this.state.currentMajor}
