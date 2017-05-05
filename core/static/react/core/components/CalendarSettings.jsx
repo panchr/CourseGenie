@@ -59,7 +59,7 @@ class CalendarSettings extends React.Component {
 		const majorTrackSize = this.props.addMode ? '12u': '6u',
 			certificateSize = this.props.addMode ? '0u': '6u';
 
-		var certificateStyle = {};
+		var certificateStyle = {paddingTop: '4.2em'};
 		if (this.props.addMode) certificateStyle.display = 'none';
 
 		return <Modal open={this.props.open}
@@ -109,7 +109,7 @@ class CalendarSettings extends React.Component {
 					</div>
 				</div>
 
-				<div className="6u" style={{paddingTop: '4.2em'}}>
+				<div className={certificateSize} style={certificateStyle}>
 					<div className="row no-children-top-padding">
 						<div className="12u no-left-padding"><h2>Certificate(s)</h2></div>
 					</div>
