@@ -117,16 +117,16 @@ module.exports = {
 		getProgress: function(id, callback=(e) => null) {
 			setup_ajax_csrf();
 			return jQuery.get(dashboard_data.calendar.progressUrl(id))
-				.done((data) => callback(data))	
-				.fail(shared.errorHandler);		
+				.done((data) => callback(data))
+				.fail(shared.errorHandler);
 			},
 
 		setSingleProgress: function(id, data, callback=(e) => null) {
 			setup_ajax_csrf();
 			return jQuery.ajax(dashboard_data.calendar.singleProgressUrl(id),
 				{method: 'PATCH', data: data})
-				.done((data) => callback(data))	
-				.fail(shared.errorHandler);		
+				.done((data) => callback(data))
+				.fail(shared.errorHandler);
 			},
 
 		addCertificate: function(id, cert_id, callback=(e) => null) {
@@ -187,21 +187,21 @@ module.exports = {
 			return jQuery.post(preference_data.urls.wl_dept(dept))
 				.done(callback)
 				.fail(shared.errorHandler);
-			},	
+			},
 
 		bl_area: function(area, callback=(e) => null) {
 			setup_ajax_csrf();
 			return jQuery.post(preference_data.urls.bl_area(area))
 				.done(callback)
 				.fail(shared.errorHandler);
-			},	
+			},
 
 		wl_area: function(area, callback=(e) => null) {
 			setup_ajax_csrf();
 			return jQuery.post(preference_data.urls.wl_area(area))
 				.done(callback)
 				.fail(shared.errorHandler);
-			},	
+			},
 
 		del_bl_course: function(course, callback=(e) => null) {
 			setup_ajax_csrf();
@@ -225,7 +225,7 @@ module.exports = {
 				{method: 'DELETE'})
 				.done(callback)
 				.fail(shared.errorHandler);
-			},	
+			},
 
 		del_bl_area: function(area, callback=(e) => null) {
 			setup_ajax_csrf();
@@ -233,7 +233,7 @@ module.exports = {
 				{method: 'DELETE'})
 				.done(callback)
 				.fail(shared.errorHandler);
-			},	
+			},
 
 		del_wl_area: function(area, callback=(e) => null) {
 			setup_ajax_csrf();
@@ -241,6 +241,6 @@ module.exports = {
 				{method: 'DELETE'})
 				.done(callback)
 				.fail(shared.errorHandler);
-			},	
+			},
 		},
 	};

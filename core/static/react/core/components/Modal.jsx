@@ -27,7 +27,7 @@ class Modal extends React.Component {
 		if (this.props.className) className += ' ' + this.props.className;
 
 		const btn = <div className='center-parent' style={{width: '50%'}}>
-					<a className="button-add fit btn" onClick={this.props.onButtonClick}>{this.props.buttonText}</a>
+					<a className="button fit btn" onClick={this.props.onButtonClick}>{this.props.buttonText}</a>
 				</div>;
 
 		if (this.props.open) {

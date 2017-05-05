@@ -291,7 +291,6 @@ def recommend(calendar):
 		satisfied_reqs.append(progress.requirement)
 
 	progresses = user_progresses.filter(user_completed=True).select_related('requirement')
-	satisfied_reqs = []
 	for progress in progresses:
 		satisfied_reqs.append(progress.requirement)
 

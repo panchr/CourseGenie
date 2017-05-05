@@ -605,6 +605,32 @@
 			color: #FFF !important;
 		}
 
+		.button-delete
+		{
+			display: inline-block;
+			background: none;
+			border: 3px solid #e82929;
+			border-radius: 5px;
+			font-size: 0.65em;
+			padding: 0.70em 2em 0.70em 2em;
+			color: #e82929 !important;
+			text-decoration: none;
+			font-size: 1.2em;
+			font-weight: 300;
+			-moz-transition: color 0.35s ease-in-out, background-color 0.35s ease-in-out, border-color 0.35s ease-in-out;
+			-webkit-transition: color 0.35s ease-in-out, background-color 0.35s ease-in-out, border-color 0.35s ease-in-out;
+			-o-transition: color 0.35s ease-in-out, background-color 0.35s ease-in-out, border-color 0.35s ease-in-out;
+			-ms-transition: color 0.35s ease-in-out, background-color 0.35s ease-in-out, border-color 0.35s ease-in-out;
+			transition: color 0.35s ease-in-out, background-color 0.35s ease-in-out, border-color 0.35s ease-in-out;
+			text-align: center;
+		}
+		.button-delete:hover
+		{
+			background: #e82929;
+			border-color: rgba(255,255,255,0.4);
+			color: #FFF !important;
+		}
+
 		.course-area
 		{
 			-webkit-appearance: none;
@@ -697,7 +723,7 @@
 			position: relative;
 			display: inline-block;
 			background: none;
-			border: 2px solid #7C9CD0;
+			border: 1.5px solid #7C9CD0;
 			border-radius: 5px;
 			padding: 0.30em 1em 0.30em 1em;
 			color: #7C9CD0 !important;

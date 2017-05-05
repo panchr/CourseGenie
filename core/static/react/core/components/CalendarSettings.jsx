@@ -59,7 +59,7 @@ class CalendarSettings extends React.Component {
 		const majorTrackSize = this.props.addMode ? '12u': '6u',
 			certificateSize = this.props.addMode ? '0u': '6u';
 
-		var certificateStyle = {};
+		var certificateStyle = {paddingTop: '4.2em'};
 		if (this.props.addMode) certificateStyle.display = 'none';
 
 		return <Modal open={this.props.open}
@@ -75,7 +75,7 @@ class CalendarSettings extends React.Component {
 			</div>
 			<div className='row no-children-top-padding'>
 				<div className="12u">
-					<input type="text" className="text fit"
+					<input type="text" className="text" style={{width: '25em', margin: 'auto', display: 'block'}}
 					defaultValue={this.props.currentName}
 					ref={(e) => this.elems.name_input = e} maxLength="50" />
 				</div>
@@ -111,17 +111,17 @@ class CalendarSettings extends React.Component {
 
 				<div className={certificateSize} style={certificateStyle}>
 					<div className="row no-children-top-padding">
-						<div className="12u"><h2>Certificate(s)</h2></div>
+						<div className="12u no-left-padding"><h2>Certificate(s)</h2></div>
 					</div>
 					<div className="row">
 						<div className="12u center">
 							<ListInput t={(e) => <span>{e.name}</span>}
 								data={this.state.currentCertificates}
 								blankText='None yet!'
-								getInput={() => this.props.certificates[this.elems.certificate_input.value]} cols={2}
+								getInput={() => this.props.certificates[this.elems.certificate_input.value]}
 								onAdd={(e) => this.props.onCertificateAdd(e)}
 								onDelete={(e, i) => this.props.onCertificateRemove(e, i)}>
-									<select name="selected-certificate"
+									<select name="selected-certificate" style={{marginLeft: '3em'}}
 										ref={(e) => this.elems.certificate_input = e}>
 										{this.props.certificates.map((e, i) =>
 											<option value={i} key={Math.random()}>
