@@ -397,17 +397,18 @@ class Dashboard extends React.Component {
 				</div>
 
 				<div className="row">
-					<div className='7u hovering-tabs'>
+					<div className='7u hovering-tabs small-left-padding'>
 						<ExpandingTabs tabs={[
 							{name: 'Sandbox', content:
 								<Sandbox onCourseAdd={(c) => this.addToSandbox(c)}
 									onCourseRemove={(c, i) => this.removeFromSandbox(i, c)}
 									courses={this.state.sandbox.toJS()} />},
 							{name: 'Progress', content:
-								<div className='row'>
+								<div className='row small-left-padding'>
 								<div className="12u">
 									<ProgressView progress={this.state.progress.toJS()}
 									onProgressChange={this.progressChange} />
+								<br/>
 								</div>
 								</div>},
 							]} />

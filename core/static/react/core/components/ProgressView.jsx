@@ -19,7 +19,7 @@ function ProgressView(props) {
 			onProgressChange={(i, id) => props.onProgressChange('major', null, i, id)}/>
 		<ProgressItem data={p.track}
 			onProgressChange={(i, id) => props.onProgressChange('track', null, i, id)} />
-		<ListView data={p.certificates} t={(e, j) => 
+		<ListView data={p.certificates} t={(e, j) =>
 			<ProgressItem data={e}
 				onProgressChange={(i, id) =>
 					props.onProgressChange('certificates', j, i, id)}/>}
@@ -63,7 +63,7 @@ function ProgressItem(props) {
 		parent = data[0].parent;
 
 	return <div>
-		<h2>{progress_type}: {parent.name}
+		<h2 className='topbtm-pad'>{progress_type}: {parent.name}
 			{parent.short_name ? ` (${parent.short_name})`: ''}</h2>
 		<ListView data={data} t={(e, i) => {
 			var checkmark = null;

@@ -80,7 +80,9 @@
 	left: 0;
 	padding: 1em;
 	}
-
+.small-left-padding {
+	padding-left: 0.8em;
+}
 .messages-list .message {
 	border-radius: 0.45em;
 	margin-top: 1em;
