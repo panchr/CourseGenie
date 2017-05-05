@@ -358,24 +358,23 @@ class Dashboard extends React.Component {
 	render() {
 		return (<div className="container">
 				<div className="row">
-					<div className="12u">
+					<div className="5u">
 						<Dropdown>
 							<DropdownTrigger className='btn'>Calendars <Icon i='ios-arrow-down' /></DropdownTrigger>
 							<DropdownContent>
-								<h2 className='dropdown-item btn'
+								<h2 className='dropdown-item btn' style={{fontSize: '100%', color: 'green'}}
 									onClick={() => this.setState({calendarAddModalOpen: true})}>
-									New Calendar <Icon i='ios-plus-empty'
+									New Calendar &nbsp; <Icon i='ios-plus-empty'
 										style={{color: 'green'}} />
 								</h2>
-								<ul>
+								<ul className="no-margin">
 								{this.state.calendars.map((e, i) => {
 									return <li key={Math.random()} className='btn dropdown-item'>
-										<h2>
+										<h2 style={{fontSize: '100%', textAlign: 'left'}}>
 											<span onClick={() => this.setCalendar(i)}
 												className={classNames({'active-calendar': i == this.state.currentCalendar})}>
-											{e.get('name')}
+											{e.get('name')} &nbsp;
 											</span>
-											&nbsp;
 											{this.state.calendars.size == 1? null:
 												// can't delete last calendar
 												<span onClick={() => this.setState({confirmationModalOpen: true, toDeleteCalendar: i})}>
@@ -388,6 +387,13 @@ class Dashboard extends React.Component {
 							</DropdownContent>
 						</Dropdown>
 					</div>
+					<div className="2u">
+						<button className='cal-button btn'
+							onClick={() => this.setState({calendarSettingsModalOpen: true})}>
+								Calendar Settings
+							</button>
+						</div>
+						<br/>
 				</div>
 
 				<div className="row">
@@ -400,13 +406,6 @@ class Dashboard extends React.Component {
 							{name: 'Progress', content:
 								<div className='row'>
 								<div className="12u">
-									<button className='button-add btn force-center'
-										onClick={() => this.setState({calendarSettingsModalOpen: true})}
-										style={{marginTop: '1em'}}>
-											Calendar Settings
-										</button>
-								</div>
-								<div className="12u">
 									<ProgressView progress={this.state.progress.toJS()}
 									onProgressChange={this.progressChange} />
 								</div>
@@ -414,7 +413,7 @@ class Dashboard extends React.Component {
 							]} />
 					</div>
 
-					<div className="7u no-left-padding">
+					<div className="7u no-padding">
 						<div className="grid-pad scrollable-container no-horizontal-scroll">
 							<ListView t={(e, i) =>
 								<SemesterDisplay {...e.toJS()} maxSize={6}
@@ -511,7 +510,7 @@ class Dashboard extends React.Component {
 						this.setState({calendarAddModalOpen: false});
 						}}
 					onClose={() => this.setState({calendarAddModalOpen: false})}
-					header='Add Calendar' majors={this.props.majors}
+					majors={this.props.majors}
 					tracks={this.props.tracks} certificates={this.props.certificates}
 					currentMajor={this.state.currentMajor}
 					currentTrack={this.state.currentTrack}

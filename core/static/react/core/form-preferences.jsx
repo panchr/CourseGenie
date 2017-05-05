@@ -258,12 +258,12 @@ class PreferenceForm extends React.Component {
 									{/* refs are required (as callbacks) to get input */}
 								</div>
 							</ListInput>
-							<br/>
-							<br/>
 						</div>
 					</div>
 				</form>
 			</div>
+			<br/>
+			<br/>
 		</div>;
 		}
 	}

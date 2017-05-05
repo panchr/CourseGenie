@@ -68,7 +68,7 @@ class CalendarSettings extends React.Component {
 			onClose={() => this.props.onClose()}
 			className={classNames({'center-parent': true, 'expanding': ! this.props.addMode})}>
 			<h1>{this.props.header}</h1>
-			<div className='row'>
+			<div className='row no-children-top-padding'>
 				<div className='12u'>
 					<h2>Name</h2>
 				</div>
@@ -80,11 +80,10 @@ class CalendarSettings extends React.Component {
 					ref={(e) => this.elems.name_input = e} maxLength="50" />
 				</div>
 			</div>
-
 			<div className="row">
 				<div className={majorTrackSize}>
 					<div className="row no-children-top-padding">
-						<div className="12u"><h2>Major</h2></div>
+						<div className="12u"><br/><h2>Major</h2></div>
 						<div className="12u center">
 							<select name="add-selected-major"
 								value={this.state.currentMajor}
@@ -96,7 +95,7 @@ class CalendarSettings extends React.Component {
 						</div>
 					</div>
 					<div className="row no-children-top-padding">
-						<div className="12u"><h2>Track</h2></div>
+						<div className="12u"><br/><h2>Track</h2></div>
 					</div>
 					<div className="row no-children-top-padding">
 						<div className="12u center">
