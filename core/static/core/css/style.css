@@ -680,6 +680,24 @@
 			text-align: left;
 		}
 
+		.course-entry
+		{
+			position: relative;
+			display: inline-block;
+			background: none;
+			border: 1.5px solid #7C9CD0;
+			height: 2em;
+			width: 60%;
+			margin-left: 3.5em;
+			border-radius: 5px;
+			line-height: 1.5em;
+			padding: 0.2em 0.2em 0.2em 1.2em;
+			color: #7C9CD0;
+			text-decoration: none;
+			font-weight: 300;
+			text-align: left;
+		}
+
 		.course-blank
 		{
 			position: relative;

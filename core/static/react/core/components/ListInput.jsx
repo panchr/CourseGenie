@@ -52,17 +52,16 @@ class ListInput extends React.Component {
 				{this.props.children}
 			</div>
 			<div className="row">
-				<div className="12u" style={{paddingLeft: '0', paddingRight: '2em'}}>
+				<div className="12u">
 					<div className='center-parent' style={{width: '30%'}}>
 						<a className="button-add fit btn" onClick={this.addElement}>Add</a>
 					</div>
 				</div>
 			</div>
 			<GridView t={(e, i) => {
-				return <div>
-					{this.props.t(e, i)}
-					&nbsp;
-					<Icon i='ios-close-outline' style={{color: 'red'}} className='btn'
+				return <div className='course-entry'>
+					{this.props.t(e, i)} &nbsp;
+					<Icon i='ios-close-empty' style={{color: 'LightSlateGray'}} className='btn'
 						onClick={() => {this.removeElement(i)}} />
 				</div>
 				}} data={this.state.data} cols={this.props.cols}
