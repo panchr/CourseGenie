@@ -465,7 +465,7 @@ class Dashboard extends React.Component {
 						}}
 					onClose={() => this.setState({courseInputModalOpen: false, selectedSemester: {},
 						selectedSemester_index: null})}>
-					<h1>{this.state.selectedSemester.term_display} {this.state.selectedSemester.year}</h1>
+					<h1 style={{fontSize: '1.2em', paddingLeft: '0'}}>{this.state.selectedSemester.term_display} {this.state.selectedSemester.year}</h1>
 					<div className='row'>
 						<div className='6u'>
 							<span>Department</span>
@@ -490,14 +490,14 @@ class Dashboard extends React.Component {
 				<Modal open={this.state.confirmationModalOpen} button={false}
 					onClose={() => this.setState({confirmationModalOpen: false})}>
 					<h2>Do you really want to delete this calendar?</h2>
-					<h3 className='center'>{this.state.toDeleteCalendar != null ? this.state.calendars.get(this.state.toDeleteCalendar).get('name'): null}</h3>
+					<h3 className='center topbtm'>{this.state.toDeleteCalendar != null ? this.state.calendars.get(this.state.toDeleteCalendar).get('name'): null}</h3>
 					<div className='row'>
 						<div className="6u">
-							<span className="button-add btn"
+							<span className="button-delete btn"
 								onClick={() => this.deleteCalendar()}>
 								Delete</span>
 						</div>
-						<div className="6u">
+						<div className="6u" style={{paddingLeft: '3em'}}>
 							<span className="button-add btn"
 								onClick={() => this.setState({confirmationModalOpen: false})}>
 								Cancel</span>
@@ -526,7 +526,7 @@ class Dashboard extends React.Component {
 					onClose={() => this.setState({calendarSettingsModalOpen: false})}
 					onCertificateAdd={(e) => data.calendar.addCertificate(this.calendarId(), e.id)}
 					onCertificateRemove={(e, i) => data.calendar.removeCertificate(this.calendarId(), e.id)}
-					header='Edit Calendar' majors={this.props.majors}
+					majors={this.props.majors}
 					tracks={this.props.tracks} certificates={this.props.certificates}
 					currentName={this.state.calendars.get(this.state.currentCalendar).get('name')}
 					currentMajor={this.state.currentMajor}
