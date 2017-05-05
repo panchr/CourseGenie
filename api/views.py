@@ -108,27 +108,45 @@ class CalendarViewSet(viewsets.ModelViewSet):
     @detail_route(methods=['post', 'delete'], url_path='sandbox')
     def modify_sandbox(self, request, pk=None):
         calendar = self.get_object()
-        course_id = request.query_params['course_id']
+
+        search_kwargs = {}
+        course_name = ''
+        if 'course_id' in request.query_params:
+            course_name = request.query_params['course_id']
+            search_kwargs['course_id'] = course_name
+        elif 'short_name' in request.query_params:
+            course_name = request.query_params['short_name']
+            short_name = COURSE_RE.match(course_name)
+            if not short_name:
+                raise NotAcceptable(detail='unacceptable')
+
+            search_kwargs['number'] = short_name.group('num')
+            search_kwargs['department'] = short_name.group('dept')
+            if short_name.group('letter'):
+                search_kwargs['letter'] = short_name.group('letter')
+        else:
+            raise NotAcceptable(detail='unacceptable')
 
         try:
-            course = Course.objects.get(course_id=course_id)
+            course = Course.objects.get(**search_kwargs)
         except Course.DoesNotExist:
-            raise NotFound('course %s not found' % course_id)
+            raise NotFound('course %s not found' % course_name)
 
         if request.method == 'POST':
             # check if already there, and if so, raise 409
             if calendar.sandbox.filter(id=course.id).exists():
-                raise ContentError('course %s already in sandbox' % course_id)
+                raise ContentError('course %s already in sandbox' % course_name)
 
             calendar.sandbox.add(course)
         elif request.method == 'DELETE':
             if not calendar.sandbox.filter(id=course.id).exists():
-                raise ContentError('course %s not in sandbox' % course_id)
+                raise ContentError('course %s not in sandbox' % course_name)
 
             calendar.sandbox.remove(course)
 
         genie.clear_cached_recommendations(calendar.profile_id, calendar.pk)
-        return Response({'success': True})
+        serializer = CourseSerializer(course)
+        return Response(serializer.data)
 
 class RecordViewSet(viewsets.ModelViewSet):
     queryset = Record.objects.all()
@@ -271,7 +289,7 @@ class SemesterViewSet(viewsets.ModelViewSet):
         if 'course_id' in request.query_params:
             course_name = request.query_params['course_id']
             search_kwargs['course_id'] = course_name
-        else:
+        elif 'short_name' in request.query_params:
             course_name = request.query_params['short_name']
             short_name = COURSE_RE.match(course_name)
             if not short_name:
@@ -281,6 +299,8 @@ class SemesterViewSet(viewsets.ModelViewSet):
             search_kwargs['department'] = short_name.group('dept')
             if short_name.group('letter'):
                 search_kwargs['letter'] = short_name.group('letter')
+        else:
+            raise NotAcceptable(detail='unacceptable')
 
 
         try:

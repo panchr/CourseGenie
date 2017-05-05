@@ -72,6 +72,7 @@ class Dashboard extends React.Component {
 			messages: new List(),
 			selectedSemester: new Object(),
 			selectedSemester_index: null,
+			selectedSandbox: false,
 			sandbox: new List(),
 			progress: new Map({
 				degree: new List(),
@@ -254,10 +255,10 @@ class Dashboard extends React.Component {
 		}
 
 	addDirectCourse(semester_index) {
-		var department = this.elems.department_input.value,
+		const department = this.elems.department_input.value,
 			number = this.elems.number_input.value,
 			c = (department + " " + number).toUpperCase(),
-			current = this.state.semesters.get(semester_index);
+			sandbox = semester_index == null && this.state.selectedSandbox;
 
 		if (department == '' || number == '') {
 			this.addMessage({message: 'Cannot input a blank course.', t: 'error'});
@@ -269,9 +270,16 @@ class Dashboard extends React.Component {
 			this.addMessage({message: 'The course number must be a number, optionally followed by a letter.', t: 'error'});
 			}
 		else {
-			this.requests.push(data.calendar.addToSemesterByCourseName(current.get('id'), c, (course_data) => {
-				this.addCourseToDisplay(semester_index, course_data);
-				}));
+			if (sandbox) {
+				this.requests.push(data.calendar.addToSandboxShort(this.calendarId(), c,
+					(course_data) => this.setState({sandbox: this.state.sandbox.push(course_data)})))
+				}
+			else {
+				const current = this.state.semesters.get(semester_index);
+				this.requests.push(data.calendar.addToSemesterByCourseName(current.get('id'), c, (course_data) => {
+					this.addCourseToDisplay(semester_index, course_data);
+					}));
+				}
 			}
 		}
 
@@ -402,6 +410,14 @@ class Dashboard extends React.Component {
 							{name: 'Sandbox', content:
 								<Sandbox onCourseAdd={(c) => this.addToSandbox(c)}
 									onCourseRemove={(c, i) => this.removeFromSandbox(i, c)}
+									onPlusClick={() => {
+										if (! this.state.courseInputModalOpen)
+											this.setState({
+												courseInputModalOpen: true,
+												selectedSandbox: true,
+												selectedSemester: {}, selectedSemester_index: null,
+												});
+										}}
 									courses={this.state.sandbox.toJS()} />},
 							{name: 'Progress', content:
 								<div className='row small-left-padding'>
@@ -423,7 +439,8 @@ class Dashboard extends React.Component {
 									onCourseRemove={(c, j) => this.removeCourse(i, j, c)}
 									onPlusClick={() => {
 										if (! this.state.courseInputModalOpen)
-											this.setState({courseInputModalOpen: true, selectedSemester: e.toJS(),
+											this.setState({
+												courseInputModalOpen: true, selectedSemester: e.toJS(),
 												selectedSemester_index: i});
 										}} />
 								} data={this.state.semesters} />
@@ -461,11 +478,16 @@ class Dashboard extends React.Component {
 				<Modal open={this.state.courseInputModalOpen} buttonText='Add'
 					onButtonClick={() => {
 						this.addDirectCourse(this.state.selectedSemester_index);
-						this.setState({courseInputModalOpen: false, selectedSemester: {}});
+						this.setState({courseInputModalOpen: false, selectedSandbox: false,
+							selectedSemester: {}, selectedSemester_index: null});
 						}}
-					onClose={() => this.setState({courseInputModalOpen: false, selectedSemester: {},
-						selectedSemester_index: null})}>
-					<h1 style={{fontSize: '1.2em', paddingLeft: '0'}}>{this.state.selectedSemester.term_display} {this.state.selectedSemester.year}</h1>
+					onClose={() => this.setState({courseInputModalOpen: false, selectedSemester: {}, selectedSemester_index: null
+						})}>
+					{this.state.selectedSandbox ?
+							<h1 style={{fontSize: '1.2em', paddingLeft: '0'}}>Sandbox</h1>
+							:
+							<h1 style={{fontSize: '1.2em', paddingLeft: '0'}}>{this.state.selectedSemester.term_display} {this.state.selectedSemester.year}</h1>
+					}
 					<div className='row'>
 						<div className='6u'>
 							<span>Department</span>

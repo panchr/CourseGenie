@@ -31,7 +31,7 @@ function Sandbox(props) {
 			</div>;
 		}} cols={3} minRows={2} data={props.courses}
 			blankElement={() =>
-				<div className='course-blank'>
+				<div className='course-blank btn course-color' onClick={props.onPlusClick}>
 				<Icon i='ios-plus-empty' className='large-icon course-plus' />
 				</div>} /></div>
 		<div className='topbtm-pad'></div>
@@ -42,6 +42,7 @@ function Sandbox(props) {
 Sandbox.propTypes = {
 	connectDropTarget: React.PropTypes.func.isRequired,
 	onCourseAdd: React.PropTypes.func.isRequired,
+	onCourseRemove: React.PropTypes.func.isRequired,
 	onCourseRemove: React.PropTypes.func.isRequired,
 	courses: React.PropTypes.array.isRequired,
 	};
