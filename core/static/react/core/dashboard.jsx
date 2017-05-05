@@ -533,7 +533,7 @@ class Dashboard extends React.Component {
 						this.setState({calendarAddModalOpen: false});
 						}}
 					onClose={() => this.setState({calendarAddModalOpen: false})}
-					majors={this.props.majors}
+					header='Add Calendar' majors={this.props.majors}
 					tracks={this.props.tracks} certificates={this.props.certificates}
 					currentMajor={this.state.currentMajor}
 					currentTrack={this.state.currentTrack}
