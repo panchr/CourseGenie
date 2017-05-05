@@ -98,6 +98,14 @@ module.exports = {
 				.fail(shared.errorHandler);
 			},
 
+		addToSandboxShort: function(id, short_name, callback=(e) => null) {
+			setup_ajax_csrf();
+			return jQuery.post(dashboard_data.calendar.sandboxShortUrl(id,
+				short_name))
+				.done((data) => callback(data))
+				.fail(shared.errorHandler);
+			},
+
 		removeFromSandbox: function(id, course, callback=(e) => null) {
 			setup_ajax_csrf();
 			return jQuery.ajax(dashboard_data.calendar.sandboxUrl(id,

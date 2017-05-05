@@ -57,6 +57,11 @@
 						return base.replace('889', id) + '?course_id=' + course_id;
 						},
 
+					sandboxShortUrl: function(id, short_name) {
+						var base = "{% url 'api:calendar-sandbox' pk=889 %}";
+						return base.replace('889', id) + '?short_name=' + short_name;
+						},
+
 					progressUrl: function(id) {
 						var base = "{% url 'api:progress-list' %}";
 						return base + '?calendar_id=' + id;
