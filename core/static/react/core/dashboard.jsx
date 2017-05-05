@@ -548,7 +548,7 @@ class Dashboard extends React.Component {
 					onClose={() => this.setState({calendarSettingsModalOpen: false})}
 					onCertificateAdd={(e) => data.calendar.addCertificate(this.calendarId(), e.id)}
 					onCertificateRemove={(e, i) => data.calendar.removeCertificate(this.calendarId(), e.id)}
-					majors={this.props.majors}
+					header='Edit Calendar' majors={this.props.majors}
 					tracks={this.props.tracks} certificates={this.props.certificates}
 					currentName={this.state.calendars.get(this.state.currentCalendar).get('name')}
 					currentMajor={this.state.currentMajor}
