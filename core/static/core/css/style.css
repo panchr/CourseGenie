@@ -679,7 +679,6 @@
 			background: none;
 			border: 3px solid #7C9CD0;
 			border-radius: 5px;
-			font-size: 0.85em;
 			padding: 0.70em 2em 0.70em 2em;
 			color: #7C9CD0 !important;
 			text-decoration: none;
@@ -693,8 +692,35 @@
 			text-align: center;
 		}
 
+		.cal-button
+		{
+			position: relative;
+			display: inline-block;
+			background: none;
+			border: 2px solid #7C9CD0;
+			border-radius: 5px;
+			padding: 0.30em 1em 0.30em 1em;
+			color: #7C9CD0 !important;
+			text-decoration: none;
+			font-size: 0.9em;
+			font-weight: 300;
+			margin-bottom: 1em;
+			-moz-transition: color 0.35s ease-in-out, background-color 0.35s ease-in-out, border-color 0.35s ease-in-out;
+			-webkit-transition: color 0.35s ease-in-out, background-color 0.35s ease-in-out, border-color 0.35s ease-in-out;
+			-o-transition: color 0.35s ease-in-out, background-color 0.35s ease-in-out, border-color 0.35s ease-in-out;
+			-ms-transition: color 0.35s ease-in-out, background-color 0.35s ease-in-out, border-color 0.35s ease-in-out;
+			transition: color 0.35s ease-in-out, background-color 0.35s ease-in-out, border-color 0.35s ease-in-out;
+			text-align: center;
+		}
 
 			.button:hover
+			{
+				background: #7C9CD0;
+				border-color: rgba(255,255,255,0.4);
+				color: #FFF !important;
+			}
+
+			.cal-button:hover
 			{
 				background: #7C9CD0;
 				border-color: rgba(255,255,255,0.4);

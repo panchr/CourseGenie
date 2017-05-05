@@ -80,7 +80,9 @@
 	left: 0;
 	padding: 1em;
 	}
-
+.small-left-padding {
+	padding-left: 0.8em;
+}
 .messages-list .message {
 	border-radius: 0.45em;
 	margin-top: 1em;
@@ -131,6 +133,10 @@
 	margin: 0 3% 3% 0;
 }
 
+.no-padding {
+	padding: 0;
+}
+
 .course-color:hover {
 	background-color: rgb(222, 251, 222);
 	transition: color .2s;
@@ -172,6 +178,11 @@
 
 .recs {
 	width: 96%;
+}
+
+.no-margin {
+	margin-bottom: 0 !important;
+	padding-right: 0.3em;
 }
 
 /*
@@ -317,7 +328,7 @@
     display: none;
     position: absolute;
     background-color: white;
-    border: 1px black solid;
+    border: 1px #D8D8D8 solid;
     border-bottom-left-radius: 0.25em;
     border-bottom-right-radius: 0.25em;
     border-top: 0;
@@ -329,6 +340,7 @@
 
 .dropdown-item {
 	padding: 0.5em;
+	text-align: left;
 	}
 
 .active-calendar {
