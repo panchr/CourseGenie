@@ -5,25 +5,11 @@
 {% block body %}
 	<body class="left-sidebar">
 		<!-- Main -->
-		<div class="dash-head">
-			<div class="container">
-				<header><h2 class="title">
-				<div class="row">
-						<div class="8u">Past Courses</div>
-							<div class="hidemobile 4u">
-                <div class="icon-pad">
-              <a href="{% url 'core:dashboard' %}"><span class="icon2 fa-desktop"></span></a>
-              <a href="{% url 'core:transcript' %}"><span class="icon2 fa-archive"></span></a>
-            <a href="{% url 'core:preferences' %}"><span class="icon2 fa-cog"></span></a>
-          <a href="{% url 'core:questions' %}"><span class="icon2 fa-question"></span></a></div></div>
-				</div>
-			</h2></header>
-			</div>
-		</div>
+		{% include 'core/partials/header.html' with title='Past Courses' %}
 		<hr/>
 		<div class="row 50%">
 			<div class="center 12u">
-			<h1>Upload your courses via transcript or enter them manually</h1></div>
+			<h1>Upload your transcript or enter your courses manually.</h1></div>
 			<div class="title"></div>
 			<div class="12u">
 				<div class="center-parent" style="width:30%">
