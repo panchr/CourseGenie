@@ -49,8 +49,11 @@ class CourseForm extends React.Component {
 		this.state = {
 			courses: new List(props.data.existing_courses),
 			user: props.data.user,
-			graduation_year: props.data.graduation_year,
 			messages: new List(),
+			graduation_year: props.data.graduation_year || (new Date()).getFullYear() + 3,
+			major: props.majors[0].value,
+			first_name: props.data.user.first_name,
+			last_name: props.data.user.last_name,
 			};
 
 		this.elems = {};
@@ -66,10 +69,8 @@ class CourseForm extends React.Component {
 					for (var term in data.transcript.courses) {
 						courses = courses.concat(data.transcript.courses[term]);
 						}
-					this.setState({courses: new List(courses),
-						user: data.user});
-					this.elems.first_name_input.value = data.user.first_name;
-					this.elems.last_name_input.value = data.user.last_name;
+					this.setState({courses: new List(courses), user: data.user,
+						first_name: data.user.first_name, last_name: data.user.last_name});
 					})
 				.fail(() => {
 					// need generic request error handling
@@ -113,11 +114,11 @@ class CourseForm extends React.Component {
 		var data = {
 			courses: this.elems.courses_list.getValues(),
 			user: {
-				first_name: this.elems.first_name_input.value,
-				last_name: this.elems.last_name_input.value,
+				first_name: this.state.first_name,
+				last_name: this.state.last_name,
 				},
-			graduation_year: this.elems.year_input.value,
-			major: this.elems.major_input.value,
+			graduation_year: this.state.graduation_year,
+			major: this.state.major,
 			};
 
 		if (data.user.first_name == '' || data.user.last_name == '') {
@@ -180,12 +181,14 @@ class CourseForm extends React.Component {
 						<div className="6u"><h1>First Name</h1></div>
 						<div className="6u$"><h1>Last Name</h1></div>
 						<div className="6u">
-							<input type="text" defaultValue={this.state.user.first_name}
-							ref={(e) => this.elems.first_name_input = e} maxLength="25" />
+							<input type="text" value={this.state.first_name}
+								onChange={(e) => this.setState({first_name: e.target.value})}
+								maxLength="25" />
 						</div>
 						<div className="6u">
-							<input type="text" defaultValue={this.state.user.last_name}
-								ref={(e) => this.elems.last_name_input = e} maxLength="25" />
+							<input type="text" value={this.state.last_name}
+								onChange={(e) => this.setState({last_name: e.target.value})}
+								maxLength="25" />
 						</div>
 					</div>
 					<div className="row">
@@ -193,10 +196,9 @@ class CourseForm extends React.Component {
 							<h1>Graduation Year</h1>
 						</div>
 						<div className="6u">
-							<input defaultValue={
-								this.state.graduation_year || (new Date()).getFullYear() + 3}
-								type="number" className="number"
-								ref={(e) => this.elems.year_input = e} />
+							<input value={this.state.graduation_year}
+								onChange={(e) => this.setState({graduation_year: e.target.value})}
+								type="number" className="number" />
 						</div>
 					</div>
 					<div className="row" style={hiddenIfSubmitted}>
@@ -204,8 +206,8 @@ class CourseForm extends React.Component {
 							<h1>Major (can be changed later)</h1>
 						</div>
 						<div className="12u">
-							<select name="selected-major"
-								ref={(e) => this.elems.major_input = e}>
+							<select name="selected-major" value={this.state.major}
+								onChange={(e) => this.setState({major: e.target.value})}>
 								{this.props.majors.map((e) =>
 									<option value={e.value} key={Math.random()}>{e.label}</option>)}
 							</select>
