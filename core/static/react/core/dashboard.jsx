@@ -13,10 +13,10 @@ const React = require('react'),
 // var Dropdown = require('react-simple-dropdown');
 
 import Dropdown, { DropdownTrigger, DropdownContent } from 'react-simple-dropdown';
-
 import HTML5Backend from 'react-dnd-html5-backend';
 import { DragDropContext } from 'react-dnd';
 import { List, Map, fromJS } from 'immutable';
+import Cookies from 'universal-cookie';
 
 var CourseDisplay = require('core/components/CourseDisplay.jsx'),
   RecommendationDisplay = require('core/components/RecommendationDisplay.jsx'),
@@ -104,6 +104,16 @@ class Dashboard extends React.Component {
 	componentWillMount() {
 		data.installErrorHandler((msg) => this.addMessage({message: msg, t: 'error'}));
 		this.loadAllData();
+
+		const cookies = new Cookies();
+		if (! Boolean(cookies.get('help-displayed'))) {
+			cookies.set('help-displayed', true);
+			this.addMessage({
+				message: 'Drag courses from your recommendations into a semester or your Sandbox tab. View & Edit your progress through the Progress tab.',
+				header: 'Welcome!',
+				t: 'success',
+				})
+			}
 		}
 
 	componentWillUnmount() {

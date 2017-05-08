@@ -94,6 +94,7 @@
 	padding: 1em;
 	font-size: 0.9em;
 	opacity: 0.9;
+	max-width: 33vw;
 	}
 
 .messages-list .message h1 {
@@ -105,6 +106,11 @@
 
 .messages-list .message.error {
 	background-color: #f3d6d6;
+	color: black;
+	}
+
+.messages-list .message.success {
+	background-color: #96e296;
 	color: black;
 	}
 
