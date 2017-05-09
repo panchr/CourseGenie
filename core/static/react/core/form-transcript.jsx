@@ -198,7 +198,7 @@ class CourseForm extends React.Component {
 						<div className="6u">
 							<input value={this.state.graduation_year}
 								onChange={(e) => this.setState({graduation_year: e.target.value})}
-								type="number" className="number" />
+								type="text" className="number" />
 						</div>
 					</div>
 					<div className="row" style={hiddenIfSubmitted}>
