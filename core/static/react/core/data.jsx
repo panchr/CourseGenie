@@ -33,8 +33,9 @@ module.exports = {
 	installErrorHandler: function(handler) {
 		shared.errorHandler = (response, msg, error) => {
 			var msg = response.responseText;
-			if (response.responseJSON && response.responseJSON.error) {
-				msg = response.responseJSON.error;
+			if (response.responseJSON) {
+				if (response.responseJSON.error) msg = response.responseJSON.error;
+				else if (response.responseJSON.detail) msg = response.responseJSON.detail;
 				}
 			handler(msg);
 			};

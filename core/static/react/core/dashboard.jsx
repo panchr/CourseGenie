@@ -112,7 +112,7 @@ class Dashboard extends React.Component {
 				message: 'Drag courses from your recommendations into a semester or your Sandbox tab. View & Edit your progress through the Progress tab.',
 				header: 'Welcome!',
 				t: 'success',
-				})
+				});
 			}
 		}
 
