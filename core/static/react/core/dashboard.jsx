@@ -91,10 +91,12 @@ class Dashboard extends React.Component {
 			currentTrack: null,
 			currentCertificates: new List(),
 			loadingData: false,
+			refreshQueued: false,
 			};
 
 		this.elems = {};
 		this.requests = new Array();
+		this.intervals = new Array();
 		this.progressChange = this.progressChange.bind(this);
 		this.setCalendar = this.setCalendar.bind(this);
 
@@ -114,10 +116,18 @@ class Dashboard extends React.Component {
 				t: 'success',
 				});
 			}
+
+		this.intervals.push(setInterval(() => {
+			if (this.state.refreshQueued && ! this.state.loadingData) {
+				this.loadAllData();
+				this.setState({refreshQueued: false});
+				}
+			}, 3000));
 		}
 
 	componentWillUnmount() {
 		this.requests.map((r) => r.abort());
+		this.intervals.map((i) => clearInterval(i));
 		}
 
 	calendarId(index) {
@@ -222,7 +232,8 @@ class Dashboard extends React.Component {
 		}
 
 	dismissSuggestion(id, index) {
-		this.requests.push(data.recommendations.dismiss(id));
+		this.requests.push(data.recommendations.dismiss(id,
+			() => this.setState({refreshQueued: true})));
 		this.removeSuggestion(index);
 		}
 
@@ -238,7 +249,7 @@ class Dashboard extends React.Component {
 		var current = this.state.semesters.get(index);
 
 		this.requests.push(data.calendar.addToSemester(current.get('id'), course,
-			() => {this.addCourseToDisplay(index, course)}));
+			() => this.addCourseToDisplay(index, course)));
 		}
 
 	addCourseToDisplay(index, course) {
@@ -261,7 +272,7 @@ class Dashboard extends React.Component {
 				current.set('courses', current.get('courses').delete(course_index))),
 			});
 		this.requests.push(data.calendar.removeFromSemester(current.get('id'),
-			course, () => {}));
+			course, () => this.setState({refreshQueued: true})));
 		}
 
 	addDirectCourse(semester_index) {
@@ -282,12 +293,13 @@ class Dashboard extends React.Component {
 		else {
 			if (sandbox) {
 				this.requests.push(data.calendar.addToSandboxShort(this.calendarId(), c,
-					(course_data) => this.setState({sandbox: this.state.sandbox.push(course_data)})))
+					(course_data) => this.setState({sandbox: this.state.sandbox.push(course_data), refreshQueued: true})))
 				}
 			else {
 				const current = this.state.semesters.get(semester_index);
 				this.requests.push(data.calendar.addToSemesterByCourseName(current.get('id'), c, (course_data) => {
 					this.addCourseToDisplay(semester_index, course_data);
+					this.setState({refreshQueued: true});
 					}));
 				}
 			}
@@ -303,7 +315,7 @@ class Dashboard extends React.Component {
 	removeFromSandbox(i, course) {
 		this.setState({sandbox: this.state.sandbox.remove(i)});
 		this.requests.push(data.calendar.removeFromSandbox(
-			this.calendarId(), course));
+			this.calendarId(), course, () => this.setState({refreshQueued: true})));
 		}
 
 	progressChange(t, innerIndex, index, id) {
@@ -329,7 +341,8 @@ class Dashboard extends React.Component {
 		if (! new_completed) patch_data.completed = false;
 
 		this.setState({progress: fullUpdated});
-		this.requests.push(data.calendar.setSingleProgress(id, patch_data));
+		this.requests.push(data.calendar.setSingleProgress(id, patch_data,
+			() => this.setState({refreshQueued: true})));
 		}
 
 	saveCalendarSettings(update_data) {
@@ -459,7 +472,7 @@ class Dashboard extends React.Component {
 					<div className="5u move-up" id="float">
 						<h3>
 							Recommendations &nbsp;
-							<span className='tooltip-bottom' data-tooltip='Click and drag recommendations into your calendar from here.'>
+							<span className='tooltip-bottom' data-tooltip='Drag recommendations into your calendar from here.'>
 							<Icon i='ios-help-outline' />
 							</span>
 
@@ -560,8 +573,8 @@ class Dashboard extends React.Component {
 						this.setState({calendarSettingsModalOpen: false});
 						}}
 					onClose={() => this.setState({calendarSettingsModalOpen: false})}
-					onCertificateAdd={(e) => data.calendar.addCertificate(this.calendarId(), e.id)}
-					onCertificateRemove={(e, i) => data.calendar.removeCertificate(this.calendarId(), e.id)}
+					onCertificateAdd={(e) => data.calendar.addCertificate(this.calendarId(), e.id, () => this.setState({refreshQueued: true}))}
+					onCertificateRemove={(e, i) => data.calendar.removeCertificate(this.calendarId(), e.id, () => this.setState({refreshQueued: true}))}
 					header='Edit Calendar' majors={this.props.majors}
 					tracks={this.props.tracks} certificates={this.props.certificates}
 					currentName={this.state.calendars.get(this.state.currentCalendar).get('name')}
