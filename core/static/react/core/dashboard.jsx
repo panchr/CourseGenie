@@ -418,7 +418,7 @@ class Dashboard extends React.Component {
 							</DropdownContent>
 						</Dropdown>
 					</div>
-					<div className="2u">
+					<div className="2u hidemobile">
 						<button className='cal-button btn'
 							onClick={() => this.setState({calendarSettingsModalOpen: true})}>
 								Calendar Settings
@@ -469,7 +469,7 @@ class Dashboard extends React.Component {
 								} data={this.state.semesters} />
 						</div>
 					</div>
-					<div className="5u move-up" id="float">
+					<div className="5u move-up hidemobile" id="float">
 						<h3>
 							Recommendations &nbsp;
 							<span className='tooltip-bottom' data-tooltip='Drag recommendations into your calendar from here.'>

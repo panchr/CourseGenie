@@ -9,6 +9,12 @@
 	padding-right: 3em;
 }
 
+@media (max-width: 960px) {
+#titleBar {
+    display: none !important;
+}
+}
+
 .topbtm{
 	padding-top: 1em;
 	padding-bottom: 0.5em;
