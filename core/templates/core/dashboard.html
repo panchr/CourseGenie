@@ -53,6 +53,11 @@
 						return base + '?calendar_id=' + id;
 						},
 
+					singleProgressByRequirementUrl: function(calendar, requirement) {
+						var base = "{% url 'api:progress-list' %}";
+						return base + '?calendar_id=' + calendar + '&requirement_id=' + requirement;
+						},
+
 					singleProgressUrl: function(id) {
 						var base = "{% url 'api:progress-detail' pk=889 %}";
 						return base.replace('889', id);

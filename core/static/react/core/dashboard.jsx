@@ -319,7 +319,8 @@ class Dashboard extends React.Component {
 			this.calendarId(), course, () => this.setState({refreshQueued: true})));
 		}
 
-	progressChange(t, innerIndex, index, id) {
+	progressChange(t, innerIndex, index, id, count=0) {
+		if (count == 5) return;
 		var toUpdate = this.state.progress.get(t);
 
 		if (t == 'certificates') toUpdate = toUpdate.get(innerIndex);
@@ -341,9 +342,15 @@ class Dashboard extends React.Component {
 		var patch_data = {user_completed: new_completed};
 		if (! new_completed) patch_data.completed = false;
 
-		this.setState({progress: fullUpdated});
 		this.requests.push(data.calendar.setSingleProgress(id, patch_data,
-			() => this.setState({refreshQueued: true})));
+			() => this.setState({refreshQueued: true, progress: fullUpdated}),
+			() => {
+				this.requests.push(data.calendar.getSingleProgress(this.calendarId(),
+					p.get('requirement').get('id'),
+					(r) => this.progressChange(t, innerIndex, index, r[0].id, count+1)));
+				return true;
+				}
+			));
 		}
 
 	saveCalendarSettings(update_data) {

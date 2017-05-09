@@ -122,12 +122,22 @@ module.exports = {
 				.fail(shared.errorHandler);
 			},
 
-		setSingleProgress: function(id, data, callback=(e) => null) {
+		getSingleProgress: function(id, req_id, callback=(e) => null) {
+			setup_ajax_csrf();
+			return jQuery.get(dashboard_data.calendar.singleProgressByRequirementUrl(id, req_id))
+				.done((data) => callback(data))
+				.fail(shared.errorHandler);
+			},
+
+		setSingleProgress: function(id, data, callback=(e) => null, fail=(e)=>null) {
 			setup_ajax_csrf();
 			return jQuery.ajax(dashboard_data.calendar.singleProgressUrl(id),
 				{method: 'PATCH', data: data})
 				.done((data) => callback(data))
-				.fail(shared.errorHandler);
+				.fail((response, msg, error) => {
+					if (! fail(response, msg, error))
+						shared.errorHandler(response, msg, error);
+					});
 			},
 
 		addCertificate: function(id, cert_id, callback=(e) => null) {

@@ -334,7 +334,7 @@ class SemesterViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
 class ProgressViewSet(viewsets.ModelViewSet):
-    filter_fields = ('calendar_id',)
+    filter_fields = ('calendar_id', 'requirement_id')
     queryset = Progress.objects.all()
     serializer_class = ProgressSerializer
 
