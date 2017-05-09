@@ -16,6 +16,10 @@ var CourseDisplay = require('core/components/CourseDisplay.jsx'),
 function Sandbox(props) {
 	return props.connectDropTarget(<div>
 		<div className='topbtm-pad'></div>
+		<div>
+			<p>In the sandbox, store any courses that you are interested in but want
+			to save for later.</p>
+		</div>
 		<br/>
 		<div className='grid-pad'>
 		<GridView t={(c, i) => {

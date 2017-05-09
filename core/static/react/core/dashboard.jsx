@@ -431,11 +431,11 @@ class Dashboard extends React.Component {
 									courses={this.state.sandbox.toJS()} />},
 							{name: 'Progress', content:
 								<div className='row small-left-padding'>
-								<div className="12u">
-									<ProgressView progress={this.state.progress.toJS()}
-									onProgressChange={this.progressChange} />
-								<br/>
-								</div>
+									<div className="12u">
+										<ProgressView progress={this.state.progress.toJS()}
+										onProgressChange={this.progressChange} />
+									<br/>
+									</div>
 								</div>},
 							]} />
 					</div>
