@@ -459,6 +459,10 @@ class Dashboard extends React.Component {
 					<div className="5u move-up" id="float">
 						<h3>
 							Recommendations &nbsp;
+							<span className='tooltip-bottom' data-tooltip='Click and drag recommendations into your calendar from here.'>
+							<Icon i='ios-help-outline' />
+							</span>
+
 							<RotatingIcon rotating={this.state.loading}
 									i='ios-loop-strong' onClick={() => this.loadAllData()}
 									style={{float: 'right', color: '#009688'}} className='btn' />
