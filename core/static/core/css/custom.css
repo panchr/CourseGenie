@@ -9,6 +9,12 @@
 	padding-right: 3em;
 }
 
+@media (max-width: 960px) {
+#titleBar {
+    display: none !important;
+}
+}
+
 .topbtm{
 	padding-top: 1em;
 	padding-bottom: 0.5em;
@@ -173,13 +179,13 @@
 		color: #7C9CD0;
 		}
 
-.dash-head {
-	position: relative;
-	padding: 1.1em 0 0 0;
-	margin-left: 0;
-	margin-bottom: -0.5em;
-	background: #fff;
-	}
+	.dash-head {
+		position: relative;
+		padding: 1.1em 0 0 0;
+		background: #fff;
+		background-size: cover;
+		color: #7C9CD0;
+		}
 
 	.dash-head header h2 {
 		font-size: 2.7em;
@@ -391,15 +397,15 @@
   -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
   filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=0);
   opacity: 0;
-  -webkit-transition: 
+  -webkit-transition:
       opacity 0.2s ease-in-out,
         visibility 0.2s ease-in-out,
         /*-webkit-transform 0.2s cubic-bezier(0.71, 1.7, 0.77, 1.24);*/
-    -moz-transition:    
+    -moz-transition:
         opacity 0.2s ease-in-out,
         visibility 0.2s ease-in-out,
         /*-moz-transform 0.2s cubic-bezier(0.71, 1.7, 0.77, 1.24);*/
-    transition:         
+    transition:
         opacity 0.2s ease-in-out,
         visibility 0.2s ease-in-out,
         /*transform 0.2s cubic-bezier(0.71, 1.7, 0.77, 1.24);*/
@@ -438,11 +444,12 @@
 [data-tooltip]:after {
   z-index: 1000;
   padding: 8px;
-  width: 160px;
+  width: 120px;
   text-align: center;
   background-color: #000;
   background-color: hsla(0, 0%, 20%, 0.9);
   color: #fff;
+	letter-spacing: 1px;
   content: attr(data-tooltip);
   font-size: 14px;
   line-height: 1.2;
@@ -464,7 +471,7 @@
 [data-tooltip]:before,
 .tooltip:before,
 .tooltip-top:before {
-  margin-left: -6px;
+  margin-left: -15px;
   margin-bottom: -12px;
   border-top-color: #000;
   border-top-color: hsla(0, 0%, 20%, 0.9);
@@ -491,7 +498,7 @@
 .tooltip-top:focus:after {
   -webkit-transform: translateY(-12px);
   -moz-transform:    translateY(-12px);
-  transform:         translateY(-12px); 
+  transform:         translateY(-12px);
 }
 
 /* Left */
@@ -504,7 +511,6 @@
 
 .tooltip-left:before {
   margin-left: 0;
-  margin-right: -12px;
   margin-bottom: 0;
   border-top-color: transparent;
   border-left-color: #000;
@@ -517,7 +523,7 @@
 .tooltip-left:focus:after {
   -webkit-transform: translateX(-12px);
   -moz-transform:    translateX(-12px);
-  transform:         translateX(-12px); 
+  transform:         translateX(-12px);
 }
 
 /* Bottom */
@@ -542,7 +548,7 @@
 .tooltip-bottom:focus:after {
   -webkit-transform: translateY(12px);
   -moz-transform:    translateY(12px);
-  transform:         translateY(12px); 
+  transform:         translateY(12px);
 }
 
 /* Right */
@@ -566,7 +572,7 @@
 .tooltip-right:focus:after {
   -webkit-transform: translateX(12px);
   -moz-transform:    translateX(12px);
-  transform:         translateX(12px); 
+  transform:         translateX(12px);
 }
 
 /* Move directional arrows down a bit for left/right tooltips */

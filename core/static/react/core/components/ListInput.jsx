@@ -52,7 +52,7 @@ class ListInput extends React.Component {
 				{this.props.children}
 			</div>
 			<div className="row">
-				<div className="12u">
+				<div className="12u title">
 					<div className='center-parent' style={{width: '30%'}}>
 						<a className="button-add fit btn" onClick={this.addElement}>Add</a>
 					</div>
