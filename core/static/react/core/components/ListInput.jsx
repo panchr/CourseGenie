@@ -47,23 +47,41 @@ class ListInput extends React.Component {
 		}
 
 	render() {
+		const viewAdd= this.props.calSettings ? 'row': 'hide',
+		viewAddCert= this.props.calSettings ? 'hide': 'row',
+		viewCourse= this.props.calSettings ? 'course-entry': 'hide',
+		viewCourseCal= this.props.calSettings ? 'hide': 'course-entry';
+
 		return <div>
 			<div className='row'>
 				{this.props.children}
 			</div>
-			<div className="row">
+			<div className={viewAdd}>
 				<div className="12u title">
 					<div className='center-parent' style={{width: '30%'}}>
-						<a className="button-add fit btn" onClick={this.addElement}>Add</a>
+						<a className='button-add fit btn' onClick={this.addElement} style={{fontSize: '0.9em', padding: '0.2em 1em 0.2em 1em', height: '2.5em', border: '2px solid #11DC84'}}>Add Certificate</a>
+					</div>
+				</div>
+			</div>
+			<div className={viewAddCert}>
+				<div className="12u title">
+					<div className='center-parent' style={{width: '30%'}}>
+						<a className='button-add fit btn' onClick={this.addElement}>Add</a>
 					</div>
 				</div>
 			</div>
 			<GridView t={(e, i) => {
-				return <div className='course-entry'>
+				return <div>
+					<div className={viewCourse}  style={{height: '3.3em'}}>
 					{this.props.t(e, i)} &nbsp;
 					<Icon i='ios-close-empty' style={{color: 'LightSlateGray'}} className='btn'
 						onClick={() => {this.removeElement(i)}} />
 				</div>
+				<div className={viewCourseCal}>
+					{this.props.t(e, i)} &nbsp;
+					<Icon i='ios-close-empty' style={{color: 'LightSlateGray'}} className='btn'
+						onClick={() => {this.removeElement(i)}} />
+				</div></div>
 				}} data={this.state.data} cols={this.props.cols}
 				blankText={this.props.blankText} />
 		</div>;
@@ -81,6 +99,7 @@ ListInput.propTypes = {
 	blankText: React.PropTypes.string,
 	onDelete: React.PropTypes.func,
 	onAdd: React.PropTypes.func,
+	calSettings: React.PropTypes.bool,
 	};
 
 ListInput.defaultProps = {
@@ -88,6 +107,7 @@ ListInput.defaultProps = {
 	cols: 1,
 	onDelete: () => {},
 	onAdd: () => {},
+	calSettings: false,
 	};
 
 module.exports = ListInput;

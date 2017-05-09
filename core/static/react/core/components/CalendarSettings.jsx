@@ -117,6 +117,7 @@ class CalendarSettings extends React.Component {
 						<div className="12u center">
 							<ListInput t={(e) => <span>{e.name}</span>}
 								data={this.state.currentCertificates}
+								calSettings
 								blankText='None yet!'
 								getInput={() => this.props.certificates[this.elems.certificate_input.value]}
 								onAdd={(e) => this.props.onCertificateAdd(e)}
