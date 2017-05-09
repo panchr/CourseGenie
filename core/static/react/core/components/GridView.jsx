@@ -71,7 +71,7 @@ GridView.propTypes = {
 	rows: React.PropTypes.number,
 	minRows: React.PropTypes.number,
 	cols: React.PropTypes.number.isRequired,
-	blankElement: React.PropTypes.func,	
+	blankElement: React.PropTypes.func,
 	};
 
 GridView.defaultProps = {

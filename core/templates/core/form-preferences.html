@@ -5,17 +5,9 @@
 {% block body %}
 	<body class="left-sidebar">
 		<!-- Main -->
-		<div class="page-header">
-			<div class="container">
-				<section>
-					<header><h2 class="title">Preferences</h2></header>
-				</section>
-			</div>
-		</div>
-
+		{% include 'core/partials/header.html' with title='Preferences' %}
 		<hr/>
 		<div id="preference-form">
-
 		<script>
 			var preference_data = {
 				preference_id: "{{ preference_id }}",

@@ -33,8 +33,9 @@ module.exports = {
 	installErrorHandler: function(handler) {
 		shared.errorHandler = (response, msg, error) => {
 			var msg = response.responseText;
-			if (response.responseJSON && response.responseJSON.error) {
-				msg = response.responseJSON.error;
+			if (response.responseJSON) {
+				if (response.responseJSON.error) msg = response.responseJSON.error;
+				else if (response.responseJSON.detail) msg = response.responseJSON.detail;
 				}
 			handler(msg);
 			};
@@ -43,6 +44,18 @@ module.exports = {
 	calendar: {
 		getData: function(id, callback) {
 			return jQuery.get(dashboard_data.calendar.url(id))
+				.done((data) => callback(data))
+				.fail(shared.errorHandler);
+			},
+
+		create: function(data, callback=() => null) {
+			return jQuery.post(dashboard_data.calendar.createUrl, data)
+				.done((data) => callback(data))
+				.fail(shared.errorHandler);
+			},
+
+		delete: function(id, callback=() => null) {
+			return jQuery.ajax(dashboard_data.calendar.url(id), {method: 'DELETE'})
 				.done((data) => callback(data))
 				.fail(shared.errorHandler);
 			},
@@ -86,6 +99,14 @@ module.exports = {
 				.fail(shared.errorHandler);
 			},
 
+		addToSandboxShort: function(id, short_name, callback=(e) => null) {
+			setup_ajax_csrf();
+			return jQuery.post(dashboard_data.calendar.sandboxShortUrl(id,
+				short_name))
+				.done((data) => callback(data))
+				.fail(shared.errorHandler);
+			},
+
 		removeFromSandbox: function(id, course, callback=(e) => null) {
 			setup_ajax_csrf();
 			return jQuery.ajax(dashboard_data.calendar.sandboxUrl(id,
@@ -97,17 +118,32 @@ module.exports = {
 		getProgress: function(id, callback=(e) => null) {
 			setup_ajax_csrf();
 			return jQuery.get(dashboard_data.calendar.progressUrl(id))
-				.done((data) => callback(data))	
-				.fail(shared.errorHandler);		
+				.done((data) => callback(data))
+				.fail(shared.errorHandler);
 			},
 
 		setSingleProgress: function(id, data, callback=(e) => null) {
 			setup_ajax_csrf();
 			return jQuery.ajax(dashboard_data.calendar.singleProgressUrl(id),
 				{method: 'PATCH', data: data})
-				.done((data) => callback(data))	
-				.fail(shared.errorHandler);		
-			}
+				.done((data) => callback(data))
+				.fail(shared.errorHandler);
+			},
+
+		addCertificate: function(id, cert_id, callback=(e) => null) {
+			setup_ajax_csrf();
+			return jQuery.post(dashboard_data.calendar.certificateUrl(id, cert_id))
+				.done((data) => callback(data))
+				.fail(shared.errorHandler);
+			},
+
+		removeCertificate: function(id, cert_id, callback=(e) => null) {
+			setup_ajax_csrf();
+			return jQuery.ajax(dashboard_data.calendar.certificateUrl(id, cert_id),
+				{method: 'DELETE'})
+				.done((data) => callback(data))
+				.fail(shared.errorHandler);
+			},
 		},
 
 	recommendations: {
@@ -133,6 +169,14 @@ module.exports = {
 				.fail(shared.errorHandler);
 			},
 
+		patch: function(data, callback=(e) => null) {
+			setup_ajax_csrf();
+			return jQuery.ajax(preference_data.urls.preference(),
+				{method: 'PATCH', data: data})
+				.done((data) => callback(data))
+				.fail(shared.errorHandler);
+			},
+
 		bl_course: function(course, callback=(e) => null) {
 			setup_ajax_csrf();
 			return jQuery.post(preference_data.urls.bl_course(course))
@@ -152,21 +196,21 @@ module.exports = {
 			return jQuery.post(preference_data.urls.wl_dept(dept))
 				.done(callback)
 				.fail(shared.errorHandler);
-			},	
+			},
 
 		bl_area: function(area, callback=(e) => null) {
 			setup_ajax_csrf();
 			return jQuery.post(preference_data.urls.bl_area(area))
 				.done(callback)
 				.fail(shared.errorHandler);
-			},	
+			},
 
 		wl_area: function(area, callback=(e) => null) {
 			setup_ajax_csrf();
 			return jQuery.post(preference_data.urls.wl_area(area))
 				.done(callback)
 				.fail(shared.errorHandler);
-			},	
+			},
 
 		del_bl_course: function(course, callback=(e) => null) {
 			setup_ajax_csrf();
@@ -190,7 +234,7 @@ module.exports = {
 				{method: 'DELETE'})
 				.done(callback)
 				.fail(shared.errorHandler);
-			},	
+			},
 
 		del_bl_area: function(area, callback=(e) => null) {
 			setup_ajax_csrf();
@@ -198,7 +242,7 @@ module.exports = {
 				{method: 'DELETE'})
 				.done(callback)
 				.fail(shared.errorHandler);
-			},	
+			},
 
 		del_wl_area: function(area, callback=(e) => null) {
 			setup_ajax_csrf();
@@ -206,6 +250,6 @@ module.exports = {
 				{method: 'DELETE'})
 				.done(callback)
 				.fail(shared.errorHandler);
-			},	
+			},
 		},
 	};

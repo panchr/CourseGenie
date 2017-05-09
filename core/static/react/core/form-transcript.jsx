@@ -16,7 +16,8 @@ var CourseDisplay = require('core/components/CourseDisplay.jsx'),
 	GridView = require('core/components/GridView.jsx'),
 	ErrorAlert = require('core/components/ErrorAlert.jsx'),
 	Icon = require('core/components/Icon.jsx'),
-	ListInput = require('core/components/ListInput.jsx');
+	ListInput = require('core/components/ListInput.jsx'),
+	MessageList = require('core/components/MessageList.jsx');
 
 function main() {
 	var queryParameters = queryString.parse(window.location.search);
@@ -48,9 +49,11 @@ class CourseForm extends React.Component {
 		this.state = {
 			courses: new List(props.data.existing_courses),
 			user: props.data.user,
-			graduation_year: props.data.graduation_year,
-			errorMsg: '',
-			requestErrorMsg: '',
+			messages: new List(),
+			graduation_year: props.data.graduation_year || (new Date()).getFullYear() + 3,
+			major: props.majors[0].value,
+			first_name: props.data.user.first_name,
+			last_name: props.data.user.last_name,
 			};
 
 		this.elems = {};
@@ -66,15 +69,13 @@ class CourseForm extends React.Component {
 					for (var term in data.transcript.courses) {
 						courses = courses.concat(data.transcript.courses[term]);
 						}
-					this.setState({courses: new List(courses),
-						user: data.user});
-					this.elems.first_name_input.value = data.user.first_name;
-					this.elems.last_name_input.value = data.user.last_name;
+					this.setState({courses: new List(courses), user: data.user,
+						first_name: data.user.first_name, last_name: data.user.last_name});
 					})
 				.fail(() => {
 					// need generic request error handling
 					// - see Quizzera's utils.handleAPIError
-					this.setState({requestErrorMsg: 'transcript request failed - blame Kathy'});
+					this.addMessage({message: 'Please re-submit transcript.', t: 'error'});
 					});
 			}
 		}
@@ -83,24 +84,26 @@ class CourseForm extends React.Component {
 		if (this.transcriptRequest) this.transcriptRequest.abort();
 		}
 
+	addMessage(m) {
+		this.setState({messages: this.state.messages.push(m)});
+		}
+
 	getCourse(c) {
 		var department = this.elems.department_input.value,
 			number = this.elems.number_input.value,
 			c = (department + " " + number).toUpperCase();
 
-		this.setState({errorMsg: ''});
-
 		if (department == '' || number == '') {
-			this.setState({errorMsg: 'Cannot input a blank course'});
+			this.addMessage({message: 'Cannot input a blank course', t: 'error'});
 			}
 		else if (this.state.courses.indexOf(c) != -1) {
-			this.setState({errorMsg: c + ' is already added!'});
+			this.addMessage({message: c + ' is already added!', t: 'error'});
 			}
 		else if (! /^\w{3}$/.test(department)) {
-			this.setState({errorMsg: 'The department must be 3 letters.'});
+			this.addMessage({message: 'The department must be 3 letters.', t: 'error'});
 			}
 		else if (! /^\d{3}[a-zA-Z]?$/.test(number)) {
-			this.setState({errorMsg: 'The course number must be a number, optionally followed by a letter.'});
+			this.addMessage({message: 'The course number must be a number, optionally followed by a letter.', t: 'error'});
 			}
 		else {
 			return c;
@@ -111,16 +114,16 @@ class CourseForm extends React.Component {
 		var data = {
 			courses: this.elems.courses_list.getValues(),
 			user: {
-				first_name: this.elems.first_name_input.value,
-				last_name: this.elems.last_name_input.value,
+				first_name: this.state.first_name,
+				last_name: this.state.last_name,
 				},
-			graduation_year: this.elems.year_input.value,
-			major: this.elems.major_input.value,
+			graduation_year: this.state.graduation_year,
+			major: this.state.major,
 			};
 
 		if (data.user.first_name == '' || data.user.last_name == '') {
 			event.preventDefault(); // prevent form submission
-			this.setState({errorMsg: 'A first and last name must be provided!'});
+			this.addMessage({message: 'A first and last name must be provided!', t: 'error'});
 			}
 
 		this.elems.data_out.value = JSON.stringify(data);
@@ -128,12 +131,17 @@ class CourseForm extends React.Component {
 
 	render() {
 		var hiddenIfSubmitted = {};
+		var hiddenIfNotSubmitted = {};
 		if (this.props.data.submitted) hiddenIfSubmitted.display = 'none';
+		if (!this.props.data.submitted) hiddenIfNotSubmitted.display = 'none';
 
 		return (<div>
-				<ErrorAlert msg={this.state.errorMsg} />
-				<ErrorAlert msg={this.state.requestErrorMsg} />
 				<div className="container">
+					<div className='messages-list'>
+						<MessageList messages={this.state.messages.toJS()}
+							onDismiss={(i) => this.setState({messages: this.state.messages.delete(i)})} />
+					</div>
+
 					<form method="post" action={this.props.action}
 						onSubmit={this.submitForm}>
 						<section><section>
@@ -143,11 +151,12 @@ class CourseForm extends React.Component {
 							value={window._csrf_token}/>
 						<div className="row">
 							<div className="12u">
-								<h2>Courses Entered</h2>
 								<ListInput ref={(e) => this.elems.courses_list = e} t={(c) => {
 									var split = c.split(" ");
 									return <CourseDisplay department={split[0]} number={split[1]} />;
-									}} getInput={this.getCourse} data={this.state.courses} cols={2} blankText='None yet!' >
+									}} getInput={this.getCourse} data={this.state.courses} cols={4} blankText='None yet!'
+									onAdd={(e) => this.setState({courses: this.state.courses.push(e)})}
+									onDelete={(e, i) => this.setState({courses: this.state.courses.remove(i)})}>
 									<div className="6u">
 										<h1>Department</h1>
 									</div>
@@ -168,45 +177,52 @@ class CourseForm extends React.Component {
 						</div>
 					</section>
 					<hr/>
-					<div className="row 50%">
+					<div className="row">
 						<div className="6u"><h1>First Name</h1></div>
 						<div className="6u$"><h1>Last Name</h1></div>
 						<div className="6u">
-							<input type="text" defaultValue={this.state.user.first_name}
-							ref={(e) => this.elems.first_name_input = e} />
+							<input type="text" value={this.state.first_name}
+								onChange={(e) => this.setState({first_name: e.target.value})}
+								maxLength="25" />
 						</div>
 						<div className="6u">
-							<input type="text" defaultValue={this.state.user.last_name}
-								ref={(e) => this.elems.last_name_input = e} />
+							<input type="text" value={this.state.last_name}
+								onChange={(e) => this.setState({last_name: e.target.value})}
+								maxLength="25" />
 						</div>
 					</div>
-					<div className="row 50%">
+					<div className="row">
 						<div className="6u$">
 							<h1>Graduation Year</h1>
 						</div>
 						<div className="6u">
-							<input defaultValue={
-								this.state.graduation_year || (new Date()).getFullYear() + 3}
-								type="number" className="number"
-								ref={(e) => this.elems.year_input = e} />
+							<input value={this.state.graduation_year}
+								onChange={(e) => this.setState({graduation_year: e.target.value})}
+								type="number" className="number" />
 						</div>
 					</div>
-					<div className="row 50%" style={hiddenIfSubmitted}>
+					<div className="row" style={hiddenIfSubmitted}>
 						<div className="12u$">
 							<h1>Major (can be changed later)</h1>
 						</div>
 						<div className="12u">
-							<select name="selected-major"
-								ref={(e) => this.elems.major_input = e}>
+							<select name="selected-major" value={this.state.major}
+								onChange={(e) => this.setState({major: e.target.value})}>
 								{this.props.majors.map((e) =>
 									<option value={e.value} key={Math.random()}>{e.label}</option>)}
 							</select>
 						</div>
 					</div>
 					</section>
-						<div className="row 50%">
+						<div className="row 50%" style={hiddenIfSubmitted}>
 							<div className="12u center">
 								<input type="submit" className="button btn" value="Get Started"/>
+								<div className='topbtm-pad'></div>
+							</div>
+						</div>
+						<div className="row 50%" style={hiddenIfNotSubmitted}>
+							<div className="12u center">
+								<input type="submit" className="button btn" value="Save"/>
 								<div className='topbtm-pad'></div>
 							</div>
 						</div>

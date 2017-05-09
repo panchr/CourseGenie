@@ -177,6 +177,7 @@ class Record(models.Model):
 
 class Calendar(models.Model):
 	profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='calendars')
+	name = models.CharField(max_length=50, default='Default Calendar')
 	degree = models.ForeignKey(Degree)
 	major = models.ForeignKey(Major)
 	track = models.ForeignKey(Track, blank=True, null=True) # optional 
@@ -237,6 +238,8 @@ class Preference(models.Model):
 		# wl: white listed
 	wl_areas = models.ManyToManyField(Area, related_name='wl_course')
 	wl_depts = models.ManyToManyField(Department, related_name='wl_dept')
+
+	use_flexibility = models.BooleanField(default=True)
 
 	def __str__(self):
 		return "preference"

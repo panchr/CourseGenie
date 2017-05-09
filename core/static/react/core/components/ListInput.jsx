@@ -32,11 +32,13 @@ class ListInput extends React.Component {
 	addElement() {
 		var data = this.props.getInput();
 		if (data == undefined || data == null) return;
-		this.setState({data: this.state.data.push(data)});
+		this.setState({data: this.state.data.push(data)},
+			() => this.props.onAdd(data));
 		}
 
 	removeElement(index) {
-		this.props.onDelete(this.state.data.get(index));
+		var removed_data = this.state.data.get(index);
+		this.props.onDelete(removed_data, index)
 		this.setState({data: this.state.data.remove(index)});
 		}
 
@@ -51,16 +53,15 @@ class ListInput extends React.Component {
 			</div>
 			<div className="row">
 				<div className="12u">
-					<div className='center-parent' style={{width: '50%'}}>
+					<div className='center-parent' style={{width: '30%'}}>
 						<a className="button-add fit btn" onClick={this.addElement}>Add</a>
 					</div>
 				</div>
 			</div>
 			<GridView t={(e, i) => {
-				return <div>
-					{this.props.t(e, i)}
-					&nbsp;
-					<Icon i='ios-close-outline' style={{color: 'red'}} className='btn'
+				return <div className='course-entry'>
+					{this.props.t(e, i)} &nbsp;
+					<Icon i='ios-close-empty' style={{color: 'LightSlateGray'}} className='btn'
 						onClick={() => {this.removeElement(i)}} />
 				</div>
 				}} data={this.state.data} cols={this.props.cols}
@@ -79,12 +80,14 @@ ListInput.propTypes = {
 	cols: React.PropTypes.number,
 	blankText: React.PropTypes.string,
 	onDelete: React.PropTypes.func,
+	onAdd: React.PropTypes.func,
 	};
 
 ListInput.defaultProps = {
 	blankText: '',
 	cols: 1,
 	onDelete: () => {},
+	onAdd: () => {},
 	};
 
 module.exports = ListInput;

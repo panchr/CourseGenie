@@ -3,6 +3,7 @@
 
 import urllib2
 import json
+import base64
 
 from django.shortcuts import render, redirect
 from django.views.generic import TemplateView
@@ -17,6 +18,9 @@ from core import genie
 # Create your views here.
 class IndexView(TemplateView):
 	template_name = 'core/index.html'
+
+class QuestionView(LoginRequiredMixin, TemplateView):
+	template_name = 'core/questions.html'
 
 class TranscriptView(LoginRequiredMixin, TemplateView):
 	template_name = 'core/form-transcript.html'
@@ -52,40 +56,18 @@ class TranscriptView(LoginRequiredMixin, TemplateView):
 		user.first_name = data['user']['first_name']
 		user.last_name = data['user']['last_name']
 		user.profile.year = int(data['graduation_year'])
-		grad_year = int(data['graduation_year'])
 
 		if not (user.profile.submitted
 			and Calendar.objects.filter(profile=user.profile).exists()):
 			calendar = Calendar.objects.create(profile=user.profile,
-				degree_id=1, major_id=int(data['major']))
-			now = timezone.now()
-			if grad_year > now.year + 4:
-				grad_year = now.year + 4
-			if now.month in {1, 9, 10, 11, 12}: # SF SF ... S
-				for y in range(now.year+1, grad_year):
-					sem1 = Semester.objects.create(calendar=calendar,
-						year=y, term=Semester.TERM_SPRING)
-					sem2 = Semester.objects.create(calendar=calendar,
-						year=y, term=Semester.TERM_FALL)	
-				sem1 = Semester.objects.create(calendar=calendar,
-					year=grad_year, term=Semester.TERM_SPRING)							
-
-			else: # Spring or summer, F SF SF ... S
-				sem2 = Semester.objects.create(calendar=calendar,
-					year=now.year, term=Semester.TERM_FALL)	
-				for y in range(now.year+1, grad_year):
-					sem1 = Semester.objects.create(calendar=calendar,
-						year=y, term=Semester.TERM_SPRING)
-					sem2 = Semester.objects.create(calendar=calendar,
-						year=y, term=Semester.TERM_FALL)	
-				sem1 = Semester.objects.create(calendar=calendar,
-					year=grad_year, term=Semester.TERM_SPRING)				
+				degree_id=1, major_id=int(data['major']), name='Default Calendar')
+			genie.generate_semesters(calendar)
 
 		user.profile.submitted = True
 		user.save()
 		user.profile.save()
 
-		genie.clear_cached_recommendations(user.profile.pk)
+		genie.clear_cached_recommendations(user.profile.id)
 		return redirect('core:dashboard')
 
 class DashboardView(LoginRequiredMixin, TemplateView):
@@ -94,14 +76,15 @@ class DashboardView(LoginRequiredMixin, TemplateView):
 	def get_context_data(self, **kwargs):
 		context = super(DashboardView, self).get_context_data(**kwargs)
 		user = self.request.user
-		user_calendars = list(Calendar.objects.filter(profile=user.profile.id).values_list('id', flat=True))
-		context['user_calendars'] = json.dumps(user_calendars)
+		user_calendars = list(Calendar.objects.filter(profile=user.profile.id).values('id', 'name'))
+		context['user_calendars'] = to_js(user_calendars)
+		context['profile_id'] = user.profile.id
 		context['preference_id'] = user.profile.preference.id
-		context['majors'] = json.dumps(list(Major.objects.all().values(
+		context['majors'] = to_js(list(Major.objects.all().values(
 			'short_name', 'name', 'id')))
-		context['tracks'] = json.dumps(list(Track.objects.all().values(
+		context['tracks'] = to_js(list(Track.objects.all().values(
 			'short_name', 'name', 'id', 'major_id')))
-		context['certificates'] = json.dumps(list(Certificate.objects.all().values(
+		context['certificates'] = to_js(list(Certificate.objects.all().values(
 			'short_name', 'name', 'id')))
 
 		return context
@@ -121,3 +104,6 @@ class PreferenceView(LoginRequiredMixin, TemplateView):
 		context['preference_id'] = self.request.user.profile.preference.id
 
 		return context
+
+def to_js(d):
+	return base64.encodestring(json.dumps(d)).replace('\n', '')

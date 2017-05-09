@@ -7,8 +7,8 @@
 
 import json
 import re
-import random
 
+from django.utils import timezone
 from django.db import transaction
 from django.db.models import Count
 from django.core.cache import cache
@@ -281,13 +281,16 @@ def recommend(calendar):
 	profile = calendar.profile
 	major = calendar.major
 	degree = calendar.degree
-	random.seed(profile.user_id)
 
 	calculate_progress(calendar)
 	user_progresses = Progress.objects.filter(calendar=calendar)
 
 	progresses = user_progresses.filter(completed=True).select_related('requirement')
 	satisfied_reqs = []
+	for progress in progresses:
+		satisfied_reqs.append(progress.requirement)
+
+	progresses = user_progresses.filter(user_completed=True).select_related('requirement')
 	for progress in progresses:
 		satisfied_reqs.append(progress.requirement)
 
@@ -333,10 +336,14 @@ def recommend(calendar):
 	# filter out courses already in calendar
 	filter_out |= set(calendar.semesters.all().values_list('courses', flat=True))
 
+	# filter out courses in sandbox
+	filter_out |= set(calendar.sandbox.all())
+
 	wl_depts_short = set()
 	wl_areas = set()
 	bl_depts_short = set()
 	bl_areas = set()
+	use_flexibility = True
 	try:
 		preference = Preference.objects.get(profile=profile)
 	except Preference.DoesNotExist:
@@ -348,6 +355,7 @@ def recommend(calendar):
 		wl_areas = set(preference.wl_areas.all().values_list('short_name', flat=True))
 		bl_depts_short = set(preference.bl_depts.all().values_list('short_name', flat=True))
 		bl_areas = set(preference.bl_areas.all().values_list('short_name', flat=True))
+		use_flexibility = preference.use_flexibility
 
 	list_suggestions_reg = dict()
 	list_suggestions_dist = dict()
@@ -408,12 +416,13 @@ def recommend(calendar):
 					'{} requirement of your %s certificate,\n' % cert.short_name, is_dist,
 					'%s {}' % cert.short_name)
 
-			# add points if satisfy flexibility (requirements of other majors themselves, excluding their tracks)
-			for maj in other_majors:
-				_update_entry([], entry, other_majors[maj][0], other_majors[maj][1],
-				 	course, RANK_F,
-					'{} requirement of the %s major for flexibility,\n' % maj.short_name, is_dist,
-					'%s {}' % maj.short_name)
+			if use_flexibility:
+				# add points if satisfy flexibility (requirements of other majors themselves, excluding their tracks)
+				for maj in other_majors:
+					_update_entry([], entry, other_majors[maj][0], other_majors[maj][1],
+					 	course, RANK_F,
+						'{} requirement of the %s major for flexibility,\n' % maj.short_name, is_dist,
+						'Flexibility: %s {}' % maj.short_name)
 
 			if len(entry['reason']) > 1:
 				entry['reason'] = "This course satisfies the " + entry['reason']
@@ -454,6 +463,32 @@ def recommend(calendar):
 	result = sorted_total[:TOP_COUNT]
 	set_cached_recommendation(calendar, result)
 	return result
+
+def generate_semesters(calendar):
+	grad_year = calendar.profile.year
+
+	semesters = []
+
+	now = timezone.now()
+	if grad_year > now.year + 4:
+		grad_year = now.year + 4
+	if grad_year <= now.year:
+		grad_year = now.year + 1
+	if now.month in {1, 9, 10, 11, 12}: # SF SF ... S
+		for y in range(now.year+1, grad_year):
+			semesters.append(Semester(calendar=calendar, year=y, term=Semester.TERM_SPRING))
+			semesters.append(Semester(calendar=calendar, year=y, term=Semester.TERM_FALL))
+		semesters.append(Semester(calendar=calendar, year=grad_year, term=Semester.TERM_SPRING))
+
+	else: # Spring or summer, F SF SF ... S
+		semesters.append(Semester(calendar=calendar, year=now.year, term=Semester.TERM_FALL))
+		for y in range(now.year+1, grad_year):
+			semesters.append(Semester(calendar=calendar, year=y, term=Semester.TERM_SPRING))
+			semesters.append(Semester(calendar=calendar, year=y, term=Semester.TERM_FALL))
+		semesters.append(Semester(calendar=calendar,
+			year=grad_year, term=Semester.TERM_SPRING))
+
+	Semester.objects.bulk_create(semesters)
 
 def _form_cache_key(calendar):
 	return '%d-%d' % (calendar.profile_id, calendar.pk)

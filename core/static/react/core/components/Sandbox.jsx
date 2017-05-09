@@ -16,10 +16,16 @@ var CourseDisplay = require('core/components/CourseDisplay.jsx'),
 function Sandbox(props) {
 	return props.connectDropTarget(<div>
 		<div className='topbtm-pad'></div>
+		<div>
+			<p>In the sandbox, store any courses that you are interested in but want
+			to save for later.</p>
+		</div>
+		<br/>
+		<div className='grid-pad'>
 		<GridView t={(c, i) => {
-			return <div>
+			return <div className='course-list'>
 					<div className='row'>
-				<div className='11u'><CourseDisplay {...c} /></div>
+				<div className='11u'><CourseDisplay {...c} extended={true}/></div>
 				<div className='1u no-left-padding'>
 					<Icon i='ios-close-empty'
 						className='btn' style={{color: 'LightSlateGray'}}
@@ -27,11 +33,11 @@ function Sandbox(props) {
 				</div>
 			</div>
 			</div>;
-			}} cols={4} minRows={1} data={props.courses}
+		}} cols={3} minRows={2} data={props.courses}
 			blankElement={() =>
-				<div className='course-blank'>
+				<div className='course-blank btn course-color' onClick={props.onPlusClick}>
 				<Icon i='ios-plus-empty' className='large-icon course-plus' />
-				</div>} />
+				</div>} /></div>
 		<div className='topbtm-pad'></div>
 		<div className='topbtm-pad'></div>
 	</div>);
@@ -40,6 +46,7 @@ function Sandbox(props) {
 Sandbox.propTypes = {
 	connectDropTarget: React.PropTypes.func.isRequired,
 	onCourseAdd: React.PropTypes.func.isRequired,
+	onCourseRemove: React.PropTypes.func.isRequired,
 	onCourseRemove: React.PropTypes.func.isRequired,
 	courses: React.PropTypes.array.isRequired,
 	};

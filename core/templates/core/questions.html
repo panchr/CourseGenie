@@ -1,0 +1,23 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}CourseGenie - Questions{% endblock %}
+{% block body %}
+	<body class="homepage">
+		<!-- Banner -->
+    {% include 'core/partials/header.html' with title='Questions' %}
+    	<hr/>
+      <br/>
+      <div class="container">
+        <div class="row">
+          <div class="12u">
+          <h4>How do I use CourseGenie?</h4>
+          CourseGenie consists of three main pages: Past Courses, Preferences, and the Dashboard.<br/>
+          The Dashboard is CourseGenie's homepage. Create different calendars via the calendar dropdown. Add courses to your current calendar or sandbox by dragging them from the recommendations list, or by clicking on a free course space. Dismiss recommended courses by clicking on the X. View your calendar's degree progress by clicking on the progress tab.<br/>
+          Go to Past Courses to edit the list of courses you've already taken, or change your name and graduation year.<br/>
+          Go to Preferences to edit your course blacklist (courses you do not want to take), subject dislike list (areas and departments you are not interested in), and subject interest list. These things help us provide better course recommendations for you specifically!
+        </div>
+      </div>
+
+	</body>
+{% endblock %}
