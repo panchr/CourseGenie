@@ -117,12 +117,13 @@ class Dashboard extends React.Component {
 				});
 			}
 
+		// Background refresh data every 5s if needed.
 		this.intervals.push(setInterval(() => {
 			if (this.state.refreshQueued && ! this.state.loadingData) {
 				this.loadAllData();
 				this.setState({refreshQueued: false});
 				}
-			}, 3000));
+			}, 5000));
 		}
 
 	componentWillUnmount() {
@@ -387,6 +388,8 @@ class Dashboard extends React.Component {
 		}
 
 	render() {
+		const currentCertificateIds = this.state.currentCertificates.map((x) => x.get('id'));
+
 		return (<div className="container">
 				<div className="row">
 					<div className="5u">
@@ -573,10 +576,18 @@ class Dashboard extends React.Component {
 						this.setState({calendarSettingsModalOpen: false});
 						}}
 					onClose={() => this.setState({calendarSettingsModalOpen: false})}
-					onCertificateAdd={(e) => data.calendar.addCertificate(this.calendarId(), e.id, () => this.setState({refreshQueued: true}))}
-					onCertificateRemove={(e, i) => data.calendar.removeCertificate(this.calendarId(), e.id, () => this.setState({refreshQueued: true}))}
+					onCertificateAdd={(e) => {
+						data.calendar.addCertificate(this.calendarId(), e.id,
+							() => this.setState({refreshQueued: true}));
+						this.setState({currentCertificates: this.state.currentCertificates.push(new Map(e))});
+						}}
+					onCertificateRemove={(e, i) => {
+						data.calendar.removeCertificate(this.calendarId(), e.id, () => this.setState({refreshQueued: true}));
+						this.setState({currentCertificates: this.state.currentCertificates.remove(i)});
+						}}
 					header='Edit Calendar' majors={this.props.majors}
-					tracks={this.props.tracks} certificates={this.props.certificates}
+					tracks={this.props.tracks}
+					certificates={this.props.certificates.filter((x) => currentCertificateIds.indexOf(x.id) == -1)}
 					currentName={this.state.calendars.get(this.state.currentCalendar).get('name')}
 					currentMajor={this.state.currentMajor}
 					currentTrack={this.state.currentTrack}

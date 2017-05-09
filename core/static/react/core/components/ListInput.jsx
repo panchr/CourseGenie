@@ -25,7 +25,7 @@ class ListInput extends React.Component {
 
 	componentWillReceiveProps(newProps) {
 		if (newProps.data != this.state.data) {
-			this.setState({data: newProps.data});
+			this.setState({data: new List(newProps.data)});
 			}
 		}
 
