@@ -192,6 +192,11 @@
 	width: 96%;
 }
 
+.suggestion-display:hover {
+	cursor: -webkit-grabbing;
+	cursor: -moz-grabbing;
+	}
+
 .no-margin {
 	margin-bottom: 0 !important;
 	padding-right: 0.3em;
