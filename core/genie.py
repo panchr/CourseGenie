@@ -469,6 +469,8 @@ def generate_semesters(calendar):
 	now = timezone.now()
 	if grad_year > now.year + 4:
 		grad_year = now.year + 4
+	if grad_year <= now.year:
+		grad_year = now.year + 1
 	if now.month in {1, 9, 10, 11, 12}: # SF SF ... S
 		for y in range(now.year+1, grad_year):
 			semesters.append(Semester(calendar=calendar, year=y, term=Semester.TERM_SPRING))
