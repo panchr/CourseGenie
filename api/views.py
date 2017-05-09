@@ -88,17 +88,17 @@ class CalendarViewSet(viewsets.ModelViewSet):
         try:
             certificate = Certificate.objects.get(id=certificate_id)
         except Certificate.DoesNotExist:
-            raise NotFound('certificate %s not found' % certificate_id)
+            raise NotFound('Certificate "%s" not found.' % certificate_id)
 
         if request.method == 'POST':
             # check if already there, and if so, raise 409
             if calendar.certificates.filter(id=certificate.id).exists():
-                raise ContentError('certificate %s already selected' % certificate_id)
+                raise ContentError('Certificate "%s" already selected.' % certificate_id)
 
             calendar.certificates.add(certificate)
         elif request.method == 'DELETE':
             if not calendar.certificates.filter(id=certificate.id).exists():
-                raise ContentError('certificate %s is not in this calendar' % course_id)
+                raise ContentError('Certificate "%s" not in this calendar.' % course_id)
 
             calendar.certificates.remove(certificate)
 
@@ -118,29 +118,29 @@ class CalendarViewSet(viewsets.ModelViewSet):
             course_name = request.query_params['short_name']
             short_name = COURSE_RE.match(course_name)
             if not short_name:
-                raise NotAcceptable(detail='unacceptable')
+                raise NotAcceptable(detail='short_name field does not match pattern.')
 
             search_kwargs['number'] = short_name.group('num')
             search_kwargs['department'] = short_name.group('dept')
             if short_name.group('letter'):
                 search_kwargs['letter'] = short_name.group('letter')
         else:
-            raise NotAcceptable(detail='unacceptable')
+            raise NotAcceptable(detail='short_name or course_id parameter required.')
 
         try:
             course = Course.objects.get(**search_kwargs)
         except Course.DoesNotExist:
-            raise NotFound('course %s not found' % course_name)
+            raise NotFound('Course "%s" not found.' % course_name)
 
         if request.method == 'POST':
             # check if already there, and if so, raise 409
             if calendar.sandbox.filter(id=course.id).exists():
-                raise ContentError('course %s already in sandbox' % course_name)
+                raise ContentError('Course "%s" already in sandbox.' % course_name)
 
             calendar.sandbox.add(course)
         elif request.method == 'DELETE':
             if not calendar.sandbox.filter(id=course.id).exists():
-                raise ContentError('course %s not in sandbox' % course_name)
+                raise ContentError('Course "%s" not in sandbox.' % course_name)
 
             calendar.sandbox.remove(course)
 
@@ -170,7 +170,7 @@ class PreferenceViewSet(viewsets.ModelViewSet):
             course_name = request.query_params['short_name']
             short_name = COURSE_RE.match(course_name)
             if not short_name:
-                raise NotAcceptable(detail='unacceptable')
+                raise NotAcceptable(detail='short_name field does not match pattern.')
 
             search_kwargs['number'] = short_name.group('num')
             search_kwargs['department'] = short_name.group('dept')
@@ -180,17 +180,17 @@ class PreferenceViewSet(viewsets.ModelViewSet):
         try:
             course = Course.objects.get(**search_kwargs)
         except Course.DoesNotExist:
-            raise NotFound('course %s not found' % course_name)
+            raise NotFound('Course "%s" not found.' % course_name)
 
         if request.method == 'POST':
             # check if already there, and if so, raise 409
             if pref.bl_courses.filter(id=course.id).exists():
-                raise ContentError('course %s already in blacklist' % course_name)
+                raise ContentError('Course "%s" already in blacklist.' % course_name)
 
             pref.bl_courses.add(course)
         elif request.method == 'DELETE':
             if not pref.bl_courses.filter(id=course.id).exists():
-                raise ContentError('course %s not in blacklist' % course_name)
+                raise ContentError('Course "%s" not in blacklist.' % course_name)
 
             pref.bl_courses.remove(course)
 
@@ -204,7 +204,7 @@ class PreferenceViewSet(viewsets.ModelViewSet):
         t = request.query_params['t']
 
         if t not in {'wl', 'bl'}:
-            raise NotFound('area %s not found for type %s' % (short_name, t))
+            raise NotFound('Area "%s" not found for type "%s".' % (short_name, t))
 
         if t == 'wl':
             pref_list = pref.wl_areas
@@ -216,20 +216,20 @@ class PreferenceViewSet(viewsets.ModelViewSet):
         try:
             area = Area.objects.get(short_name=short_name)
         except Area.DoesNotExist:
-            raise NotFound('area %s not found' % short_name)
+            raise NotFound('Area %s not found.' % short_name)
 
         if request.method == 'POST':
             # check if already there, and if so, raise 409
             if pref_list.filter(id=area.id).exists():
-                raise ContentError('area %s already in list' % short_name)
+                raise ContentError('Area "%s" already in list.' % short_name)
 
             if other_list.filter(id=area.id).exists():
-                raise ContentError('area %s in opposing list' % short_name)
+                raise ContentError('Area "%s" in opposing list.' % short_name)
 
             pref_list.add(area)
         elif request.method == 'DELETE':
             if not pref_list.filter(id=area.id).exists():
-                raise ContentError('area %s not in list' % short_name)
+                raise ContentError('Area "%s" not in list.' % short_name)
 
             pref_list.remove(area)
 
@@ -243,7 +243,7 @@ class PreferenceViewSet(viewsets.ModelViewSet):
         t = request.query_params['t']
 
         if t not in {'wl', 'bl'}:
-            raise NotFound('dept %s not found for type %s' % (short_name, t))
+            raise NotFound('Department "%s" not found for type "%s".' % (short_name, t))
 
         if t == 'wl':
             pref_list = pref.wl_depts
@@ -255,20 +255,20 @@ class PreferenceViewSet(viewsets.ModelViewSet):
         try:
             dept = Department.objects.get(short_name=short_name)
         except Department.DoesNotExist:
-            raise NotFound('dept %s not found' % short_name)
+            raise NotFound('Department "%s" not found.' % short_name)
 
         if request.method == 'POST':
             # check if already there, and if so, raise 409
             if pref_list.filter(id=dept.id).exists():
-                raise ContentError('dept %s already in list' % short_name)
+                raise ContentError('Department "%s" already in list.' % short_name)
 
             if other_list.filter(id=dept.id).exists():
-                raise ContentError('dept %s in opposing list' % short_name)
+                raise ContentError('Department "%s" in opposing list.' % short_name)
 
             pref_list.add(dept)
         elif request.method == 'DELETE':
             if not pref_list.filter(id=dept.id).exists():
-                raise ContentError('dept %s not in list' % short_name)
+                raise ContentError('Department "%s" not in list.' % short_name)
 
             pref_list.remove(dept)
 
@@ -293,30 +293,29 @@ class SemesterViewSet(viewsets.ModelViewSet):
             course_name = request.query_params['short_name']
             short_name = COURSE_RE.match(course_name)
             if not short_name:
-                raise NotAcceptable(detail='unacceptable')
+                raise NotAcceptable(detail='short_name field does not match pattern.')
 
             search_kwargs['number'] = short_name.group('num')
             search_kwargs['department'] = short_name.group('dept')
             if short_name.group('letter'):
                 search_kwargs['letter'] = short_name.group('letter')
         else:
-            raise NotAcceptable(detail='unacceptable')
-
+            raise NotAcceptable(detail='short_name or course_id parameter required.')
 
         try:
             course = Course.objects.get(**search_kwargs)
         except Course.DoesNotExist:
-            raise NotFound('course %s not found' % course_name)
+            raise NotFound('Course "%s" not found.' % course_name)
 
         if request.method == 'POST':
             # check if already there, and if so, raise 409
             if semester.courses.filter(id=course.id).exists():
-                raise ContentError('course %s already in semester' % course_name)
+                raise ContentError('Course "%s" already in semester.' % course_name)
 
             semester.courses.add(course)
         elif request.method == 'DELETE':
             if not semester.courses.filter(id=course.id).exists():
-                raise ContentError('course %s not in semester' % course_name)
+                raise ContentError('Course "%s" not in semester.' % course_name)
 
             semester.courses.remove(course)
 
@@ -348,7 +347,7 @@ class RecommendationViewSet(viewsets.ViewSet):
         calendar_id = request.query_params['calendar']
         calendar = Calendar.objects.get(pk=calendar_id)
         if calendar.profile.user != request.user:
-            raise PermissionDenied("cannot access these recommendations")
+            raise PermissionDenied(detail='Cannot access these recommendations.')
         output_list = genie.recommend(calendar)
         serializer = RecommendationSerializer(instance=output_list, many=True)
         return Response(serializer.data)
