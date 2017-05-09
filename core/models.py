@@ -239,6 +239,8 @@ class Preference(models.Model):
 	wl_areas = models.ManyToManyField(Area, related_name='wl_course')
 	wl_depts = models.ManyToManyField(Department, related_name='wl_dept')
 
+	use_flexibility = models.BooleanField(default=True)
+
 	def __str__(self):
 		return "preference"
 

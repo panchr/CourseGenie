@@ -169,6 +169,14 @@ module.exports = {
 				.fail(shared.errorHandler);
 			},
 
+		patch: function(data, callback=(e) => null) {
+			setup_ajax_csrf();
+			return jQuery.ajax(preference_data.urls.preference(),
+				{method: 'PATCH', data: data})
+				.done((data) => callback(data))
+				.fail(shared.errorHandler);
+			},
+
 		bl_course: function(course, callback=(e) => null) {
 			setup_ajax_csrf();
 			return jQuery.post(preference_data.urls.bl_course(course))

@@ -34,6 +34,7 @@ class PreferenceForm extends React.Component {
 			bl_areas: new List(),
 			wl_areas: new List(),
 			messages: new List(),
+			flexibility: false,
 			};
 		this.elems = {};
 		this.requests = new Array();
@@ -67,6 +68,7 @@ class PreferenceForm extends React.Component {
 					bl_depts: new List(data.bl_depts.map((x) => x.short_name)),
 					wl_depts: new List(data.wl_depts.map((x) => x.short_name)),
 					wl_areas: new List(data.wl_areas.map((x) => x.short_name)),
+					flexibility: data.use_flexibility,
 					});
 				}));
 			});
@@ -77,6 +79,7 @@ class PreferenceForm extends React.Component {
 				bl_depts: new List(data.bl_depts.map((x) => x.short_name)),
 				wl_depts: new List(data.wl_depts.map((x) => x.short_name)),
 				wl_areas: new List(data.wl_areas.map((x) => x.short_name)),
+				flexibility: data.use_flexibility,
 				});
 			}));
 		}
@@ -157,6 +160,17 @@ class PreferenceForm extends React.Component {
 		else this.addMessage(`Not a valid distribution area: ${area}.`);
 		}
 
+	saveFlexibility(new_value) {
+		if (new_value == this.state.flexibility) return;
+
+		const patch_data = {
+			use_flexibility: new_value,
+			};
+
+		this.requests.push(data.preferences.patch(patch_data,
+			() => this.setState({flexibility: new_value})));
+		}
+
 	render() {
 		return <div>
 			<div className='messages-list'>
@@ -165,6 +179,25 @@ class PreferenceForm extends React.Component {
 			</div>
 			<div className="container">
 				<form action="" onSubmit={(e) => e.preventDefault()}>
+					<div className="row center">
+						<div className="12u">
+							<br/>
+							<h2>Flexibility</h2>
+							<p>In 'Flexibility' mode, CourseGenie will also recommend courses
+							that satisfy other majors if you are considering switching
+							majors.
+							</p>
+							{this.state.flexibility?
+								<Icon i='ios-checkmark' className='btn icon-hover success'
+								onClick={() => this.saveFlexibility(false)} />
+								:
+								<Icon i='ios-checkmark-outline' className='btn icon-hover'
+								onClick={() => this.saveFlexibility(true)} />}
+							&nbsp;
+							Enable Flexibility
+						</div>
+					</div>
+					<br/><hr/><br/>
 					<div className="row">
 						<div className="12u">
 							<br/>

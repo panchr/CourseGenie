@@ -343,6 +343,7 @@ def recommend(calendar):
 	wl_areas = set()
 	bl_depts_short = set()
 	bl_areas = set()
+	use_flexibility = True
 	try:
 		preference = Preference.objects.get(profile=profile)
 	except Preference.DoesNotExist:
@@ -354,6 +355,7 @@ def recommend(calendar):
 		wl_areas = set(preference.wl_areas.all().values_list('short_name', flat=True))
 		bl_depts_short = set(preference.bl_depts.all().values_list('short_name', flat=True))
 		bl_areas = set(preference.bl_areas.all().values_list('short_name', flat=True))
+		use_flexibility = preference.use_flexibility
 
 	list_suggestions_reg = dict()
 	list_suggestions_dist = dict()
@@ -414,12 +416,13 @@ def recommend(calendar):
 					'{} requirement of your %s certificate,\n' % cert.short_name, is_dist,
 					'%s {}' % cert.short_name)
 
-			# add points if satisfy flexibility (requirements of other majors themselves, excluding their tracks)
-			for maj in other_majors:
-				_update_entry([], entry, other_majors[maj][0], other_majors[maj][1],
-				 	course, RANK_F,
-					'{} requirement of the %s major for flexibility,\n' % maj.short_name, is_dist,
-					'%s {}' % maj.short_name)
+			if use_flexibility:
+				# add points if satisfy flexibility (requirements of other majors themselves, excluding their tracks)
+				for maj in other_majors:
+					_update_entry([], entry, other_majors[maj][0], other_majors[maj][1],
+					 	course, RANK_F,
+						'{} requirement of the %s major for flexibility,\n' % maj.short_name, is_dist,
+						'Flexibility: %s {}' % maj.short_name)
 
 			if len(entry['reason']) > 1:
 				entry['reason'] = "This course satisfies the " + entry['reason']

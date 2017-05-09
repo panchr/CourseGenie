@@ -157,6 +157,16 @@ class PreferenceViewSet(viewsets.ModelViewSet):
     serializer_class = PreferenceSerializer
     permission_classes = (permissions.PreferenceAccess,)
 
+    def update(self, request, pk=None, *args, **kwargs):
+        obj = self.get_object()
+        genie.clear_cached_recommendations(obj.profile_id)
+        return super(PreferenceViewSet, self).update(request, pk, *args, **kwargs)
+
+    def partial_update(self, request, pk=None, *args, **kwargs):
+        obj = self.get_object()
+        genie.clear_cached_recommendations(obj.profile_id)
+        return super(PreferenceViewSet, self).partial_update(request, pk, *args, **kwargs)
+
     @detail_route(methods=['post', 'delete'], url_path='bl-course')
     def modify_course(self, request, pk=None):
         pref = self.get_object()
