@@ -149,45 +149,6 @@
 			display: none;
 		}
 
-		#titleBar .toggle
-		{
-			position: absolute;
-			left: 0;
-			top: 0;
-			width: 80px;
-			height: 60px;
-		}
-
-			#titleBar .toggle:before
-			{
-				content: '';
-				position: absolute;
-				left: 7px;
-				top: 7px;
-				background: rgba(0,0,0,0.2);
-				width: 60px;
-				height: 44px;
-				border-radius: 4px;
-			}
-
-			#titleBar .toggle:after
-			{
-				content: '';
-				display: block;
-				width: 20px;
-				height: 12px;
-				position: absolute;
-				left: 28px;
-				top: 23px;
-				background: url('images/toggle.svg') 0px 0px no-repeat;
-				opacity: 0.7;
-			}
-
-			#titleBar .toggle:active:after
-			{
-				opacity: 0.9;
-			}
-
 	#navPanel
 	{
 		background: #1d1d1d;
