@@ -33,6 +33,11 @@
 		display: none !important;
 	}
 }
+@media (min-width: 960px) {
+	.viewmobile {
+		display: none !important;
+	}
+}
 
 .list-view .list-item {
 	display: block;
