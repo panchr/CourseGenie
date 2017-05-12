@@ -129,15 +129,15 @@ def django_migrate(args, remainder):
 
 def machine_push(args, remainder):
 	'''Push code to servers and redeploy containers.'''
-	machine_scp(args.name)
+	machine_scp(args.name, destroy_on_error=False)
 	env = get_machine_environment(args.name)
 	os.environ.update(env)
 
 	print('Building containers...')
-	docker_compose(args.name, 'build')
+	docker_compose(args.name, 'build', destroy_on_error=False)
 
 	print('Restarting containers...')
-	docker_compose(args.name, 'up', '-d')
+	docker_compose(args.name, 'up', '-d', destroy_on_error=False)
 
 def machine_create(args, remainder):
 	'''Create the machine via docker-machine.'''
@@ -177,7 +177,7 @@ def get_machine_environment(name, **kwargs):
 	data = filter(None, map(bash_env_re.match, output.splitlines()))
 	return {x.group('name'): x.group('value') for x in data}
 
-def machine_scp(name):
+def machine_scp(name, *args, **kwargs):
 	'''Push the local code to the machine.'''
 	app_dir = '/app'
 
@@ -195,7 +195,7 @@ def machine_scp(name):
 		'-r', '.', '%s:%s' % (name, app_dir),
 		]
 	print('Uploading code...')
-	docker_call(commands, name, t='call')
+	docker_call(commands, name, *args, t='call', **kwargs)
 
 def docker_compose(name, *args, **kwargs):
 	'''Run a command with docker-compose.'''
