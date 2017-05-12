@@ -1,8 +1,18 @@
 <div class="hidemobile">
 	<div class="dash-head">
 	<div class="container"><header><h2 class="title"><div class="row">
-		<div class="7u">{{ title }}</div>
-			<div class="5u" style='padding-left:2.5em'>
+		<div class="6u"><div class="12u$">{{ title }}</div></div>
+		<div class="6u" style='padding-left:2.5em'>
+			<!--
+			{% if user.is_authenticated %}
+				<div class="12u$" style="display:inline-block; font-size: 0.5em">
+					<h3 style="text-align:right;">
+						Welcome, {{ user.first_name|title|default:user.username }}.
+					</h3>
+				</div>
+			{% endif %}
+			-->
+			<div class="12u$">
 			<div class="icon-pad nav-icons">
 				<a href="{% url 'core:dashboard' %}" class='tooltip-bottom' data-tooltip="Dashboard">
 					<span class="icon2 ionicons ion-monitor"></span>
@@ -16,7 +26,8 @@
 				<a href="{% url 'logout' %}" class='tooltip-bottom' data-tooltip='Logout'>
 					<span class="icon2 ionicons ion-log-out"></span>
 				</a>
-			</div></div>
+			</div>
+		</div>
 	</div></h2></header></div>
 </div>
 <hr/>
