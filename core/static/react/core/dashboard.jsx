@@ -464,6 +464,10 @@ class Dashboard extends React.Component {
 					</div>
 
 					<div className="7u no-padding">
+						<div>
+							<h3 className='center'>{this.state.calendars.get(this.state.currentCalendar).get('name')}</h3>
+						</div>
+						<hr/>
 						<div className="grid-pad scrollable-container no-horizontal-scroll">
 							<ListView t={(e, i) =>
 								<SemesterDisplay {...e.toJS()} maxSize={6}
