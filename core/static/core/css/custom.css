@@ -191,14 +191,6 @@
 	padding-right: 0.3em;
 }
 
-/*
-.container {
-	margin-left: 2.5%;
-	margin-right: 2.5%;
-	width: 95%;
-}
-*/
-
 .course-blank {
 	width: 100%;
 	margin: 0.5em 0.9em 0 0;
@@ -209,13 +201,6 @@
 	width: 100%;
 	margin: 0.5em 0.9em 0 0;
 }
-
-/*
-.row {
-	width: initial;
-	display: flex;
-}
-*/
 
 .icon-pad {
 	padding-left: 1.8em;
@@ -278,6 +263,12 @@
 	opacity: 1;
 	height: 45vh;
 	overflow-y: scroll;
+	}
+
+.x-button {
+	float: right;
+    padding-right: 10%;
+    padding-left: 0;
 	}
 
 .icon-hover:hover {
