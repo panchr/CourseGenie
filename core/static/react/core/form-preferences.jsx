@@ -177,17 +177,17 @@ class PreferenceForm extends React.Component {
 								return <CourseDisplay department={split[0]} number={split[1]} />;
 								}} getInput={this.getCourse} data={this.state.bl_courses} cols={4}
 								blankText='None yet!'>
-								<div className="6u">
+								<div className="6u" style={{width: '50%!important'}}>
 									<h1>Department</h1>
 								</div>
-								<div className="6u$">
+								<div className="6u$" style={{width: '50%!important'}}>
 									<h1>Number</h1>
 								</div>
-								<div className="6u">
+								<div className="6u" style={{width: '50%!important'}}>
 									<input placeholder="e.g. COS" type="text" className="text"
 									ref={(e) => this.elems.department_input = e} />
 								</div>
-								<div className="6u$">
+								<div className="6u$" style={{width: '50%!important'}}>
 									<input placeholder="e.g. 333" type="text" className="text"
 								 	ref={(e) => this.elems.number_input = e} />
 									{/* refs are required (as callbacks) to get input */}

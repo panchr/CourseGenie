@@ -156,17 +156,17 @@ class CourseForm extends React.Component {
 									}} getInput={this.getCourse} data={this.state.courses} cols={4} blankText='None yet!'
 									onAdd={(e) => this.setState({courses: this.state.courses.push(e)})}
 									onDelete={(e, i) => this.setState({courses: this.state.courses.remove(i)})}>
-									<div className="6u">
+									<div className="6u" style={{width: '50%!important'}}>
 										<h1>Department</h1>
 									</div>
-									<div className="6u$">
+									<div className="6u$" style={{width: '50%!important'}}>
 										<h1>Number</h1>
 									</div>
-									<div className="6u">
+									<div className="6u" style={{width: '50%!important'}}>
 										<input placeholder="e.g. COS" type="text" className="text"
 										ref={(e) => this.elems.department_input = e} />
 									</div>
-									<div className="6u$">
+									<div className="6u$" style={{width: '50%!important'}}>
 										<input placeholder="e.g. 333" type="text" className="text"
 									 	ref={(e) => this.elems.number_input = e} />
 										{/* refs are required (as callbacks) to get input */}
@@ -177,13 +177,13 @@ class CourseForm extends React.Component {
 					</section>
 					<hr/>
 					<div className="row">
-						<div className="6u"><h1>First Name</h1></div>
-						<div className="6u$"><h1>Last Name</h1></div>
-						<div className="6u">
+						<div className="6u" style={{width: '50%!important'}}><h1>First Name</h1></div>
+						<div className="6u$" style={{width: '50%!important'}}><h1>Last Name</h1></div>
+						<div className="6u" style={{width: '50%!important'}}>
 							<input type="text" defaultValue={this.state.user.first_name}
 							ref={(e) => this.elems.first_name_input = e} maxLength="25" />
 						</div>
-						<div className="6u">
+						<div className="6u" style={{width: '50%!important'}}>
 							<input type="text" defaultValue={this.state.user.last_name}
 								ref={(e) => this.elems.last_name_input = e} maxLength="25" />
 						</div>
