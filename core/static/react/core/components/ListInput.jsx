@@ -77,7 +77,7 @@ class ListInput extends React.Component {
 			</div>
 			<GridView t={(e, i) => {
 				return <div>
-					<div className={viewCourse}  style={{height: '3.3em'}}>
+					<div className={viewCourse}>
 					{this.props.t(e, i)} &nbsp;
 					<Icon i='ios-close-empty' style={{color: 'LightSlateGray'}} className='btn'
 						onClick={() => {this.removeElement(i)}} />
