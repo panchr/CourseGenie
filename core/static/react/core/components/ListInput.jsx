@@ -52,7 +52,12 @@ class ListInput extends React.Component {
 		viewCourse= this.props.calSettings ? 'course-entry': 'hide',
 		viewCourseCal= this.props.calSettings ? 'hide': 'course-entry';
 
-		return <div>
+		return <div onKeyPress={(event) => {
+			if (event.which == 13) {
+				/* Enter key pressed. */
+				this.addElement();
+				}
+			}}>
 			<div className='row'>
 				{this.props.children}
 			</div>

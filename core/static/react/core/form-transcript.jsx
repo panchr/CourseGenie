@@ -145,7 +145,13 @@ class CourseForm extends React.Component {
 					</div>
 
 					<form method="post" action={this.props.action}
-						onSubmit={this.submitForm}>
+						onSubmit={this.submitForm}
+						onKeyPress={(event) => {
+							if (event.which == 13) {
+								 /* Enter key pressed - don't want to submit form. */
+								 event.preventDefault();
+								}
+							}}>
 						<section><section>
 						<input type="hidden" name="data"
 							ref={(e) => this.elems.data_out = e} />
