@@ -23,8 +23,8 @@ function SemesterDisplay(props) {
 		<GridView t={(c, i) => {
 			return <div className='course-list'>
 					<div className='row'>
-				<div className='11u'><CourseDisplay {...c} extended={true} /></div>
-				<div className='1u no-left-padding'>
+				<div className='11u' style={{width: '90%!important'}}><CourseDisplay {...c} extended={true} /></div>
+				<div className='1u x-button' style={{width: '1%!important'}}>
 					<Icon i='ios-close-empty'
 						className='btn' style={{color: 'LightSlateGray'}}
 						onClick={() => {props.onCourseRemove(c, i)}} />
