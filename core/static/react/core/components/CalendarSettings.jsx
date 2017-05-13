@@ -75,7 +75,7 @@ class CalendarSettings extends React.Component {
 			</div>
 			<div className='row no-children-top-padding'>
 				<div className="12u">
-					<input type="text" className="text" style={{width: '25em', margin: 'auto', display: 'block'}}
+					<input type="text" className="text" style={{width: '70%', margin: 'auto', display: 'block'}}
 					defaultValue={this.props.currentName}
 					ref={(e) => this.elems.name_input = e} maxLength="50" />
 				</div>
