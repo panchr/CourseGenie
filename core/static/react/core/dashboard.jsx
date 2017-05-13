@@ -487,12 +487,15 @@ class Dashboard extends React.Component {
 						<h3>
 							Recommendations &nbsp;
 							<span className='tooltip-bottom' data-tooltip='Drag recommendations into your calendar from here.'>
-							<Icon i='ios-help-outline' />
+								<Icon i='ios-help-outline' />
 							</span>
 
-							<RotatingIcon rotating={this.state.loading}
+							<span className='tooltip-bottom' style={{float: 'right'}}
+								data-tooltip='Reload recommendations.'>
+								<RotatingIcon rotating={this.state.loading}
 									i='ios-loop-strong' onClick={() => this.loadAllData()}
-									style={{float: 'right', color: '#009688'}} className='btn' />
+									style={{color: '#009688'}} className='btn' />
+							</span>
 						</h3>
 						<div className='scrollable-container no-horizontal-scroll'>
 							<ListView t={(e, i) => {
