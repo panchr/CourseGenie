@@ -107,7 +107,11 @@ class PreferenceForm extends React.Component {
 			}
 		else {
 			this.state.bl_courses = this.state.bl_courses.push(c);
-			this.requests.push(data.preferences.bl_course(c));
+			this.requests.push(data.preferences.bl_course(c,
+				() => {
+					this.elems.department_input.value = '';
+					this.elems.number_input.value = '';
+					}));
 			return c;
 			}
 		}
@@ -124,7 +128,8 @@ class PreferenceForm extends React.Component {
 		var dept = this.elems.bl_dept_input.value;
 		if (this.validate_dept(dept)) {
 			this.state.bl_depts = this.state.bl_depts.push(dept);
-			this.requests.push(data.preferences.bl_dept(dept));
+			this.requests.push(data.preferences.bl_dept(dept,
+				() => this.elems.bl_dept_input.value = ''));
 			return dept;
 			}
 		else this.addMessage(`Department is not three letters: ${dept}.`);
@@ -134,7 +139,8 @@ class PreferenceForm extends React.Component {
 		var dept = this.elems.wl_dept_input.value;
 		if (this.validate_dept(dept)) {
 			this.state.wl_depts = this.state.wl_depts.push(dept);
-			this.requests.push(data.preferences.wl_dept(dept));
+			this.requests.push(data.preferences.wl_dept(dept,
+				() => this.elems.wl_dept_input.value = ''));
 			return dept;
 			}
 		else this.addMessage(`Department is not three letters: ${dept}.`);
@@ -144,7 +150,8 @@ class PreferenceForm extends React.Component {
 		var area = this.elems.bl_area_input.value;
 		if (this.validate_area(area)) {
 			this.state.bl_areas = this.state.bl_areas.push(area);
-			this.requests.push(data.preferences.bl_area(area));
+			this.requests.push(data.preferences.bl_area(area,
+				() => this.elems.bl_area_input.value = ''));
 			return area;
 			}
 		else this.addMessage(`Not a valid distribution area: ${area}.`);
@@ -154,7 +161,8 @@ class PreferenceForm extends React.Component {
 		var area = this.elems.wl_area_input.value;
 		if (this.validate_area(area)) {
 			this.state.wl_areas = this.state.wl_areas.push(area);
-			this.requests.push(data.preferences.wl_area(area));
+			this.requests.push(data.preferences.wl_area(area,
+				() => this.elems.wl_area_input.value = ''));
 			return area;
 			}
 		else this.addMessage(`Not a valid distribution area: ${area}.`);

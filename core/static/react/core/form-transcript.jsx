@@ -106,6 +106,8 @@ class CourseForm extends React.Component {
 			this.addMessage({message: 'The course number must be a number, optionally followed by a letter.', t: 'error'});
 			}
 		else {
+			this.elems.department_input.value = '';
+			this.elems.number_input.value = '';
 			return c;
 			}
 		}
