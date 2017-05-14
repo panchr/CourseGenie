@@ -412,20 +412,20 @@
 			margin: 0em auto;
 		}
 
-			form input[type="text"],
-			form input[type="password"],
-			form input[type="email"],
-			form input[type="number"],
+			form input[type="text"], .form input[type="text"],
+			form input[type="password"], .form input[type="password"],
+			form input[type="email"], .form input[type="email"],
+			form input[type="number"], .form input[type="number"],
 			form select,
 			form textarea
 			{
 				-webkit-appearance: none;
 			}
 
-			form input[type="text"],
-			form input[type="password"],
-			form input[type="email"],
-			form input[type="number"],
+			form input[type="text"], .form input[type="text"],
+			form input[type="password"], .form input[type="password"],
+			form input[type="email"], .form input[type="email"],
+			form input[type="number"], .form input[type="number"],
 			form select,
 			form textarea
 			{

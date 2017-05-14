@@ -67,6 +67,7 @@ class CalendarSettings extends React.Component {
 			onButtonClick={() => this.onSave()}
 			onClose={() => this.props.onClose()}
 			className={classNames({'center-parent': true, 'expanding': ! this.props.addMode})}>
+			<div className='form'>
 			<h1>{this.props.header}</h1>
 			<div className='row no-children-top-padding'>
 				<div className='12u'>
@@ -133,6 +134,7 @@ class CalendarSettings extends React.Component {
 						</div>
 					</div>
 				</div>
+			</div>
 			</div>
 		</Modal>;
 		}

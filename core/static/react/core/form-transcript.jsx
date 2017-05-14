@@ -165,20 +165,24 @@ class CourseForm extends React.Component {
 									}} getInput={this.getCourse} data={this.state.courses} cols={4} blankText='None yet!'
 									onAdd={(e) => this.setState({courses: this.state.courses.push(e)})}
 									onDelete={(e, i) => this.setState({courses: this.state.courses.remove(i)})}>
+
 									<div className="6u">
-										<h1>Department</h1>
-									</div>
-									<div className="6u$">
-										<h1>Number</h1>
-									</div>
-									<div className="6u">
-										<input placeholder="e.g. COS" type="text" className="text"
+										<div className="row"><div className="12u">
+											<h1>Department</h1>
+										</div></div>
+										<div className="row"><div className="12u">
+											<input placeholder="e.g. COS" type="text" className="text"
 										ref={(e) => this.elems.department_input = e} />
+										</div></div>
 									</div>
-									<div className="6u$">
-										<input placeholder="e.g. 333" type="text" className="text"
+									<div className="6u">
+										<div className="row"><div className="12u">
+											<h1>Number</h1>
+										</div></div>
+										<div className="row"><div className="12u">
+											<input placeholder="e.g. 333" type="text" className="text"
 									 	ref={(e) => this.elems.number_input = e} />
-										{/* refs are required (as callbacks) to get input */}
+										</div></div>
 									</div>
 								</ListInput>
 							</div>
@@ -186,17 +190,21 @@ class CourseForm extends React.Component {
 					</section>
 					<hr/>
 					<div className="row">
-						<div className="6u"><h1>First Name</h1></div>
-						<div className="6u$"><h1>Last Name</h1></div>
 						<div className="6u">
-							<input type="text" value={this.state.first_name}
+							<div className="row"><div className="12u"><h1>First Name</h1></div></div>
+							<div className="row"><div className="12u">
+								<input type="text" value={this.state.first_name}
 								onChange={(e) => this.setState({first_name: e.target.value})}
 								maxLength="25" />
+							</div></div>
 						</div>
 						<div className="6u">
-							<input type="text" value={this.state.last_name}
+							<div className="row"><div className="12u"><h1>Last Name</h1></div></div>
+							<div className="row"><div className="12u">
+								<input type="text" value={this.state.last_name}
 								onChange={(e) => this.setState({last_name: e.target.value})}
 								maxLength="25" />
+							</div></div>
 						</div>
 					</div>
 					<div className="row">

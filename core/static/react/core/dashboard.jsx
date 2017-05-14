@@ -532,6 +532,7 @@ class Dashboard extends React.Component {
 							:
 							<h1 style={{fontSize: '1.2em', paddingLeft: '0'}}>{this.state.selectedSemester.term_display} {this.state.selectedSemester.year}</h1>
 					}
+					<form>
 					<div className='row'>
 						<div className='6u'>
 							<span>Department</span>
@@ -551,6 +552,7 @@ class Dashboard extends React.Component {
 							{/* refs are required (as callbacks) to get input */}
 						</div>
 					</div>
+					</form>
 				</Modal>
 
 				<Modal open={this.state.confirmationModalOpen} button={false}

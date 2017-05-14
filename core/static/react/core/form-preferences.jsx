@@ -218,31 +218,36 @@ class PreferenceForm extends React.Component {
 								return <CourseDisplay department={split[0]} number={split[1]} />;
 								}} getInput={this.getCourse} data={this.state.bl_courses} cols={4}
 								blankText='None yet!'>
+
 								<div className="6u">
-									<h1>Department</h1>
-								</div>
-								<div className="6u$">
-									<h1>Number</h1>
-								</div>
-								<div className="6u">
-									<input placeholder="e.g. COS" type="text" className="text"
+									<div className="row"><div className="12u">
+										<h1>Department</h1>
+									</div></div>
+									<div className="row"><div className="12u">
+										<input placeholder="e.g. CBE" type="text" className="text"
 									ref={(e) => this.elems.department_input = e} />
+									</div></div>
 								</div>
-								<div className="6u$">
-									<input placeholder="e.g. 333" type="text" className="text"
+								<div className="6u">
+									<div className="row"><div className="12u">
+										<h1>Number</h1>
+									</div></div>
+									<div className="row"><div className="12u">
+										<input placeholder="e.g. 245" type="text" className="text"
 								 	ref={(e) => this.elems.number_input = e} />
-									{/* refs are required (as callbacks) to get input */}
+									</div></div>
 								</div>
 							</ListInput>
 						</div>
 					</div>
 					<br/><hr/><br/>
+
 					<div className="row">
-						<div className="6u"><h2>Subjects I Dislike</h2></div>
-						<div className="6u"><h2>Subjects I Am Interested In</h2></div>
-					</div>
-					<div className="row">
-						<div className="6u">
+					<div className="6u">
+						<div className="row"><div className="12u">
+							<h2>Subjects I Dislike</h2>
+						</div></div>
+						<div className="row"><div className="12u">
 							<h3>Department</h3>
 							<ListInput ref={(e) => this.elems.bl_dept_elem = e}
 								onDelete={(c) => this.requests.push(data.preferences.del_bl_dept(c))}
@@ -255,24 +260,8 @@ class PreferenceForm extends React.Component {
 									{/* refs are required (as callbacks) to get input */}
 								</div>
 							</ListInput>
-						</div>
-						<div className="6u">
-							<h3>Department</h3>
-							<ListInput ref={(e) => this.elems.wl_dept_elem = e}
-								onDelete={(c) => this.requests.push(data.preferences.del_wl_dept(c))}
-								t={(c) => <span>{c}</span>}
-								getInput={this.getDept_wl} data={this.state.wl_depts} cols={3}
-								blankText='None yet!'>
-								<div className="12u$">
-									<input placeholder="e.g. ART" type="text" className="text"
-								 	ref={(e) => this.elems.wl_dept_input = e} />
-									{/* refs are required (as callbacks) to get input */}
-								</div>
-							</ListInput>
-						</div>
-					</div>
-					<div className="row">
-						<div className="6u">
+						</div></div>
+						<div className="row"><div className="12u">
 							<h3>Area</h3>
 							<ListInput ref={(e) => this.elems.bl_area_elem = e}
 								onDelete={(c) => this.requests.push(data.preferences.del_bl_area(c))}
@@ -285,8 +274,27 @@ class PreferenceForm extends React.Component {
 									{/* refs are required (as callbacks) to get input */}
 								</div>
 							</ListInput>
-						</div>
-						<div className="6u">
+						</div></div>
+					</div>
+					<div className="6u">
+						<div className="row"><div className="12u">
+							<h2>Subjects I Am Interested In</h2>
+						</div></div>
+						<div className="row"><div className="12u">
+							<h3>Department</h3>
+							<ListInput ref={(e) => this.elems.wl_dept_elem = e}
+								onDelete={(c) => this.requests.push(data.preferences.del_wl_dept(c))}
+								t={(c) => <span>{c}</span>}
+								getInput={this.getDept_wl} data={this.state.wl_depts} cols={3}
+								blankText='None yet!'>
+								<div className="12u$">
+									<input placeholder="e.g. ART" type="text" className="text"
+								 	ref={(e) => this.elems.wl_dept_input = e} />
+									{/* refs are required (as callbacks) to get input */}
+								</div>
+							</ListInput>
+						</div></div>
+						<div className="row"><div className="12u">
 							<h3>Area</h3>
 							<ListInput ref={(e) => this.elems.wl_area_elem = e}
 								onDelete={(c) => this.requests.push(data.preferences.del_wl_area(c))}
@@ -299,7 +307,8 @@ class PreferenceForm extends React.Component {
 									{/* refs are required (as callbacks) to get input */}
 								</div>
 							</ListInput>
-						</div>
+						</div></div>
+					</div>
 					</div>
 				</form>
 			</div>
