@@ -113,7 +113,7 @@ class CalendarSettings extends React.Component {
 					<div className="row no-children-top-padding">
 						<div className="12u no-left-padding"><h2>Certificate(s)</h2></div>
 					</div>
-					<div className="row">
+					<div className="row" style={{paddingLeft: '1.3em'}}>
 						<div className="12u center">
 							<ListInput t={(e) => <span>{e.name}</span>}
 								data={this.state.currentCertificates}
