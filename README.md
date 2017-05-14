@@ -19,3 +19,18 @@ Any changes in the local directory will be synced automatically to the
 container. To run a command on the web container, which is where the Django
 project runs, run `$ docker-compose exec web {command}`. For example, to run
 Django's migrations: `$ docker-compose exec web python manage.py migrate`.
+
+### run vs. exec
+
+`$ docker-compose run {container} {command}` should be used if you want to run
+a command on a container service without having such a container running.
+However, note that it will cause a new container to be spawned, which means
+that using `run` repeatedly will slow down Docker after a while. To alleviate
+this, you can stop containers using `$ docker stop {container_id}$` where the
+`container_id` can be found using `$ docker-compose ps`.
+
+On the other hand, `$ docker-compose exec {container} {command}` executes a
+command on the running instances of the container. This prevents a new
+container from spawning, so Docker will *not* slow down overtime. However, you
+need to have a container running. In addition, these changes will not persist
+when spawning a new container.
